@@ -69,7 +69,7 @@ struct ShiftTableView: View {
                     .padding(.bottom, 140) // 플로팅 버튼 공간 확보 (버튼 높이 + 여백)
                 }
             }
-            .background(Color(hex: "EFF0F2"))
+            .background(Color.white)
             .overlay(
                 // 플로팅 버튼과 그라디언트 배경
                 VStack {
@@ -128,9 +128,9 @@ struct ShiftTableView: View {
                         }
                     }
                     .padding(.horizontal)
-                    .padding(.bottom, 100) // 네비게이션 바 위로 충분히 올림
+                    .padding(.bottom, 80) // 네비게이션 바 위로 적당히 올림
                     .background(
-                        // 그라디언트 배경 - 버튼과 겹치도록
+                        // 그라디언트 배경 - 가로에 꽉 차게 확장
                         LinearGradient(
                             gradient: Gradient(colors: [
                                 Color.white.opacity(0),
@@ -141,7 +141,7 @@ struct ShiftTableView: View {
                             startPoint: .top,
                             endPoint: .bottom
                         )
-                        .frame(height: 120)
+                        .frame(width: UIScreen.main.bounds.width, height: 120)
                         .offset(y: -20) // 버튼과 겹치도록 위로 이동
                     )
                 }

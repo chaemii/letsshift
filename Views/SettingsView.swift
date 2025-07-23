@@ -345,15 +345,15 @@ struct ColorPickerView: View {
     @State private var showingNameEditor = false
     
     private let customColors: [Color] = [
-        .charcoalBlack, .mainColor, .mainColorButton, .mainColorDark, .pointColor, .subColor1, .subColor2,
-        .backgroundLight, .backgroundWhite, .nightShift, .deepNightShift, .dayShift, .offDuty, .standby,
+        .mainColor, .mainColorButton, .mainColorDark, .pointColor, .subColor1, .subColor2,
+        .backgroundLight, .nightShift, .deepNightShift, .dayShift, .offDuty, .standby,
         Color(hex: "439897"), Color(hex: "4B4B4B"), Color(hex: "F47F4C"), Color(hex: "2C3E50"), Color(hex: "77BBFB"),
         Color(hex: "7E85F9"), Color(hex: "FFA8D2"), Color(hex: "C39DF4"), Color(hex: "92E3A9"), Color(hex: "B9D831")
     ]
     
     private let systemColors: [Color] = [
         .red, .orange, .yellow, .green, .blue, .purple, .pink,
-        .gray, .black, .brown, .cyan, .mint, .indigo, .teal
+        .gray, .brown, .cyan, .mint, .indigo, .teal, .charcoalBlack
     ]
     
     var body: some View {
@@ -397,21 +397,8 @@ struct ColorPickerView: View {
                         .foregroundColor(.charcoalBlack)
                         .frame(maxWidth: .infinity, alignment: .leading)
                     
-                    LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 8), spacing: 10) {
-                        ForEach(Array(customColors.enumerated()), id: \.element) { index, colorOption in
-                            Circle()
-                                .fill(colorOption)
-                                .frame(width: 36, height: 36)
-                                .overlay(
-                                    Circle()
-                                        .stroke(color == colorOption ? Color.mainColorButton : Color.clear, lineWidth: 3)
-                                )
-                                .onTapGesture {
-                                    color = colorOption
-                                }
-                        }
-                        
-                        ForEach(Array(systemColors.enumerated()), id: \.element) { index, colorOption in
+                    LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7), spacing: 10) {
+                        ForEach(Array((customColors + systemColors).enumerated()), id: \.offset) { index, colorOption in
                             Circle()
                                 .fill(colorOption)
                                 .frame(width: 36, height: 36)
