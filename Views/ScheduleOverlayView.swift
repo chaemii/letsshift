@@ -67,6 +67,7 @@ struct ScheduleOverlayView: View {
                         Spacer()
                     }
                 }
+                .frame(height: 100) // 고정 높이 설정
                 
                 // 고정된 공간 - 휴가 설정 섹션의 최대 높이만큼 항상 확보
                 VStack(spacing: 15) {
@@ -116,10 +117,6 @@ struct ScheduleOverlayView: View {
                                 .buttonStyle(PlainButtonStyle())
                             }
                         }
-                    } else {
-                        // 휴가 설정이 OFF일 때는 투명한 공간으로 동일한 높이 유지
-                        Color.clear
-                            .frame(height: 44)
                     }
                 }
                 
