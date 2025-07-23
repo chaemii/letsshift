@@ -618,26 +618,27 @@ struct SalarySetupView: View {
                 loadCurrentValues()
             }
         }
-        
-        private func loadCurrentValues() {
-            baseSalary = shiftManager.settings.baseSalary > 0 ? "\(Int(shiftManager.settings.baseSalary))" : ""
-            nightShiftRate = shiftManager.settings.nightShiftRate > 0 ? "\(shiftManager.settings.nightShiftRate)" : ""
-            deepNightShiftRate = shiftManager.settings.deepNightShiftRate > 0 ? "\(shiftManager.settings.deepNightShiftRate)" : ""
-            overtimeRate = shiftManager.settings.overtimeRate > 0 ? "\(shiftManager.settings.overtimeRate)" : ""
-            holidayWorkRate = shiftManager.settings.holidayWorkRate > 0 ? "\(shiftManager.settings.holidayWorkRate)" : ""
-            annualVacationDays = shiftManager.settings.annualVacationDays > 0 ? "\(shiftManager.settings.annualVacationDays)" : ""
-        }
-        
-        private func saveSalaryInfo() {
-            shiftManager.settings.baseSalary = Double(baseSalary) ?? 0
-            shiftManager.settings.nightShiftRate = Double(nightShiftRate) ?? 1.5
-            shiftManager.settings.deepNightShiftRate = Double(deepNightShiftRate) ?? 2.0
-            shiftManager.settings.overtimeRate = Double(overtimeRate) ?? 1.5
-            shiftManager.settings.holidayWorkRate = Double(holidayWorkRate) ?? 1.5
-            shiftManager.settings.annualVacationDays = Int(annualVacationDays) ?? 15
-            shiftManager.saveData()
-        }
     }
+    
+    private func loadCurrentValues() {
+        baseSalary = shiftManager.settings.baseSalary > 0 ? "\(Int(shiftManager.settings.baseSalary))" : ""
+        nightShiftRate = shiftManager.settings.nightShiftRate > 0 ? "\(shiftManager.settings.nightShiftRate)" : ""
+        deepNightShiftRate = shiftManager.settings.deepNightShiftRate > 0 ? "\(shiftManager.settings.deepNightShiftRate)" : ""
+        overtimeRate = shiftManager.settings.overtimeRate > 0 ? "\(shiftManager.settings.overtimeRate)" : ""
+        holidayWorkRate = shiftManager.settings.holidayWorkRate > 0 ? "\(shiftManager.settings.holidayWorkRate)" : ""
+        annualVacationDays = shiftManager.settings.annualVacationDays > 0 ? "\(shiftManager.settings.annualVacationDays)" : ""
+    }
+    
+    private func saveSalaryInfo() {
+        shiftManager.settings.baseSalary = Double(baseSalary) ?? 0
+        shiftManager.settings.nightShiftRate = Double(nightShiftRate) ?? 1.5
+        shiftManager.settings.deepNightShiftRate = Double(deepNightShiftRate) ?? 2.0
+        shiftManager.settings.overtimeRate = Double(overtimeRate) ?? 1.5
+        shiftManager.settings.holidayWorkRate = Double(holidayWorkRate) ?? 1.5
+        shiftManager.settings.annualVacationDays = Int(annualVacationDays) ?? 15
+        shiftManager.saveData()
+    }
+}
 
 struct ShiftPatternSelectionSheet: View {
     @EnvironmentObject var shiftManager: ShiftManager

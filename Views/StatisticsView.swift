@@ -69,7 +69,7 @@ struct StatisticsView: View {
                         }
                         
                         // 예상 급여 정보
-                        if shiftManager.settings.hourlyWage > 0 {
+                        if shiftManager.settings.baseSalary > 0 {
                             ExpectedSalaryCard(selectedTab: selectedTab, selectedDate: selectedTab == .monthly ? selectedMonth : selectedYear)
                         } else {
                             SalarySetupPrompt()
@@ -392,26 +392,43 @@ struct ExpectedSalaryCard: View {
         var deepNightShiftBonus: Double = 0
         var overtimeBonus: Double = 0
         
+        // 시급 계산 (기본급 ÷ 209)
+        let hourlyWage = shiftManager.settings.baseSalary / 209.0
+        
         for schedule in schedules {
-            let baseHours = Double(schedule.shiftType.workingHours)
             let overtimeHours = Double(schedule.overtimeHours)
             
-            // 기본 급여
-            baseSalary += baseHours * shiftManager.settings.hourlyWage
-            
-            // 야간 근무 수당
-            if schedule.shiftType == .야간 {
-                nightShiftBonus += baseHours * shiftManager.settings.nightShiftBonus
-            }
-            
-            // 심야 근무 수당
-            if schedule.shiftType == .심야 {
-                deepNightShiftBonus += baseHours * shiftManager.settings.deepNightShiftBonus
+            switch schedule.shiftType {
+            case .주간:
+                // 주간근무: 09:00~18:00 (9시간) - 1.0배
+                baseSalary += 9.0 * hourlyWage * 1.0
+                
+            case .야간:
+                // 야간근무: 18:00~23:00 (5시간) - 1.5배
+                baseSalary += 5.0 * hourlyWage * 1.0
+                nightShiftBonus += 5.0 * hourlyWage * (shiftManager.settings.nightShiftRate - 1.0)
+                
+            case .심야:
+                // 심야근무: 23:00~익일 07:00 (8시간) - 2.0배
+                baseSalary += 8.0 * hourlyWage * 1.0
+                deepNightShiftBonus += 8.0 * hourlyWage * (shiftManager.settings.deepNightShiftRate - 1.0)
+                
+            case .당직:
+                // 당직근무: 24시간 대기 (4시간 실제근무 가정) - 1.0배
+                baseSalary += 4.0 * hourlyWage * 1.0
+                
+            case .오후:
+                // 오후근무: 주간과 동일하게 처리
+                baseSalary += 9.0 * hourlyWage * 1.0
+                
+            case .휴무, .비번:
+                // 휴무, 비번: 무급
+                break
             }
             
             // 초과근무 수당
             if overtimeHours > 0 {
-                overtimeBonus += overtimeHours * shiftManager.settings.hourlyWage * (shiftManager.settings.overtimeRate - 1.0)
+                overtimeBonus += overtimeHours * hourlyWage * (shiftManager.settings.overtimeRate - 1.0)
             }
         }
         

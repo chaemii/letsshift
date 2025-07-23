@@ -191,10 +191,11 @@ struct ShiftSettings: Codable {
     var colors: [String: String] = [:]
     
     // 급여 정보 추가
-    var hourlyWage: Double = 0.0
-    var nightShiftBonus: Double = 0.0  // 야간 근무 시간당 추가 금액
+    var baseSalary: Double = 0.0        // 기본급 (월급)
+    var nightShiftRate: Double = 1.5    // 야간 근무 수당 배율 (기본 1.5배)
+    var deepNightShiftRate: Double = 2.0 // 심야 근무 수당 배율 (기본 2.0배)
     var overtimeRate: Double = 1.5      // 초과근무 배율 (기본 1.5배)
-    var deepNightShiftBonus: Double = 0.0  // 심야 근무 시간당 추가 금액
+    var holidayWorkRate: Double = 1.5   // 휴일 근무 수당 배율 (기본 1.5배)
     
     // 휴가 정보 추가
     var annualVacationDays: Int = 15  // 연간 휴가 일수
@@ -363,26 +364,42 @@ class ShiftManager: ObservableObject {
     private func calculateSalary(for schedules: [ShiftSchedule]) -> Double {
         var totalSalary: Double = 0.0
         
+        // 시급 계산 (기본급 ÷ 209)
+        let hourlyWage = settings.baseSalary / 209.0
+        
         for schedule in schedules {
-            let baseHours = Double(schedule.shiftType.workingHours)
+            var dailySalary: Double = 0.0
+            
+            switch schedule.shiftType {
+            case .주간:
+                // 주간근무: 09:00~18:00 (9시간) - 1.0배
+                dailySalary = 9.0 * hourlyWage * 1.0
+                
+            case .야간:
+                // 야간근무: 18:00~23:00 (5시간) - 1.5배
+                dailySalary = 5.0 * hourlyWage * settings.nightShiftRate
+                
+            case .심야:
+                // 심야근무: 23:00~익일 07:00 (8시간) - 2.0배
+                dailySalary = 8.0 * hourlyWage * settings.deepNightShiftRate
+                
+            case .당직:
+                // 당직근무: 24시간 대기 (4시간 실제근무 가정) - 1.0배
+                dailySalary = 4.0 * hourlyWage * 1.0
+                
+            case .오후:
+                // 오후근무: 주간과 동일하게 처리
+                dailySalary = 9.0 * hourlyWage * 1.0
+                
+            case .휴무, .비번:
+                // 휴무, 비번: 무급
+                dailySalary = 0.0
+            }
+            
+            // 초과근무 수당 추가
             let overtimeHours = Double(schedule.overtimeHours)
-            
-            // 기본 급여
-            var dailySalary = baseHours * settings.hourlyWage
-            
-            // 야간 근무 보너스
-            if schedule.shiftType == .야간 {
-                dailySalary += baseHours * settings.nightShiftBonus
-            }
-            
-            // 심야 근무 보너스
-            if schedule.shiftType == .심야 {
-                dailySalary += baseHours * settings.deepNightShiftBonus
-            }
-            
-            // 초과근무 급여
             if overtimeHours > 0 {
-                dailySalary += overtimeHours * settings.hourlyWage * settings.overtimeRate
+                dailySalary += overtimeHours * hourlyWage * settings.overtimeRate
             }
             
             totalSalary += dailySalary
