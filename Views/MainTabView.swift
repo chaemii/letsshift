@@ -6,6 +6,10 @@ struct MainTabView: View {
     
     var body: some View {
         ZStack {
+            // 전체 배경색
+            Color(hex: "EFF0F2")
+                .ignoresSafeArea()
+            
             // Main content
             TabView(selection: $selectedTab) {
                 MainCalendarView()

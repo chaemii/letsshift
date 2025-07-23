@@ -144,6 +144,9 @@ struct SettingsView: View {
                     .foregroundColor(.red)
                 }
             }
+            .background(Color(hex: "EFF0F2"))
+            .listStyle(InsetGroupedListStyle())
+            .scrollContentBackground(.hidden)
             .padding(.bottom, 80) // 네비게이션 바 높이만큼 여백
             .sheet(isPresented: $showingColorPicker) {
                 ColorPickerView(

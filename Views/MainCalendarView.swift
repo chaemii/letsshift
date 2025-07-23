@@ -105,16 +105,7 @@ struct MainCalendarView: View {
                 Spacer()
             }
             }
-            .background(
-                VStack {
-                    Spacer()
-                    Rectangle()
-                        .fill(Color.backgroundLight)
-                        .frame(height: 80)
-                        .blur(radius: 10)
-                }
-            )
-            .background(Color.backgroundLight)
+            .background(Color(hex: "EFF0F2"))
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("일정 추가") {

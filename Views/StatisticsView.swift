@@ -80,7 +80,7 @@ struct StatisticsView: View {
                     .padding(.bottom, 80) // 네비게이션 바 높이만큼 여백
                 }
             }
-            .background(Color.backgroundLight)
+            .background(Color(hex: "EFF0F2"))
         }
     }
     
@@ -161,13 +161,19 @@ struct StatisticsSummaryBox: View {
                 HStack {
                     StatItem(title: "야간 근무", value: "\(stats.nightShiftDays)일", icon: "moon")
                     Divider()
-                    StatItem(title: "평균 근무시간", value: "\(stats.averageWorkHours)시간", icon: "chart.bar")
+                    StatItem(title: "당직", value: "\(stats.dutyDays)일", icon: "house")
                 }
                 
                 HStack {
-                    StatItem(title: "초과근무 시간", value: "\(stats.overtimeHours)시간", icon: "timer")
+                    StatItem(title: "평균 근무시간", value: "\(stats.averageWorkHours)시간", icon: "chart.bar")
                     Divider()
+                    StatItem(title: "초과근무 시간", value: "\(stats.overtimeHours)시간", icon: "timer")
+                }
+                
+                HStack {
                     StatItem(title: "근무율", value: "\(stats.workRate)%", icon: "percent")
+                    Divider()
+                    StatItem(title: "당직 시간", value: "\(stats.dutyHours)시간", icon: "clock.badge")
                 }
             }
         }
@@ -176,13 +182,17 @@ struct StatisticsSummaryBox: View {
         .cornerRadius(16)
     }
     
-    private func getStatistics() -> (totalWorkDays: Int, totalWorkHours: Int, nightShiftDays: Int, averageWorkHours: Int, overtimeHours: Int, workRate: Int) {
+    private func getStatistics() -> (totalWorkDays: Int, totalWorkHours: Int, nightShiftDays: Int, averageWorkHours: Int, overtimeHours: Int, workRate: Int, dutyDays: Int, dutyHours: Int) {
         let schedules = getSchedulesForPeriod()
         
         let totalWorkDays = schedules.filter { $0.shiftType != .휴무 && $0.shiftType != .비번 }.count
         let totalWorkHours = schedules.reduce(0) { $0 + $1.shiftType.workingHours + $1.overtimeHours }
         let nightShiftDays = schedules.filter { $0.shiftType == .야간 || $0.shiftType == .심야 }.count
         let overtimeHours = schedules.reduce(0) { $0 + $1.overtimeHours }
+        
+        // 당직 통계 추가
+        let dutyDays = schedules.filter { $0.shiftType == .당직 }.count
+        let dutyHours = schedules.filter { $0.shiftType == .당직 }.reduce(0) { $0 + $1.shiftType.workingHours + $1.overtimeHours }
         
         let averageWorkHours = totalWorkDays > 0 ? totalWorkHours / totalWorkDays : 0
         
@@ -192,7 +202,7 @@ struct StatisticsSummaryBox: View {
             365
         let workRate = totalDays > 0 ? Int((Double(totalWorkDays) / Double(totalDays)) * 100) : 0
         
-        return (totalWorkDays, totalWorkHours, nightShiftDays, averageWorkHours, overtimeHours, workRate)
+        return (totalWorkDays, totalWorkHours, nightShiftDays, averageWorkHours, overtimeHours, workRate, dutyDays, dutyHours)
     }
     
     private func getSchedulesForPeriod() -> [ShiftSchedule] {
