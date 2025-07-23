@@ -66,13 +66,14 @@ struct ShiftTableView: View {
                         }
                     }
                     .padding(.horizontal)
-                    .padding(.bottom, 100) // 플로팅 버튼 공간 확보
+                    .padding(.bottom, 140) // 플로팅 버튼 공간 확보 (버튼 높이 + 여백)
                 }
             }
             .background(Color(hex: "EFF0F2"))
             .overlay(
                 // 플로팅 버튼과 그라디언트 배경
                 VStack {
+                    // 플로팅 버튼들을 네비게이션 바 위로 고정
                     Spacer()
                     
                     // 플로팅 버튼들
@@ -127,7 +128,7 @@ struct ShiftTableView: View {
                         }
                     }
                     .padding(.horizontal)
-                    .padding(.bottom, 40) // 네비게이션 바 높이만큼 여백 추가
+                    .padding(.bottom, 100) // 네비게이션 바 위로 충분히 올림
                     .background(
                         // 그라디언트 배경 - 버튼과 겹치도록
                         LinearGradient(
