@@ -64,6 +64,7 @@ enum ShiftType: String, CaseIterable, Codable {
     case 야간 = "야간"
     case 심야 = "심야"
     case 오후 = "오후"
+    case 당직 = "당직"
     case 비번 = "비번"
     case 휴무 = "휴무"
     
@@ -74,6 +75,7 @@ enum ShiftType: String, CaseIterable, Codable {
         case .심야: defaultColor = .deepNightShift
         case .주간: defaultColor = .dayShift
         case .오후: defaultColor = .subColor1
+        case .당직: defaultColor = .pointColor
         case .휴무: defaultColor = .offDuty
         case .비번: defaultColor = .standby
         }
@@ -86,6 +88,7 @@ enum ShiftType: String, CaseIterable, Codable {
         case .야간: return 8
         case .심야: return 8
         case .오후: return 8
+        case .당직: return 24
         case .비번: return 0
         case .휴무: return 0
         }
@@ -97,6 +100,7 @@ enum ShiftType: String, CaseIterable, Codable {
         case .오후: return "15:00-23:00"
         case .야간: return "19:00-07:00"
         case .심야: return "23:00-07:00"
+        case .당직: return "24시간"
         case .비번: return "대기"
         case .휴무: return "휴무"
         }
@@ -107,6 +111,8 @@ enum ShiftType: String, CaseIterable, Codable {
 enum ShiftPatternType: String, CaseIterable, Codable {
     case twoShift = "2교대"
     case threeShift = "3교대"
+    case threeTeamTwoShift = "3조 2교대"
+    case fourTeamTwoShift = "4조 2교대"
     case fourTeamThreeShift = "4조 3교대"
     case fiveTeamThreeShift = "5조 3교대"
     case irregular = "비주기적"
@@ -115,6 +121,8 @@ enum ShiftPatternType: String, CaseIterable, Codable {
         switch self {
         case .twoShift: return "2교대"
         case .threeShift: return "3교대"
+        case .threeTeamTwoShift: return "3조 2교대"
+        case .fourTeamTwoShift: return "4조 2교대"
         case .fourTeamThreeShift: return "4조 3교대"
         case .fiveTeamThreeShift: return "5조 3교대"
         case .irregular: return "비주기적"
@@ -125,6 +133,8 @@ enum ShiftPatternType: String, CaseIterable, Codable {
         switch self {
         case .twoShift: return "주간/야간 (12시간씩)"
         case .threeShift: return "주간/오후/야간 (8시간씩)"
+        case .threeTeamTwoShift: return "당직-비번-휴무 (3조 2교대)"
+        case .fourTeamTwoShift: return "주간-야간-비번-휴무 (4조 2교대)"
         case .fourTeamThreeShift: return "4조로 3교대 + 휴일 보장"
         case .fiveTeamThreeShift: return "5조로 3교대 + 충분한 휴무"
         case .irregular: return "월마다 비주기적 배치"
@@ -137,6 +147,10 @@ enum ShiftPatternType: String, CaseIterable, Codable {
             return [.주간, .야간]
         case .threeShift:
             return [.주간, .오후, .야간]
+        case .threeTeamTwoShift:
+            return [.당직, .비번, .휴무]
+        case .fourTeamTwoShift:
+            return [.주간, .야간, .비번, .휴무]
         case .fourTeamThreeShift:
             return [.주간, .오후, .야간, .휴무]
         case .fiveTeamThreeShift:
@@ -152,11 +166,13 @@ struct ShiftSchedule: Codable, Identifiable {
     let date: Date
     var shiftType: ShiftType
     var overtimeHours: Int
+    var isVacation: Bool = false
     
-    init(date: Date, shiftType: ShiftType, overtimeHours: Int = 0) {
+    init(date: Date, shiftType: ShiftType, overtimeHours: Int = 0, isVacation: Bool = false) {
         self.date = date
         self.shiftType = shiftType
         self.overtimeHours = overtimeHours
+        self.isVacation = isVacation
     }
 }
 
@@ -170,6 +186,9 @@ struct ShiftSettings: Codable {
     var nightShiftBonus: Double = 0.0  // 야간 근무 시간당 추가 금액
     var overtimeRate: Double = 1.5      // 초과근무 배율 (기본 1.5배)
     var deepNightShiftBonus: Double = 0.0  // 심야 근무 시간당 추가 금액
+    
+    // 휴가 정보 추가
+    var annualVacationDays: Int = 15  // 연간 휴가 일수
 }
 
 // MARK: - Calendar Extensions
@@ -235,6 +254,8 @@ class ShiftManager: ObservableObject {
         switch settings.shiftPatternType {
         case .twoShift: return 2
         case .threeShift: return 3
+        case .threeTeamTwoShift: return 3
+        case .fourTeamTwoShift: return 4
         case .fourTeamThreeShift: return 4
         case .fiveTeamThreeShift: return 5
         case .irregular: return 6
@@ -263,6 +284,7 @@ class ShiftManager: ObservableObject {
         case .심야: return "deepNightShift"
         case .주간: return "dayShift"
         case .오후: return "afternoonShift"
+        case .당직: return "dutyShift"
         case .휴무: return "offDuty"
         case .비번: return "standby"
         }
@@ -386,6 +408,39 @@ class ShiftManager: ObservableObject {
         }
         
         return weeklyHours
+    }
+    
+    // 휴가 관련 메서드들
+    func getUsedVacationDays(for year: Int) -> Int {
+        let calendar = Calendar.current
+        let startOfYear = calendar.dateInterval(of: .year, for: calendar.date(from: DateComponents(year: year)) ?? Date())?.start ?? Date()
+        let endOfYear = calendar.dateInterval(of: .year, for: calendar.date(from: DateComponents(year: year)) ?? Date())?.end ?? Date()
+        
+        return schedules.filter { 
+            $0.date >= startOfYear && $0.date < endOfYear && $0.isVacation 
+        }.count
+    }
+    
+    func getRemainingVacationDays(for year: Int) -> Int {
+        return settings.annualVacationDays - getUsedVacationDays(for: year)
+    }
+    
+    func getVacationDaysByMonth(for year: Int) -> [Int: Int] {
+        let calendar = Calendar.current
+        var monthlyVacations: [Int: Int] = [:]
+        
+        for month in 1...12 {
+            let startOfMonth = calendar.date(from: DateComponents(year: year, month: month)) ?? Date()
+            let endOfMonth = calendar.dateInterval(of: .month, for: startOfMonth)?.end ?? Date()
+            
+            let monthlyVacationCount = schedules.filter { 
+                $0.date >= startOfMonth && $0.date < endOfMonth && $0.isVacation 
+            }.count
+            
+            monthlyVacations[month] = monthlyVacationCount
+        }
+        
+        return monthlyVacations
     }
 }
 

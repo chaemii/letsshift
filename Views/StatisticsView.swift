@@ -63,6 +63,11 @@ struct StatisticsView: View {
                             WeeklyWorkHoursChart(selectedMonth: selectedMonth)
                         }
                         
+                        // 연간 탭에서만 휴가 통계 표시
+                        if selectedTab == .yearly {
+                            VacationStatisticsCard(selectedYear: selectedYear)
+                        }
+                        
                         // 예상 급여 정보
                         if shiftManager.settings.hourlyWage > 0 {
                             ExpectedSalaryCard(selectedTab: selectedTab, selectedDate: selectedTab == .monthly ? selectedMonth : selectedYear)
@@ -460,6 +465,86 @@ struct SalaryDetailRow: View {
         formatter.currencyCode = "KRW"
         formatter.maximumFractionDigits = 0
         return formatter.string(from: NSNumber(value: amount)) ?? "₩0"
+    }
+}
+
+struct VacationStatisticsCard: View {
+    let selectedYear: Date
+    @EnvironmentObject var shiftManager: ShiftManager
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 20) {
+            Text("연간 휴가 현황")
+                .font(.system(size: 20, weight: .semibold))
+                .foregroundColor(.charcoalBlack)
+            
+            let year = Calendar.current.component(.year, from: selectedYear)
+            let totalVacationDays = shiftManager.settings.annualVacationDays
+            let usedVacationDays = shiftManager.getUsedVacationDays(for: year)
+            let remainingVacationDays = shiftManager.getRemainingVacationDays(for: year)
+            
+            VStack(spacing: 15) {
+                VacationStatRow(title: "총 연차", value: "\(totalVacationDays)일", icon: "calendar.badge.plus")
+                VacationStatRow(title: "사용한 연차", value: "\(usedVacationDays)일", icon: "calendar.badge.checkmark")
+                VacationStatRow(title: "남은 연차", value: "\(remainingVacationDays)일", icon: "calendar.badge.clock")
+            }
+            
+            // 월별 휴가 사용 현황
+            VStack(alignment: .leading, spacing: 15) {
+                Text("월별 휴가 사용 현황")
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundColor(.charcoalBlack)
+                
+                LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 3), spacing: 10) {
+                    ForEach(1...12, id: \.self) { month in
+                        let monthlyVacations = shiftManager.getVacationDaysByMonth(for: year)[month] ?? 0
+                        if monthlyVacations > 0 {
+                            VStack(spacing: 5) {
+                                Text("\(month)월")
+                                    .font(.system(size: 12, weight: .medium))
+                                    .foregroundColor(.charcoalBlack.opacity(0.7))
+                                
+                                Text("\(monthlyVacations)일")
+                                    .font(.system(size: 14, weight: .bold))
+                                    .foregroundColor(.pointColor)
+                            }
+                            .padding(8)
+                            .background(Color.backgroundWhite)
+                            .cornerRadius(8)
+                        }
+                    }
+                }
+            }
+        }
+        .padding(20)
+        .background(Color.backgroundWhite)
+        .cornerRadius(12)
+        .shadow(color: .black.opacity(0.05), radius: 8, x: 0, y: 2)
+    }
+}
+
+struct VacationStatRow: View {
+    let title: String
+    let value: String
+    let icon: String
+    
+    var body: some View {
+        HStack(spacing: 12) {
+            Image(systemName: icon)
+                .font(.system(size: 18))
+                .foregroundColor(.mainColorButton)
+                .frame(width: 24)
+            
+            Text(title)
+                .font(.system(size: 15, weight: .medium))
+                .foregroundColor(.charcoalBlack)
+            
+            Spacer()
+            
+            Text(value)
+                .font(.system(size: 15, weight: .semibold))
+                .foregroundColor(.charcoalBlack)
+        }
     }
 }
 

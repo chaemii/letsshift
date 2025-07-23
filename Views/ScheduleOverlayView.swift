@@ -6,8 +6,8 @@ struct ScheduleOverlayView: View {
     
     let selectedDate: Date
     @State private var selectedShiftType: ShiftType = .휴무
-
     @State private var overtimeHours: String = ""
+    @State private var isVacation: Bool = false
     
     var body: some View {
         NavigationView {
@@ -29,10 +29,10 @@ struct ScheduleOverlayView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .foregroundColor(.charcoalBlack)
                     
-                    // Horizontal shift type selection
+                    // Horizontal shift type selection - 현재 패턴의 근무 유형만 표시
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 12) {
-                            ForEach(ShiftType.allCases, id: \.self) { shiftType in
+                            ForEach(getCurrentPatternShiftTypes(), id: \.self) { shiftType in
                                 CompactShiftTypeButton(
                                     shiftType: shiftType,
                                     isSelected: selectedShiftType == shiftType
@@ -59,6 +59,20 @@ struct ScheduleOverlayView: View {
                         
                         Text("시간")
                             .foregroundColor(.charcoalBlack.opacity(0.7))
+                    }
+                }
+                
+                VStack(spacing: 15) {
+                    Text("휴가 여부")
+                        .font(.headline)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .foregroundColor(.charcoalBlack)
+                    
+                    HStack {
+                        Toggle("휴가로 설정", isOn: $isVacation)
+                            .toggleStyle(SwitchToggleStyle(tint: .mainColor))
+                        
+                        Spacer()
                     }
                 }
                 
@@ -105,11 +119,23 @@ struct ScheduleOverlayView: View {
         return formatter.string(from: selectedDate)
     }
     
+    private func getCurrentPatternShiftTypes() -> [ShiftType] {
+        let pattern = shiftManager.settings.shiftPatternType.generatePattern()
+        // 중복 제거하고 순서 유지
+        var uniqueTypes: [ShiftType] = []
+        for shiftType in pattern {
+            if !uniqueTypes.contains(shiftType) {
+                uniqueTypes.append(shiftType)
+            }
+        }
+        return uniqueTypes
+    }
+    
     private func loadCurrentSchedule() {
         if let schedule = shiftManager.schedules.first(where: { Calendar.current.isDate($0.date, inSameDayAs: selectedDate) }) {
             selectedShiftType = schedule.shiftType
-            // Load overtime hours
             overtimeHours = String(schedule.overtimeHours)
+            isVacation = schedule.isVacation
         }
     }
     
@@ -119,14 +145,18 @@ struct ScheduleOverlayView: View {
         if let index = shiftManager.schedules.firstIndex(where: { Calendar.current.isDate($0.date, inSameDayAs: selectedDate) }) {
             shiftManager.schedules[index].shiftType = selectedShiftType
             shiftManager.schedules[index].overtimeHours = overtime
+            shiftManager.schedules[index].isVacation = isVacation
         } else {
             let newSchedule = ShiftSchedule(
                 date: selectedDate,
                 shiftType: selectedShiftType,
-                overtimeHours: overtime
+                overtimeHours: overtime,
+                isVacation: isVacation
             )
             shiftManager.schedules.append(newSchedule)
         }
+        
+        shiftManager.saveData()
     }
     
     private func deleteSchedule() {

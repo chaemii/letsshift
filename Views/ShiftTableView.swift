@@ -15,117 +15,137 @@ struct ShiftTableView: View {
                 HStack {
                     Button(action: previousMonth) {
                         Image(systemName: "chevron.left")
-                            .font(.system(size: 14))
+                            .font(.system(size: 18))
                             .foregroundColor(.charcoalBlack)
                     }
                     
                     Spacer()
                     
                     Text(monthYearString)
-                        .font(.system(size: 14, weight: .bold))
+                        .font(.system(size: 18, weight: .bold))
                         .foregroundColor(.charcoalBlack)
                     
                     Spacer()
                     
                     Button(action: nextMonth) {
                         Image(systemName: "chevron.right")
-                            .font(.system(size: 14))
+                            .font(.system(size: 18))
                             .foregroundColor(.charcoalBlack)
                     }
                 }
                 .padding(.horizontal)
-                .padding(.vertical, 20)
+                .padding(.vertical, 24)
                 
                 // Table header
                 HStack(spacing: 0) {
                     Text("날짜")
-                        .frame(width: 50, alignment: .leading)
-                        .font(.caption)
-                        .fontWeight(.bold)
+                        .frame(width: 60, alignment: .leading)
+                        .font(.system(size: 16, weight: .bold))
                         .foregroundColor(.charcoalBlack)
                     
                     ForEach(1...shiftManager.getTeamCount(), id: \.self) { teamNumber in
                         Text("\(teamNumber)조")
                             .frame(maxWidth: .infinity)
-                            .font(.caption)
-                            .fontWeight(.bold)
+                            .font(.system(size: 16, weight: .bold))
                             .foregroundColor(teamNumber == getTeamNumber() ? .charcoalBlack : .charcoalBlack.opacity(0.6))
                     }
                 }
                 .padding(.horizontal)
-                .padding(.vertical, 6)
+                .padding(.vertical, 12)
                 .background(Color.backgroundLight)
                 
-                // Table content - 스크롤 없이 한눈에 보이도록
-                LazyVStack(spacing: 0) {
-                    ForEach(daysInMonth, id: \.self) { date in
-                        ShiftTableRow(
-                            date: date,
-                            currentTeam: getTeamNumber(),
-                            shiftOffset: shiftOffset
-                        )
+                // Table content - 스크롤 가능하게
+                ScrollView {
+                    LazyVStack(spacing: 2) {
+                        ForEach(daysInMonth, id: \.self) { date in
+                            ShiftTableRow(
+                                date: date,
+                                currentTeam: getTeamNumber(),
+                                shiftOffset: shiftOffset
+                            )
+                        }
                     }
+                    .padding(.horizontal)
+                    .padding(.bottom, 100) // 플로팅 버튼 공간 확보
                 }
-                .padding(.horizontal)
-                
-                Spacer()
-                
-                // 근무 밀고 당기기 컨트롤
-                HStack(spacing: 10) {
-                    Button(action: {
-                        shiftOffset -= 1
-                        hasUnsavedChanges = true
-                    }) {
-                        HStack(spacing: 4) {
-                            Image(systemName: "chevron.up")
-                                .font(.system(size: 12))
-                            Text("하루 당기기")
-                                .font(.system(size: 12, weight: .medium))
-                        }
-                        .foregroundColor(.charcoalBlack)
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 8)
-                        .background(Color.mainColor.opacity(0.3))
-                        .cornerRadius(8)
-                    }
-                    
-                    Button(action: {
-                        shiftOffset += 1
-                        hasUnsavedChanges = true
-                    }) {
-                        HStack(spacing: 4) {
-                            Image(systemName: "chevron.down")
-                                .font(.system(size: 12))
-                            Text("하루 밀기")
-                                .font(.system(size: 12, weight: .medium))
-                        }
-                        .foregroundColor(.charcoalBlack)
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 8)
-                        .background(Color.mainColor.opacity(0.3))
-                        .cornerRadius(8)
-                    }
-                    
-                    if hasUnsavedChanges {
-                        Button(action: {
-                            // TODO: 실제 근무 스케줄에 변경사항 저장
-                            hasUnsavedChanges = false
-                        }) {
-                            Text("저장")
-                                .font(.system(size: 12, weight: .bold))
-                                .foregroundColor(.white)
-                                .padding(.horizontal, 16)
-                                .padding(.vertical, 8)
-                                .background(Color.pointColor)
-                                .cornerRadius(8)
-                        }
-                    }
-                }
-                .padding(.horizontal)
-                .padding(.bottom, 20)
             }
             .navigationTitle("근무표")
             .navigationBarTitleDisplayMode(.inline)
+            .overlay(
+                // 플로팅 버튼과 그라디언트 배경
+                VStack {
+                    Spacer()
+                    
+                    // 플로팅 버튼들
+                    HStack(spacing: 10) {
+                        Button(action: {
+                            shiftOffset -= 1
+                            hasUnsavedChanges = true
+                        }) {
+                            HStack(spacing: 6) {
+                                Image(systemName: "chevron.up")
+                                    .font(.system(size: 14))
+                                Text("하루 당기기")
+                                    .font(.system(size: 14, weight: .medium))
+                            }
+                            .foregroundColor(.charcoalBlack)
+                            .padding(.horizontal, 18)
+                            .padding(.vertical, 10)
+                            .background(Color.mainColor.opacity(0.3))
+                            .cornerRadius(8)
+                        }
+                        
+                        Button(action: {
+                            shiftOffset += 1
+                            hasUnsavedChanges = true
+                        }) {
+                            HStack(spacing: 6) {
+                                Image(systemName: "chevron.down")
+                                    .font(.system(size: 14))
+                                Text("하루 밀기")
+                                    .font(.system(size: 14, weight: .medium))
+                            }
+                            .foregroundColor(.charcoalBlack)
+                            .padding(.horizontal, 18)
+                            .padding(.vertical, 10)
+                            .background(Color.mainColor.opacity(0.3))
+                            .cornerRadius(8)
+                        }
+                        
+                        if hasUnsavedChanges {
+                            Button(action: {
+                                // TODO: 실제 근무 스케줄에 변경사항 저장
+                                hasUnsavedChanges = false
+                            }) {
+                                Text("저장")
+                                    .font(.system(size: 14, weight: .bold))
+                                    .foregroundColor(.white)
+                                    .padding(.horizontal, 18)
+                                    .padding(.vertical, 10)
+                                    .background(Color.pointColor)
+                                    .cornerRadius(8)
+                            }
+                        }
+                    }
+                    .padding(.horizontal)
+                    .padding(.bottom, 20)
+                    .background(
+                        // 그라디언트 배경 - 버튼과 겹치도록
+                        LinearGradient(
+                            gradient: Gradient(colors: [
+                                Color.white.opacity(0),
+                                Color.white.opacity(0.6),
+                                Color.white.opacity(0.9),
+                                Color.white
+                            ]),
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                        .frame(height: 120)
+                        .offset(y: -20) // 버튼과 겹치도록 위로 이동
+                    )
+                }
+            )
         }
     }
     
@@ -185,18 +205,18 @@ struct ShiftTableRow: View {
     var body: some View {
         HStack(spacing: 0) {
             // Date column - 날짜와 요일을 한 줄로 표시
-            HStack(spacing: 2) {
+            HStack(spacing: 3) {
                 Text("\(calendar.component(.day, from: date))")
-                    .font(.system(size: 13, weight: .bold))
+                    .font(.system(size: 16, weight: .bold))
                     .foregroundColor(isToday ? .white : .charcoalBlack)
                 
                 Text(dayOfWeek)
-                    .font(.system(size: 11))
+                    .font(.system(size: 13))
                     .foregroundColor(isToday ? .white : (dayOfWeek == "일" ? .pointColor : dayOfWeek == "토" ? .mainColorDark : .charcoalBlack.opacity(0.6)))
             }
-            .frame(width: 50, alignment: .leading)
-            .padding(.horizontal, 4)
-            .padding(.vertical, 2)
+            .frame(width: 60, alignment: .leading)
+            .padding(.horizontal, 6)
+            .padding(.vertical, 4)
             .background(
                 RoundedRectangle(cornerRadius: 4)
                     .fill(isToday ? .pointColor : Color.clear)
@@ -210,28 +230,17 @@ struct ShiftTableRow: View {
                 let isHighlighted = isCurrentTeam && isTodayColumn
                 
                 Text(shiftType.rawValue)
-                    .font(.system(size: 12, weight: isCurrentTeam ? .bold : .medium))
+                    .font(.system(size: 15, weight: isCurrentTeam ? .bold : .medium))
                     .foregroundColor(getTextColor(for: shiftType, isCurrentTeam: isCurrentTeam))
                     .frame(maxWidth: .infinity)
-                    .padding(.vertical, 2)
+                    .padding(.vertical, 6)
                     .background(
                         RoundedRectangle(cornerRadius: 4)
                             .fill(getBackgroundColor(isCurrentTeam: isCurrentTeam, isTodayColumn: isTodayColumn, isHighlighted: isHighlighted, shiftType: shiftType))
                     )
             }
         }
-        .padding(.vertical, 0)
-        .background(
-            // 내 조의 행 전체에 연한 배경
-            Group {
-                if currentTeam >= 1 && currentTeam <= 5 {
-                    Rectangle()
-                        .fill(Color.mainColor.opacity(0.1))
-                        .frame(width: UIScreen.main.bounds.width - 50)
-                        .offset(x: 50)
-                }
-            }
-        )
+        .padding(.vertical, 2)
     }
     
     private var dayOfWeek: String {

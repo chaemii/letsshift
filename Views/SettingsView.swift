@@ -7,6 +7,7 @@ struct SettingsView: View {
         case .심야: return "deepNightShift"
         case .주간: return "dayShift"
         case .오후: return "afternoonShift"
+        case .당직: return "dutyShift"
         case .휴무: return "offDuty"
         case .비번: return "standby"
         }
@@ -107,6 +108,13 @@ struct SettingsView: View {
                         Text("초과근무 배율")
                         Spacer()
                         Text("\(shiftManager.settings.overtimeRate)배")
+                            .foregroundColor(.secondary)
+                    }
+                    
+                    HStack {
+                        Text("연간 휴가 일수")
+                        Spacer()
+                        Text("\(shiftManager.settings.annualVacationDays)일")
                             .foregroundColor(.secondary)
                     }
                     
@@ -419,6 +427,7 @@ struct SalarySetupView: View {
     @State private var nightShiftBonus: String = ""
     @State private var deepNightShiftBonus: String = ""
     @State private var overtimeRate: String = ""
+    @State private var annualVacationDays: String = ""
     
     var body: some View {
         NavigationView {
@@ -464,6 +473,15 @@ struct SalarySetupView: View {
                             .keyboardType(.decimalPad)
                             .textFieldStyle(RoundedBorderTextFieldStyle())
                     }
+                    
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("연간 휴가 일수")
+                            .font(.headline)
+                            .foregroundColor(.charcoalBlack)
+                        TextField("연간 휴가 일수를 입력하세요", text: $annualVacationDays)
+                            .keyboardType(.numberPad)
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                    }
                 }
                 .padding(.horizontal, 20)
                 
@@ -499,6 +517,7 @@ struct SalarySetupView: View {
         nightShiftBonus = shiftManager.settings.nightShiftBonus > 0 ? "\(Int(shiftManager.settings.nightShiftBonus))" : ""
         deepNightShiftBonus = shiftManager.settings.deepNightShiftBonus > 0 ? "\(Int(shiftManager.settings.deepNightShiftBonus))" : ""
         overtimeRate = shiftManager.settings.overtimeRate > 0 ? "\(shiftManager.settings.overtimeRate)" : ""
+        annualVacationDays = shiftManager.settings.annualVacationDays > 0 ? "\(shiftManager.settings.annualVacationDays)" : ""
     }
     
     private func saveSalaryInfo() {
@@ -506,6 +525,7 @@ struct SalarySetupView: View {
         shiftManager.settings.nightShiftBonus = Double(nightShiftBonus) ?? 0
         shiftManager.settings.deepNightShiftBonus = Double(deepNightShiftBonus) ?? 0
         shiftManager.settings.overtimeRate = Double(overtimeRate) ?? 1.5
+        shiftManager.settings.annualVacationDays = Int(annualVacationDays) ?? 15
         shiftManager.saveData()
     }
 }
@@ -638,6 +658,8 @@ struct ShiftPatternSelectionSheet: View {
         switch selectedPattern {
         case .twoShift: return 2
         case .threeShift: return 3
+        case .threeTeamTwoShift: return 3
+        case .fourTeamTwoShift: return 4
         case .fourTeamThreeShift: return 4
         case .fiveTeamThreeShift: return 5
         case .irregular: return 6

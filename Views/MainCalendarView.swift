@@ -59,7 +59,8 @@ struct MainCalendarView: View {
                                     shiftType: getShiftType(for: date),
                                     isSelected: calendar.isDate(date, inSameDayAs: selectedDate),
                                     isToday: calendar.isDateInToday(date),
-                                    overtimeHours: getOvertimeHours(for: date)
+                                    overtimeHours: getOvertimeHours(for: date),
+                                    isVacation: getIsVacation(for: date)
                                 ) {
                                     selectedDate = date
                                     showingOverlay = true
@@ -161,6 +162,10 @@ struct MainCalendarView: View {
         return shiftManager.schedules.first { calendar.isDate($0.date, inSameDayAs: date) }?.overtimeHours ?? 0
     }
     
+    private func getIsVacation(for date: Date) -> Bool {
+        return shiftManager.schedules.first { calendar.isDate($0.date, inSameDayAs: date) }?.isVacation ?? false
+    }
+    
     // Monthly statistics
     private var monthlyWorkDays: Int {
         let startOfMonth = calendar.startOfMonth(for: selectedDate)
@@ -213,6 +218,7 @@ struct CalendarDayView: View {
     let isSelected: Bool
     let isToday: Bool
     let overtimeHours: Int
+    let isVacation: Bool
     let action: () -> Void
     @EnvironmentObject var shiftManager: ShiftManager
     
@@ -240,6 +246,18 @@ struct CalendarDayView: View {
                     Text("+\(overtimeHours)")
                         .font(.system(size: 11, weight: .bold))
                         .foregroundColor(.pointColor)
+                        .frame(maxWidth: .infinity, alignment: .center)
+                }
+                
+                // Vacation indicator
+                if isVacation {
+                    Text("휴가")
+                        .font(.system(size: 10, weight: .bold))
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 4)
+                        .padding(.vertical, 2)
+                        .background(Color.pointColor)
+                        .cornerRadius(4)
                         .frame(maxWidth: .infinity, alignment: .center)
                 }
                 
