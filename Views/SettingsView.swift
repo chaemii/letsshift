@@ -60,9 +60,10 @@ struct SettingsView: View {
                     Button("근무 패턴 변경") {
                         showingPatternSelection = true
                     }
+                    .foregroundColor(.blue)
                 }
                 
-                Section(header: Text("색상 설정")) {
+                Section(header: Text("근무요소 수정")) {
                     ForEach(getCurrentPatternShiftTypes(), id: \.self) { shiftType in
                         HStack {
                             Circle()
@@ -77,7 +78,7 @@ struct SettingsView: View {
                                 selectedShiftType = shiftType
                                 showingColorPicker = true
                             }
-                            .foregroundColor(.charcoalBlack)
+                            .foregroundColor(.blue)
                         }
                     }
                 }
@@ -121,7 +122,7 @@ struct SettingsView: View {
                     Button("급여 정보 수정") {
                         showingSalarySetup = true
                     }
-                    .foregroundColor(.charcoalBlack)
+                    .foregroundColor(.blue)
                 }
                 
 
@@ -130,10 +131,12 @@ struct SettingsView: View {
                     Button("비주기적 근무 입력") {
                         showingCustomShiftInput = true
                     }
+                    .foregroundColor(.blue)
                     
                     Button("데이터 내보내기") {
                         exportData()
                     }
+                    .foregroundColor(.blue)
                     
                     Button("데이터 초기화") {
                         resetData()
@@ -335,10 +338,15 @@ struct ColorPickerView: View {
     let shiftType: ShiftType
     @Binding var color: Color
     @Environment(\.dismiss) var dismiss
+    @EnvironmentObject var shiftManager: ShiftManager
+    @State private var customName: String = ""
+    @State private var showingNameEditor = false
     
     private let customColors: [Color] = [
         .charcoalBlack, .mainColor, .mainColorButton, .mainColorDark, .pointColor, .subColor1, .subColor2,
-        .backgroundLight, .backgroundWhite, .nightShift, .deepNightShift, .dayShift, .offDuty, .standby
+        .backgroundLight, .backgroundWhite, .nightShift, .deepNightShift, .dayShift, .offDuty, .standby,
+        Color(hex: "439897"), Color(hex: "4B4B4B"), Color(hex: "F47F4C"), Color(hex: "2C3E50"), Color(hex: "77BBFB"),
+        Color(hex: "7E85F9"), Color(hex: "FFA8D2"), Color(hex: "C39DF4"), Color(hex: "92E3A9"), Color(hex: "B9D831")
     ]
     
     private let systemColors: [Color] = [
@@ -349,49 +357,65 @@ struct ColorPickerView: View {
     var body: some View {
         NavigationView {
             VStack(spacing: 15) {
-                Text("\(shiftType.rawValue) 색상 선택")
-                    .font(.title3)
-                    .fontWeight(.bold)
-                    .foregroundColor(.charcoalBlack)
+                HStack {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("\(shiftType.rawValue)")
+                            .font(.title3)
+                            .fontWeight(.bold)
+                            .foregroundColor(.charcoalBlack)
+                        
+                        Text("근무 요소 이름 및 색상 수정")
+                            .font(.caption)
+                            .foregroundColor(.charcoalBlack.opacity(0.7))
+                    }
+                    
+                    Spacer()
+                    
+                    Button(action: {
+                        customName = shiftType.rawValue
+                        showingNameEditor = true
+                    }) {
+                        HStack(spacing: 4) {
+                            Image(systemName: "pencil")
+                            Text("이름 수정")
+                        }
+                        .font(.caption)
+                        .foregroundColor(.blue)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .background(Color.blue.opacity(0.1))
+                        .cornerRadius(6)
+                    }
+                }
                 
                 VStack(spacing: 12) {
-                    Text("커스텀 컬러")
-                        .font(.caption)
-                        .fontWeight(.medium)
-                        .foregroundColor(.charcoalBlack.opacity(0.7))
+                    Text("색상 선택")
+                        .font(.headline)
+                        .fontWeight(.semibold)
+                        .foregroundColor(.charcoalBlack)
                         .frame(maxWidth: .infinity, alignment: .leading)
                     
-                    LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7), spacing: 8) {
-                        ForEach(customColors, id: \.self) { colorOption in
+                    LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 8), spacing: 10) {
+                        ForEach(Array(customColors.enumerated()), id: \.element) { index, colorOption in
                             Circle()
                                 .fill(colorOption)
-                                .frame(width: 32, height: 32)
+                                .frame(width: 36, height: 36)
                                 .overlay(
                                     Circle()
-                                        .stroke(color == colorOption ? Color.mainColorButton : Color.clear, lineWidth: 2)
+                                        .stroke(color == colorOption ? Color.mainColorButton : Color.clear, lineWidth: 3)
                                 )
                                 .onTapGesture {
                                     color = colorOption
                                 }
                         }
-                    }
-                }
-                
-                VStack(spacing: 12) {
-                    Text("시스템 컬러")
-                        .font(.caption)
-                        .fontWeight(.medium)
-                        .foregroundColor(.charcoalBlack.opacity(0.7))
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                    
-                    LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7), spacing: 8) {
-                        ForEach(systemColors, id: \.self) { colorOption in
+                        
+                        ForEach(Array(systemColors.enumerated()), id: \.element) { index, colorOption in
                             Circle()
                                 .fill(colorOption)
-                                .frame(width: 32, height: 32)
+                                .frame(width: 36, height: 36)
                                 .overlay(
                                     Circle()
-                                        .stroke(color == colorOption ? Color.mainColorButton : Color.clear, lineWidth: 2)
+                                        .stroke(color == colorOption ? Color.mainColorButton : Color.clear, lineWidth: 3)
                                 )
                                 .onTapGesture {
                                     color = colorOption
@@ -404,7 +428,7 @@ struct ColorPickerView: View {
             }
             .padding()
             .background(Color.backgroundLight)
-            .navigationTitle("색상 선택")
+            .navigationTitle("근무요소 수정")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -414,11 +438,69 @@ struct ColorPickerView: View {
                     .foregroundColor(.charcoalBlack)
                 }
             }
+            .sheet(isPresented: $showingNameEditor) {
+                NameEditSheet(
+                    shiftType: shiftType,
+                    customName: $customName,
+                    shiftManager: shiftManager
+                )
+            }
         }
     }
 }
 
-
+struct NameEditSheet: View {
+    let shiftType: ShiftType
+    @Binding var customName: String
+    let shiftManager: ShiftManager
+    @Environment(\.dismiss) var dismiss
+    
+    var body: some View {
+        NavigationView {
+            VStack(spacing: 25) {
+                Text("근무 요소 이름 수정")
+                    .font(.title2)
+                    .fontWeight(.bold)
+                    .foregroundColor(.charcoalBlack)
+                
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("이름")
+                        .font(.headline)
+                        .foregroundColor(.charcoalBlack)
+                    TextField("근무 요소 이름을 입력하세요", text: $customName)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                }
+                .padding(.horizontal, 20)
+                
+                Spacer()
+                
+                Button("저장") {
+                    saveCustomName()
+                    dismiss()
+                }
+                .buttonStyle(PrimaryButtonStyle())
+                .padding(.horizontal, 20)
+            }
+            .padding(.vertical, 20)
+            .background(Color.backgroundLight)
+            .navigationTitle("이름 수정")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button("취소") {
+                        dismiss()
+                    }
+                    .foregroundColor(.charcoalBlack)
+                }
+            }
+        }
+    }
+    
+    private func saveCustomName() {
+        // ShiftManager에 커스텀 이름 저장 로직 추가 필요
+        // 현재는 기본 구현만 제공
+    }
+}
 
 struct SalarySetupView: View {
     @EnvironmentObject var shiftManager: ShiftManager

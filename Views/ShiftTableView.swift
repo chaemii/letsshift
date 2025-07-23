@@ -91,7 +91,7 @@ struct ShiftTableView: View {
                             .foregroundColor(.charcoalBlack)
                             .padding(.horizontal, 18)
                             .padding(.vertical, 10)
-                            .background(Color.mainColor.opacity(0.3))
+                            .background(Color.mainColor.opacity(0.8))
                             .cornerRadius(8)
                         }
                         
@@ -108,7 +108,7 @@ struct ShiftTableView: View {
                             .foregroundColor(.charcoalBlack)
                             .padding(.horizontal, 18)
                             .padding(.vertical, 10)
-                            .background(Color.mainColor.opacity(0.3))
+                            .background(Color.mainColor.opacity(0.8))
                             .cornerRadius(8)
                         }
                         
@@ -270,7 +270,7 @@ struct ShiftTableRow: View {
             return shiftManager.getColor(for: shiftType).opacity(0.3)
         } else if isCurrentTeam {
             // 내 조 행 = 연한 강조
-            return Color.mainColor.opacity(0.2)
+            return Color.mainColor.opacity(0.5)
         } else if isTodayColumn {
             // 오늘 날짜 열 = 연한 강조
             return Color.mainColor.opacity(0.1)

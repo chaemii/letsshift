@@ -14,11 +14,11 @@ extension Color {
     static let backgroundWhite = Color(hex: "FFFFFF")
     
     // Shift type colors
-    static let nightShift = Color(hex: "D5E7EB")    // 메인컬러 (배경용)
+    static let nightShift = Color(hex: "7E85F9")    // 야간 - 라벤더 블루
     static let deepNightShift = Color(hex: "A0B2B6") // 메인컬러 다크
-    static let dayShift = Color(hex: "C7E89C")      // 개선된 서브컬러2
-    static let offDuty = Color(hex: "EFF0F2")       // 배경 라이트
-    static let standby = Color(hex: "CDB5EB")       // 개선된 서브컬러1
+    static let dayShift = Color(hex: "77BBFB")      // 주간 - 밝은 하늘색
+    static let offDuty = Color(hex: "F47F4C")       // 휴무 - 따뜻한 오렌지
+    static let standby = Color(hex: "92E3A9")       // 비번 - 민트 그린
     
     init(hex: String) {
         let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
