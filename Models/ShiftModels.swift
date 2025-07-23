@@ -107,6 +107,22 @@ enum ShiftType: String, CaseIterable, Codable {
     }
 }
 
+// MARK: - Custom Shift Pattern
+struct CustomShiftPattern: Codable, Identifiable {
+    var id = UUID()
+    var name: String
+    var shifts: [ShiftType]
+    var cycleLength: Int // 패턴이 반복되는 주기 (일 단위)
+    var description: String
+    
+    init(name: String, shifts: [ShiftType], cycleLength: Int, description: String = "") {
+        self.name = name
+        self.shifts = shifts
+        self.cycleLength = cycleLength
+        self.description = description.isEmpty ? "\(shifts.count)일 주기" : description
+    }
+}
+
 // MARK: - Shift Pattern Types
 enum ShiftPatternType: String, CaseIterable, Codable {
     case twoShift = "2교대"
@@ -116,6 +132,7 @@ enum ShiftPatternType: String, CaseIterable, Codable {
     case fourTeamThreeShift = "4조 3교대"
     case fiveTeamThreeShift = "5조 3교대"
     case irregular = "비주기적"
+    case custom = "나만의 패턴"
     
     var displayName: String {
         switch self {
@@ -126,6 +143,7 @@ enum ShiftPatternType: String, CaseIterable, Codable {
         case .fourTeamThreeShift: return "4조 3교대"
         case .fiveTeamThreeShift: return "5조 3교대"
         case .irregular: return "비주기적"
+        case .custom: return "나만의 패턴"
         }
     }
     
@@ -138,6 +156,7 @@ enum ShiftPatternType: String, CaseIterable, Codable {
         case .fourTeamThreeShift: return "4조로 3교대 + 휴일 보장"
         case .fiveTeamThreeShift: return "5조로 3교대 + 충분한 휴무"
         case .irregular: return "월마다 비주기적 배치"
+        case .custom: return "직접 만드는 근무 패턴"
         }
     }
     
@@ -157,6 +176,8 @@ enum ShiftPatternType: String, CaseIterable, Codable {
             return [.주간, .야간, .심야, .비번, .휴무]
         case .irregular:
             return [.주간, .오후, .야간, .심야, .비번, .휴무]
+        case .custom:
+            return [] // 커스텀 패턴은 ShiftManager에서 처리
         }
     }
 }
@@ -189,6 +210,9 @@ struct ShiftSettings: Codable {
     var team: String = "1조"
     var shiftPatternType: ShiftPatternType = .fiveTeamThreeShift
     var colors: [String: String] = [:]
+    
+    // 커스텀 패턴 추가
+    var customPattern: CustomShiftPattern?
     
     // 급여 정보 추가
     var baseSalary: Double = 0.0        // 기본급 (월급)
@@ -237,7 +261,15 @@ class ShiftManager: ObservableObject {
         let today = Date()
         let startOfMonth = calendar.startOfMonth(for: today)
         
-        let shiftPattern = settings.shiftPatternType.generatePattern()
+        let shiftPattern: [ShiftType]
+        
+        if settings.shiftPatternType == .custom, let customPattern = settings.customPattern {
+            shiftPattern = customPattern.shifts
+        } else {
+            shiftPattern = settings.shiftPatternType.generatePattern()
+        }
+        
+        guard !shiftPattern.isEmpty else { return }
         
         var currentDate = startOfMonth
         var patternIndex = 0
@@ -260,6 +292,33 @@ class ShiftManager: ObservableObject {
         generateDefaultSchedule()
     }
     
+    // 커스텀 패턴 관련 함수들
+    func createCustomPattern(name: String, shifts: [ShiftType], cycleLength: Int, description: String = "") {
+        let customPattern = CustomShiftPattern(
+            name: name,
+            shifts: shifts,
+            cycleLength: cycleLength,
+            description: description
+        )
+        settings.customPattern = customPattern
+        settings.shiftPatternType = .custom
+        saveData()
+        regenerateSchedule()
+    }
+    
+    func updateCustomPattern(_ pattern: CustomShiftPattern) {
+        settings.customPattern = pattern
+        saveData()
+        regenerateSchedule()
+    }
+    
+    func deleteCustomPattern() {
+        settings.customPattern = nil
+        settings.shiftPatternType = .fiveTeamThreeShift // 기본값으로 변경
+        saveData()
+        regenerateSchedule()
+    }
+    
     func getTeamCount() -> Int {
         switch settings.shiftPatternType {
         case .twoShift: return 2
@@ -269,6 +328,8 @@ class ShiftManager: ObservableObject {
         case .fourTeamThreeShift: return 4
         case .fiveTeamThreeShift: return 5
         case .irregular: return 6
+        case .custom:
+            return settings.customPattern?.shifts.count ?? 0
         }
     }
     

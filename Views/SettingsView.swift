@@ -33,6 +33,7 @@ struct SettingsView: View {
     @State private var currentSetupStep: SetupStep = .shiftType
     @State private var showingSalarySetup = false
     @State private var showingPatternSelection = false
+    @State private var showingCustomPattern = false
     
     enum SetupStep {
         case shiftType
@@ -46,8 +47,16 @@ struct SettingsView: View {
                     HStack {
                         Text("근무 패턴")
                         Spacer()
-                        Text(shiftManager.settings.shiftPatternType.displayName)
-                            .foregroundColor(.secondary)
+                        VStack(alignment: .trailing, spacing: 4) {
+                            Text(shiftManager.settings.shiftPatternType.displayName)
+                                .foregroundColor(.secondary)
+                            if shiftManager.settings.shiftPatternType == .custom,
+                               let customPattern = shiftManager.settings.customPattern {
+                                Text(customPattern.name)
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+                        }
                     }
                     
                     HStack {
@@ -61,6 +70,14 @@ struct SettingsView: View {
                         showingPatternSelection = true
                     }
                     .foregroundColor(.blue)
+                    
+                    if shiftManager.settings.shiftPatternType == .custom,
+                       let _ = shiftManager.settings.customPattern {
+                        Button("커스텀 패턴 편집") {
+                            showingCustomPattern = true
+                        }
+                        .foregroundColor(.blue)
+                    }
                 }
                 
                 Section(header: Text("근무요소 수정")) {
@@ -194,6 +211,13 @@ struct SettingsView: View {
             .sheet(isPresented: $showingPatternSelection) {
                 ShiftPatternSelectionSheet()
                     .environmentObject(shiftManager)
+            }
+            .sheet(isPresented: $showingCustomPattern) {
+                CustomPatternViewInline()
+                    .environmentObject(shiftManager)
+            }
+            .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("ShowCustomPattern"))) { _ in
+                showingCustomPattern = true
             }
 
         }
@@ -682,7 +706,15 @@ struct ShiftPatternSelectionSheet: View {
                                     pattern: pattern,
                                     isSelected: selectedPattern == pattern
                                 ) {
-                                    selectedPattern = pattern
+                                    if pattern == .custom {
+                                        // 커스텀 패턴 선택 시 CustomPatternView로 이동
+                                        dismiss()
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                            NotificationCenter.default.post(name: NSNotification.Name("ShowCustomPattern"), object: nil)
+                                        }
+                                    } else {
+                                        selectedPattern = pattern
+                                    }
                                 }
                             }
                         }
@@ -772,6 +804,8 @@ struct ShiftPatternSelectionSheet: View {
         case .fourTeamThreeShift: return 4
         case .fiveTeamThreeShift: return 5
         case .irregular: return 6
+        case .custom:
+            return shiftManager.settings.customPattern?.shifts.count ?? 0
         }
     }
     
@@ -793,6 +827,7 @@ struct ShiftPatternSelectionSheet: View {
 }
 
 struct PatternOptionCard: View {
+    @EnvironmentObject var shiftManager: ShiftManager
     let pattern: ShiftPatternType
     let isSelected: Bool
     let action: () -> Void
@@ -823,15 +858,34 @@ struct PatternOptionCard: View {
                 
                 // Pattern preview
                 HStack(spacing: 8) {
-                    ForEach(pattern.generatePattern(), id: \.self) { shiftType in
-                        Text(shiftType.rawValue)
-                            .font(.caption)
-                            .fontWeight(.medium)
-                            .foregroundColor(.white)
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 4)
-                            .background(shiftType.color)
-                            .cornerRadius(6)
+                    if pattern == .custom {
+                        if let customPattern = shiftManager.settings.customPattern {
+                            ForEach(customPattern.shifts, id: \.self) { shiftType in
+                                Text(shiftType.rawValue)
+                                    .font(.caption)
+                                    .fontWeight(.medium)
+                                    .foregroundColor(.white)
+                                    .padding(.horizontal, 8)
+                                    .padding(.vertical, 4)
+                                    .background(shiftType.color)
+                                    .cornerRadius(6)
+                            }
+                        } else {
+                            Text("패턴 생성 필요")
+                                .font(.caption)
+                                .foregroundColor(.charcoalBlack.opacity(0.6))
+                        }
+                    } else {
+                        ForEach(pattern.generatePattern(), id: \.self) { shiftType in
+                            Text(shiftType.rawValue)
+                                .font(.caption)
+                                .fontWeight(.medium)
+                                .foregroundColor(.white)
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 4)
+                                .background(shiftType.color)
+                                .cornerRadius(6)
+                        }
                     }
                 }
             }
@@ -883,5 +937,378 @@ struct TeamOptionCard: View {
             )
         }
         .buttonStyle(PlainButtonStyle())
+    }
+}
+
+// MARK: - Custom Pattern View Inline
+struct CustomPatternViewInline: View {
+    @EnvironmentObject var shiftManager: ShiftManager
+    @Environment(\.dismiss) var dismiss
+    
+    @State private var patternName: String = ""
+    @State private var selectedShifts: [ShiftType] = []
+    @State private var cycleLength: Int = 7
+    @State private var description: String = ""
+    @State private var showingShiftSelector = false
+    @State private var currentEditingIndex: Int?
+    @State private var isEditing: Bool = false
+    
+    var body: some View {
+        NavigationView {
+            ScrollView {
+                VStack(spacing: 24) {
+                    // 기존 패턴 정보 표시 (편집 모드일 때)
+                    if isEditing, let existingPattern = shiftManager.settings.customPattern {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("현재 패턴")
+                                .font(.headline)
+                                .foregroundColor(.charcoalBlack)
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(existingPattern.name)
+                                    .font(.subheadline)
+                                    .fontWeight(.medium)
+                                Text(existingPattern.description)
+                                    .font(.caption)
+                                    .foregroundColor(.charcoalBlack.opacity(0.7))
+                            }
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 12)
+                            .background(Color.mainColor)
+                            .cornerRadius(12)
+                        }
+                    }
+                    
+                    // 패턴 이름 입력
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("패턴 이름")
+                            .font(.headline)
+                            .foregroundColor(.charcoalBlack)
+                        TextField("근무 패턴의 이름을 입력하세요", text: $patternName)
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 12)
+                            .background(Color.backgroundWhite)
+                            .cornerRadius(12)
+                            .frame(height: 50)
+                    }
+                    
+                    // 주기 설정
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("반복 주기")
+                            .font(.headline)
+                            .foregroundColor(.charcoalBlack)
+                        HStack {
+                            Text("\(cycleLength)일")
+                                .font(.subheadline)
+                                .foregroundColor(.charcoalBlack)
+                            Spacer()
+                            Stepper("", value: $cycleLength, in: 2...14)
+                                .labelsHidden()
+                        }
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 12)
+                        .background(Color.backgroundWhite)
+                        .cornerRadius(12)
+                        .frame(height: 50)
+                    }
+                    
+                    // 근무 요소 선택
+                    VStack(alignment: .leading, spacing: 12) {
+                        HStack {
+                            Text("근무 요소")
+                                .font(.headline)
+                                .foregroundColor(.charcoalBlack)
+                            Spacer()
+                            Button("추가") {
+                                showingShiftSelector = true
+                            }
+                            .font(.subheadline)
+                            .foregroundColor(.mainColorButton)
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 6)
+                            .background(Color.mainColor)
+                            .cornerRadius(8)
+                        }
+                        
+                        if selectedShifts.isEmpty {
+                            Text("근무 요소를 추가해주세요")
+                                .font(.subheadline)
+                                .foregroundColor(.charcoalBlack.opacity(0.6))
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 40)
+                                .background(Color.backgroundLight)
+                                .cornerRadius(12)
+                        } else {
+                            ShiftListView(shifts: $selectedShifts, currentEditingIndex: $currentEditingIndex, showingShiftSelector: $showingShiftSelector)
+                        }
+                    }
+                    
+                    // 설명 입력
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("설명 (선택사항)")
+                            .font(.headline)
+                            .foregroundColor(.charcoalBlack)
+                        TextField("패턴에 대한 설명을 입력하세요", text: $description, axis: .vertical)
+                            .lineLimit(3...6)
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 12)
+                            .background(Color.backgroundWhite)
+                            .cornerRadius(12)
+                    }
+                    
+                    // 저장 버튼
+                    Button(action: savePattern) {
+                        Text(isEditing ? "패턴 수정" : "패턴 저장")
+                            .font(.headline)
+                            .fontWeight(.semibold)
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 16)
+                            .background(canSave ? Color.charcoalBlack : Color.charcoalBlack.opacity(0.5))
+                            .cornerRadius(12)
+                    }
+                    .disabled(!canSave)
+                    .padding(.top, 20)
+                    
+                    // 삭제 버튼 (편집 모드일 때만)
+                    if isEditing {
+                        Button(action: deletePattern) {
+                            Text("패턴 삭제")
+                                .font(.headline)
+                                .fontWeight(.medium)
+                                .foregroundColor(.red)
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 16)
+                                .background(Color.red.opacity(0.1))
+                                .cornerRadius(12)
+                        }
+                        .padding(.top, 8)
+                    }
+                }
+                .padding(20)
+            }
+            .background(Color.backgroundLight)
+            .navigationTitle("커스텀 패턴")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button("취소") {
+                        dismiss()
+                    }
+                    .foregroundColor(.charcoalBlack)
+                }
+            }
+            .sheet(isPresented: $showingShiftSelector) {
+                ShiftSelectorViewInline(
+                    selectedShift: getSelectedShift(),
+                    onSelect: handleShiftSelection
+                )
+            }
+            .onAppear {
+                loadExistingPattern()
+            }
+        }
+    }
+    
+    private var canSave: Bool {
+        !patternName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && !selectedShifts.isEmpty
+    }
+    
+    private func loadExistingPattern() {
+        if let existingPattern = shiftManager.settings.customPattern {
+            isEditing = true
+            patternName = existingPattern.name
+            selectedShifts = existingPattern.shifts
+            cycleLength = existingPattern.cycleLength
+            description = existingPattern.description
+        }
+    }
+    
+    private func savePattern() {
+        let trimmedName = patternName.trimmingCharacters(in: .whitespacesAndNewlines)
+        let trimmedDescription = description.trimmingCharacters(in: .whitespacesAndNewlines)
+        
+        if isEditing {
+            shiftManager.updateCustomPattern(CustomShiftPattern(
+                name: trimmedName,
+                shifts: selectedShifts,
+                cycleLength: cycleLength,
+                description: trimmedDescription
+            ))
+        } else {
+            shiftManager.createCustomPattern(
+                name: trimmedName,
+                shifts: selectedShifts,
+                cycleLength: cycleLength,
+                description: trimmedDescription
+            )
+        }
+        
+        dismiss()
+    }
+    
+    private func deletePattern() {
+        shiftManager.deleteCustomPattern()
+        dismiss()
+    }
+    
+    private func getSelectedShift() -> ShiftType? {
+        guard let index = currentEditingIndex, index < selectedShifts.count else { return nil }
+        return selectedShifts[index]
+    }
+    
+    private func handleShiftSelection(_ shift: ShiftType) {
+        if let index = currentEditingIndex {
+            selectedShifts[index] = shift
+            currentEditingIndex = nil
+        } else {
+            selectedShifts.append(shift)
+        }
+        showingShiftSelector = false
+    }
+}
+
+// MARK: - Shift Selector View Inline
+struct ShiftSelectorViewInline: View {
+    let selectedShift: ShiftType?
+    let onSelect: (ShiftType) -> Void
+    @Environment(\.dismiss) var dismiss
+    
+    var body: some View {
+        NavigationView {
+            ScrollView {
+                LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 2), spacing: 12) {
+                    ForEach(ShiftType.allCases, id: \.self) { shiftType in
+                        ShiftTypeCardInline(
+                            shiftType: shiftType,
+                            isSelected: selectedShift == shiftType
+                        ) {
+                            onSelect(shiftType)
+                        }
+                    }
+                }
+                .padding(20)
+            }
+            .background(Color.backgroundLight)
+            .navigationTitle("근무 요소 선택")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("취소") {
+                        dismiss()
+                    }
+                    .foregroundColor(.charcoalBlack)
+                }
+            }
+        }
+    }
+}
+
+// MARK: - Shift Type Card Inline
+struct ShiftTypeCardInline: View {
+    let shiftType: ShiftType
+    let isSelected: Bool
+    let action: () -> Void
+    
+    var body: some View {
+        Button(action: action) {
+            VStack(spacing: 8) {
+                Text(shiftType.rawValue)
+                    .font(.headline)
+                    .fontWeight(.semibold)
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 12)
+                    .background(shiftType.color)
+                    .cornerRadius(12)
+                
+                Text(shiftType.rawValue)
+                    .font(.caption)
+                    .foregroundColor(.charcoalBlack)
+                    .multilineTextAlignment(.center)
+            }
+            .padding(12)
+            .background(isSelected ? Color.mainColor.opacity(0.3) : Color.backgroundWhite)
+            .cornerRadius(12)
+            .overlay(
+                RoundedRectangle(cornerRadius: 12)
+                    .stroke(isSelected ? Color.pointColor : Color.clear, lineWidth: 2)
+            )
+        }
+        .buttonStyle(PlainButtonStyle())
+    }
+}
+
+// MARK: - Shift List View
+struct ShiftListView: View {
+    @Binding var shifts: [ShiftType]
+    @Binding var currentEditingIndex: Int?
+    @Binding var showingShiftSelector: Bool
+    
+    var body: some View {
+        List {
+            ForEach(Array(shifts.enumerated()), id: \.offset) { index, shift in
+                ShiftElementCardInline(
+                    shift: shift,
+                    index: index,
+                    onDelete: {
+                        shifts.remove(at: index)
+                    },
+                    onEdit: {
+                        currentEditingIndex = index
+                        showingShiftSelector = true
+                    }
+                )
+            }
+            .onMove { from, to in
+                shifts.move(fromOffsets: from, toOffset: to)
+            }
+        }
+        .listStyle(PlainListStyle())
+    }
+}
+
+// MARK: - Shift Element Card Inline
+struct ShiftElementCardInline: View {
+    let shift: ShiftType
+    let index: Int
+    let onDelete: () -> Void
+    let onEdit: () -> Void
+    
+    var body: some View {
+        HStack {
+            Text("\(index + 1)")
+                .font(.caption)
+                .fontWeight(.bold)
+                .foregroundColor(.white)
+                .frame(width: 24, height: 24)
+                .background(Color.charcoalBlack)
+                .clipShape(Circle())
+            
+            Text(shift.rawValue)
+                .font(.subheadline)
+                .fontWeight(.medium)
+                .foregroundColor(.white)
+                .frame(maxWidth: .infinity)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 8)
+                .background(shift.color)
+                .cornerRadius(8)
+            
+            Button(action: onEdit) {
+                Image(systemName: "pencil")
+                    .font(.caption)
+                    .foregroundColor(.charcoalBlack)
+            }
+            
+            Button(action: onDelete) {
+                Image(systemName: "trash")
+                    .font(.caption)
+                    .foregroundColor(.red)
+            }
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 8)
+        .background(Color.backgroundWhite)
+        .cornerRadius(8)
     }
 }
