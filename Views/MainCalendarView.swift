@@ -10,7 +10,8 @@ struct MainCalendarView: View {
     
     var body: some View {
         NavigationView {
-            VStack(spacing: 0) {
+            ScrollView {
+                VStack(spacing: 0) {
                 // Calendar container with white background
                 VStack(spacing: 0) {
                     // Month selector - 캘린더 바로 위로 이동
@@ -99,12 +100,21 @@ struct MainCalendarView: View {
                 .cornerRadius(16)
                 .padding(.horizontal, 20)
                 .padding(.top, 25)
+                .padding(.bottom, 80) // 네비게이션 바 높이만큼 여백
                 
                 Spacer()
             }
+            }
+            .background(
+                VStack {
+                    Spacer()
+                    Rectangle()
+                        .fill(Color.backgroundLight)
+                        .frame(height: 80)
+                        .blur(radius: 10)
+                }
+            )
             .background(Color.backgroundLight)
-            .navigationTitle("근무 캘린더")
-            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("일정 추가") {
@@ -224,47 +234,60 @@ struct CalendarDayView: View {
     
     var body: some View {
         Button(action: action) {
-            VStack(spacing: 8) {
-                // Date number
+            VStack(spacing: 4) {
+                // Date number - 고정 높이 설정
                 Text("\(Calendar.current.component(.day, from: date))")
                     .font(.system(size: 14, weight: isToday ? .semibold : .regular))
                     .foregroundColor(textColor)
+                    .frame(height: 20)
                     .frame(maxWidth: .infinity, alignment: .center)
                 
-                // Shift type label - show all shift types
+                // Shift type label - 고정 높이 설정
                 Text(shiftType.rawValue)
-                    .font(.system(size: 12, weight: .medium))
+                    .font(.system(size: 11, weight: .medium))
                     .foregroundColor(.white)
-                    .padding(.horizontal, 5)
-                    .padding(.vertical, 3)
+                    .padding(.horizontal, 4)
+                    .padding(.vertical, 2)
                     .background(shiftManager.getColor(for: shiftType))
-                    .cornerRadius(5)
+                    .cornerRadius(4)
+                    .frame(height: 18)
                     .frame(maxWidth: .infinity, alignment: .center)
                 
-                // Overtime indicator
+                // Overtime indicator - 고정 높이 설정
                 if overtimeHours > 0 {
                     Text("+\(overtimeHours)")
-                        .font(.system(size: 11, weight: .bold))
+                        .font(.system(size: 10, weight: .bold))
                         .foregroundColor(.pointColor)
+                        .frame(height: 16)
                         .frame(maxWidth: .infinity, alignment: .center)
+                } else {
+                    // 빈 공간으로 높이 유지
+                    Color.clear
+                        .frame(height: 16)
                 }
                 
-                // Vacation indicator
+                // Vacation indicator - 고정 높이 설정
                 if isVacation {
                     Text("휴가")
-                        .font(.system(size: 10, weight: .bold))
+                        .font(.system(size: 9, weight: .bold))
                         .foregroundColor(.white)
-                        .padding(.horizontal, 4)
-                        .padding(.vertical, 2)
+                        .padding(.horizontal, 3)
+                        .padding(.vertical, 1)
                         .background(Color.pointColor)
-                        .cornerRadius(4)
+                        .cornerRadius(3)
+                        .frame(height: 14)
                         .frame(maxWidth: .infinity, alignment: .center)
+                } else {
+                    // 빈 공간으로 높이 유지
+                    Color.clear
+                        .frame(height: 14)
                 }
                 
-                Spacer()
+                // 남은 공간을 채우는 Spacer
+                Spacer(minLength: 0)
             }
-            .frame(maxWidth: .infinity)
-            .aspectRatio(1, contentMode: .fill)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .aspectRatio(1, contentMode: .fit)
             .background(backgroundColor)
             .cornerRadius(10)
         }

@@ -69,8 +69,6 @@ struct ShiftTableView: View {
                     .padding(.bottom, 100) // 플로팅 버튼 공간 확보
                 }
             }
-            .navigationTitle("근무표")
-            .navigationBarTitleDisplayMode(.inline)
             .overlay(
                 // 플로팅 버튼과 그라디언트 배경
                 VStack {

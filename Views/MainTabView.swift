@@ -68,7 +68,7 @@ struct MainTabView: View {
         case 0: return "checkmark.circle"
         case 1: return "doc.text"
         case 2: return "bell"
-        case 3: return "magnifyingglass"
+        case 3: return "gearshape"
         default: return "circle"
         }
     }

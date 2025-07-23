@@ -161,18 +161,27 @@ enum ShiftPatternType: String, CaseIterable, Codable {
     }
 }
 
+enum VacationType: String, CaseIterable, Codable {
+    case 연차 = "연차"
+    case 특별휴가 = "특별 휴가"
+}
+
 struct ShiftSchedule: Codable, Identifiable {
     var id = UUID()
     let date: Date
     var shiftType: ShiftType
     var overtimeHours: Int
     var isVacation: Bool = false
+    var vacationType: VacationType? = nil
+    var isVolunteerWork: Bool = false
     
-    init(date: Date, shiftType: ShiftType, overtimeHours: Int = 0, isVacation: Bool = false) {
+    init(date: Date, shiftType: ShiftType, overtimeHours: Int = 0, isVacation: Bool = false, vacationType: VacationType? = nil, isVolunteerWork: Bool = false) {
         self.date = date
         self.shiftType = shiftType
         self.overtimeHours = overtimeHours
         self.isVacation = isVacation
+        self.vacationType = vacationType
+        self.isVolunteerWork = isVolunteerWork
     }
 }
 

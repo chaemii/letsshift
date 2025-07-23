@@ -144,8 +144,7 @@ struct SettingsView: View {
                     .foregroundColor(.red)
                 }
             }
-            .navigationTitle("설정")
-            .navigationBarTitleDisplayMode(.inline)
+            .padding(.bottom, 80) // 네비게이션 바 높이만큼 여백
             .sheet(isPresented: $showingColorPicker) {
                 ColorPickerView(
                     shiftType: selectedShiftType,

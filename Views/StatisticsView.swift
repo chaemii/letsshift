@@ -77,11 +77,10 @@ struct StatisticsView: View {
                     }
                     .padding(.horizontal, 20)
                     .padding(.vertical, 20)
+                    .padding(.bottom, 80) // 네비게이션 바 높이만큼 여백
                 }
             }
             .background(Color.backgroundLight)
-            .navigationTitle("통계")
-            .navigationBarTitleDisplayMode(.inline)
         }
     }
     
