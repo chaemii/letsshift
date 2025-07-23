@@ -6,6 +6,21 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		C297D81D2E2E6CF1009FC80E /* ShiftModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = C297D81C2E2E6CF1009FC80E /* ShiftModels.swift */; };
+		C297D8292E2E6D00009FC80E /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C297D8222E2E6D00009FC80E /* OnboardingView.swift */; };
+		C297D82A2E2E6D00009FC80E /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C297D8242E2E6D00009FC80E /* SettingsView.swift */; };
+		C297D82B2E2E6D00009FC80E /* CustomShiftInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C297D81F2E2E6D00009FC80E /* CustomShiftInputView.swift */; };
+		C297D82C2E2E6D00009FC80E /* MainCalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C297D8202E2E6D00009FC80E /* MainCalendarView.swift */; };
+		C297D82D2E2E6D00009FC80E /* ScheduleOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C297D8232E2E6D00009FC80E /* ScheduleOverlayView.swift */; };
+		C297D82E2E2E6D00009FC80E /* ShiftTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C297D8252E2E6D00009FC80E /* ShiftTableView.swift */; };
+		C297D82F2E2E6D00009FC80E /* ShiftTypeSelectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C297D8262E2E6D00009FC80E /* ShiftTypeSelectView.swift */; };
+		C297D8302E2E6D00009FC80E /* StatisticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C297D8272E2E6D00009FC80E /* StatisticsView.swift */; };
+		C297D8312E2E6D00009FC80E /* TeamSelectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C297D8282E2E6D00009FC80E /* TeamSelectView.swift */; };
+		C297D8322E2E6D00009FC80E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C297D81E2E2E6D00009FC80E /* ContentView.swift */; };
+		C297D8332E2E6D00009FC80E /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C297D8212E2E6D00009FC80E /* MainTabView.swift */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		C297D7F92E2E6C65009FC80E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -27,6 +42,18 @@
 		C297D7E62E2E6C63009FC80E /* ShiftCalendarApp_.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ShiftCalendarApp_.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C297D7F82E2E6C65009FC80E /* ShiftCalendarApp_Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ShiftCalendarApp_Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C297D8022E2E6C65009FC80E /* ShiftCalendarApp_UITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ShiftCalendarApp_UITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		C297D81C2E2E6CF1009FC80E /* ShiftModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftModels.swift; sourceTree = "<group>"; };
+		C297D81E2E2E6D00009FC80E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		C297D81F2E2E6D00009FC80E /* CustomShiftInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomShiftInputView.swift; sourceTree = "<group>"; };
+		C297D8202E2E6D00009FC80E /* MainCalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainCalendarView.swift; sourceTree = "<group>"; };
+		C297D8212E2E6D00009FC80E /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
+		C297D8222E2E6D00009FC80E /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
+		C297D8232E2E6D00009FC80E /* ScheduleOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleOverlayView.swift; sourceTree = "<group>"; };
+		C297D8242E2E6D00009FC80E /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		C297D8252E2E6D00009FC80E /* ShiftTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftTableView.swift; sourceTree = "<group>"; };
+		C297D8262E2E6D00009FC80E /* ShiftTypeSelectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftTypeSelectView.swift; sourceTree = "<group>"; };
+		C297D8272E2E6D00009FC80E /* StatisticsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsView.swift; sourceTree = "<group>"; };
+		C297D8282E2E6D00009FC80E /* TeamSelectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamSelectView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -75,6 +102,13 @@
 		C297D7DD2E2E6C63009FC80E = {
 			isa = PBXGroup;
 			children = (
+				C297D81B2E2E6CD1009FC80E /* Notifications */,
+				C297D81A2E2E6CCC009FC80E /* Widget */,
+				C297D8192E2E6CC7009FC80E /* Resources */,
+				C297D8182E2E6CC3009FC80E /* Utils */,
+				C297D8172E2E6CBE009FC80E /* ViewModels */,
+				C297D8162E2E6CBA009FC80E /* Views */,
+				C297D8152E2E6CAF009FC80E /* Models */,
 				C297D7E82E2E6C63009FC80E /* ShiftCalendarApp_ */,
 				C297D7FB2E2E6C65009FC80E /* ShiftCalendarApp_Tests */,
 				C297D8052E2E6C65009FC80E /* ShiftCalendarApp_UITests */,
@@ -90,6 +124,67 @@
 				C297D8022E2E6C65009FC80E /* ShiftCalendarApp_UITests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		C297D8152E2E6CAF009FC80E /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				C297D81C2E2E6CF1009FC80E /* ShiftModels.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		C297D8162E2E6CBA009FC80E /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				C297D81E2E2E6D00009FC80E /* ContentView.swift */,
+				C297D81F2E2E6D00009FC80E /* CustomShiftInputView.swift */,
+				C297D8202E2E6D00009FC80E /* MainCalendarView.swift */,
+				C297D8212E2E6D00009FC80E /* MainTabView.swift */,
+				C297D8222E2E6D00009FC80E /* OnboardingView.swift */,
+				C297D8232E2E6D00009FC80E /* ScheduleOverlayView.swift */,
+				C297D8242E2E6D00009FC80E /* SettingsView.swift */,
+				C297D8252E2E6D00009FC80E /* ShiftTableView.swift */,
+				C297D8262E2E6D00009FC80E /* ShiftTypeSelectView.swift */,
+				C297D8272E2E6D00009FC80E /* StatisticsView.swift */,
+				C297D8282E2E6D00009FC80E /* TeamSelectView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		C297D8172E2E6CBE009FC80E /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		C297D8182E2E6CC3009FC80E /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
+		C297D8192E2E6CC7009FC80E /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		C297D81A2E2E6CCC009FC80E /* Widget */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Widget;
+			sourceTree = "<group>";
+		};
+		C297D81B2E2E6CD1009FC80E /* Notifications */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Notifications;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -236,6 +331,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C297D81D2E2E6CF1009FC80E /* ShiftModels.swift in Sources */,
+				C297D8292E2E6D00009FC80E /* OnboardingView.swift in Sources */,
+				C297D82A2E2E6D00009FC80E /* SettingsView.swift in Sources */,
+				C297D82B2E2E6D00009FC80E /* CustomShiftInputView.swift in Sources */,
+				C297D82C2E2E6D00009FC80E /* MainCalendarView.swift in Sources */,
+				C297D82D2E2E6D00009FC80E /* ScheduleOverlayView.swift in Sources */,
+				C297D82E2E2E6D00009FC80E /* ShiftTableView.swift in Sources */,
+				C297D82F2E2E6D00009FC80E /* ShiftTypeSelectView.swift in Sources */,
+				C297D8302E2E6D00009FC80E /* StatisticsView.swift in Sources */,
+				C297D8312E2E6D00009FC80E /* TeamSelectView.swift in Sources */,
+				C297D8322E2E6D00009FC80E /* ContentView.swift in Sources */,
+				C297D8332E2E6D00009FC80E /* MainTabView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -1,0 +1,159 @@
+import SwiftUI
+
+struct MainCalendarView: View {
+    @EnvironmentObject var shiftManager: ShiftManager
+    @State private var selectedDate = Date()
+    @State private var showingOverlay = false
+    
+    private let calendar = Calendar.current
+    private let daysInWeek = ["일", "월", "화", "수", "목", "금", "토"]
+    
+    var body: some View {
+        NavigationView {
+            VStack(spacing: 0) {
+                // Month selector
+                HStack {
+                    Button(action: previousMonth) {
+                        Image(systemName: "chevron.left")
+                            .font(.title2)
+                    }
+                    
+                    Spacer()
+                    
+                    Text(monthYearString)
+                        .font(.title2)
+                        .fontWeight(.bold)
+                    
+                    Spacer()
+                    
+                    Button(action: nextMonth) {
+                        Image(systemName: "chevron.right")
+                            .font(.title2)
+                    }
+                }
+                .padding()
+                
+                // Day headers
+                HStack {
+                    ForEach(daysInWeek, id: \.self) { day in
+                        Text(day)
+                            .frame(maxWidth: .infinity)
+                            .font(.caption)
+                            .foregroundColor(day == "일" ? .red : day == "토" ? .blue : .primary)
+                    }
+                }
+                .padding(.horizontal)
+                
+                // Calendar grid
+                LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7), spacing: 1) {
+                    ForEach(daysInMonth, id: \.self) { date in
+                        if let date = date {
+                            CalendarDayView(
+                                date: date,
+                                shiftType: getShiftType(for: date),
+                                isSelected: calendar.isDate(date, inSameDayAs: selectedDate),
+                                isToday: calendar.isDateInToday(date)
+                            ) {
+                                selectedDate = date
+                                showingOverlay = true
+                            }
+                        } else {
+                            Color.clear
+                                .aspectRatio(1, contentMode: .fill)
+                        }
+                    }
+                }
+                .padding(.horizontal)
+                
+                Spacer()
+            }
+            .navigationTitle("근무 캘린더")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("일정 추가") {
+                        showingOverlay = true
+                    }
+                }
+            }
+            .sheet(isPresented: $showingOverlay) {
+                ScheduleOverlayView(selectedDate: selectedDate)
+                    .environmentObject(shiftManager)
+            }
+        }
+    }
+    
+    private var monthYearString: String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy년 M월"
+        return formatter.string(from: selectedDate)
+    }
+    
+    private var daysInMonth: [Date?] {
+        let startOfMonth = calendar.startOfMonth(for: selectedDate)
+        let endOfMonth = calendar.endOfMonth(for: selectedDate)
+        
+        let firstWeekday = calendar.component(.weekday, from: startOfMonth)
+        let daysInMonth = calendar.range(of: .day, in: .month, for: selectedDate)?.count ?? 0
+        
+        var days: [Date?] = []
+        
+        // Add empty cells for days before the first day of the month
+        for _ in 1..<firstWeekday {
+            days.append(nil)
+        }
+        
+        // Add all days in the month
+        for day in 1...daysInMonth {
+            if let date = calendar.date(byAdding: .day, value: day - 1, to: startOfMonth) {
+                days.append(date)
+            }
+        }
+        
+        return days
+    }
+    
+    private func getShiftType(for date: Date) -> ShiftType {
+        return shiftManager.schedules.first { calendar.isDate($0.date, inSameDayAs: date) }?.shiftType ?? .휴무
+    }
+    
+    private func previousMonth() {
+        if let newDate = calendar.date(byAdding: .month, value: -1, to: selectedDate) {
+            selectedDate = newDate
+        }
+    }
+    
+    private func nextMonth() {
+        if let newDate = calendar.date(byAdding: .month, value: 1, to: selectedDate) {
+            selectedDate = newDate
+        }
+    }
+}
+
+struct CalendarDayView: View {
+    let date: Date
+    let shiftType: ShiftType
+    let isSelected: Bool
+    let isToday: Bool
+    let action: () -> Void
+    
+    var body: some View {
+        Button(action: action) {
+            VStack(spacing: 4) {
+                Text("\(Calendar.current.component(.day, from: date))")
+                    .font(.caption)
+                    .fontWeight(isToday ? .bold : .regular)
+                    .foregroundColor(isToday ? .white : .primary)
+                
+                Circle()
+                    .fill(Color(shiftType.color))
+                    .frame(width: 8, height: 8)
+            }
+            .frame(maxWidth: .infinity)
+            .aspectRatio(1, contentMode: .fill)
+            .background(isSelected ? Color.blue.opacity(0.2) : Color.clear)
+            .cornerRadius(8)
+        }
+        .buttonStyle(PlainButtonStyle())
+    }
+}
