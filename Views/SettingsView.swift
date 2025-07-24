@@ -1342,11 +1342,6 @@ struct DataResetView: View {
     var body: some View {
         NavigationView {
             VStack(spacing: 20) {
-                Text("데이터 초기화")
-                    .font(.title2)
-                    .fontWeight(.bold)
-                    .foregroundColor(.charcoalBlack)
-                
                 Text("모든 데이터가 삭제됩니다.\n이 작업은 되돌릴 수 없습니다.")
                     .font(.subheadline)
                     .foregroundColor(.charcoalBlack.opacity(0.7))
@@ -1363,7 +1358,7 @@ struct DataResetView: View {
                             .foregroundColor(.white)
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 16)
-                            .background(Color.red)
+                            .background(Color(hex: "1A1A1A"))
                             .cornerRadius(12)
                     }
                     
