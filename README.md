@@ -23,13 +23,13 @@
 
 ## 🌐 웹사이트
 
-앱 공식 웹사이트: [https://chaemii.github.io/shifter](https://chaemii.github.io/shifter)
+앱 공식 웹사이트: [https://chaemii.github.io/letsshift](https://chaemii.github.io/letsshift)
 
 ## 📄 app-ads.txt
 
 이 앱은 Google AdMob을 사용합니다. app-ads.txt 파일은 다음 위치에서 확인할 수 있습니다:
 
-[https://chaemii.github.io/shifter/app-ads.txt](https://chaemii.github.io/shifter/app-ads.txt)
+[https://chaemii.github.io/letsshift/app-ads.txt](https://chaemii.github.io/letsshift/app-ads.txt)
 
 ### app-ads.txt 내용:
 ```
