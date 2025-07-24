@@ -154,6 +154,15 @@ struct CustomShiftPattern: Codable, Identifiable {
         self.startDate = Date() // 기본값으로 오늘 날짜
         self.description = description.isEmpty ? "\(shifts.count)일 주기" : description
     }
+    
+    // 새로운 간단한 initializer
+    init(cycleLength: Int, startDate: Date, dayShifts: [ShiftType]) {
+        self.name = "커스텀 패턴"
+        self.cycleLength = max(2, min(7, cycleLength)) // 2-7일 제한
+        self.startDate = startDate
+        self.dayShifts = dayShifts.isEmpty ? [.주간, .야간, .휴무] : dayShifts
+        self.description = "\(self.dayShifts.count)일 주기"
+    }
 }
 
 // MARK: - Shift Pattern Types
@@ -686,6 +695,34 @@ class ShiftManager: ObservableObject {
         }
         
         return monthlyVacations
+    }
+    
+    // MARK: - Data Reset
+    func resetAllData() {
+        schedules.removeAll()
+        settings = ShiftSettings()
+        saveData()
+    }
+    
+    // MARK: - Color Management
+    func updateShiftTypeColor(shiftType: ShiftType, color: Color) {
+        if let hexString = color.toHex() {
+            settings.colors[shiftType.rawValue] = hexString
+            saveData()
+        }
+    }
+}
+
+// MARK: - ShiftType Extensions
+extension ShiftType {
+    static var allColors: [Color] {
+        return [
+            .nightShift, .deepNightShift, .dayShift, .offDuty, .standby,
+            .mainColor, .mainColorButton, .mainColorDark, .pointColor, .subColor1, .subColor2,
+            Color(hex: "439897"), Color(hex: "4B4B4B"), Color(hex: "F47F4C"), Color(hex: "2C3E50"), Color(hex: "77BBFB"),
+            Color(hex: "7E85F9"), Color(hex: "FFA8D2"), Color(hex: "C39DF4"), Color(hex: "92E3A9"), Color(hex: "B9D831"),
+            .red, .orange, .yellow, .green, .blue, .purple, .pink, .gray, .brown, .cyan, .mint, .indigo, .teal
+        ]
     }
 }
 
