@@ -1,5 +1,6 @@
 import Foundation
 import SwiftUI
+import WidgetKit
 
 // MARK: - Color Extensions
 extension Color {
@@ -163,6 +164,17 @@ struct CustomShiftPattern: Codable, Identifiable {
         self.dayShifts = dayShifts.isEmpty ? [.주간, .야간, .휴무] : dayShifts
         self.description = "\(self.dayShifts.count)일 주기"
     }
+    
+    func toDictionary() -> [String: Any] {
+        return [
+            "id": id.uuidString,
+            "name": name,
+            "dayShifts": dayShifts.map { $0.rawValue },
+            "cycleLength": cycleLength,
+            "startDate": startDate.timeIntervalSince1970,
+            "description": description
+        ]
+    }
 }
 
 // MARK: - Shift Pattern Types
@@ -246,6 +258,18 @@ struct ShiftSchedule: Codable, Identifiable {
         self.vacationType = vacationType
         self.isVolunteerWork = isVolunteerWork
     }
+    
+    func toDictionary() -> [String: Any] {
+        return [
+            "id": id.uuidString,
+            "date": date.timeIntervalSince1970,
+            "shiftType": shiftType.rawValue,
+            "overtimeHours": overtimeHours,
+            "isVacation": isVacation,
+            "vacationType": vacationType?.rawValue as Any,
+            "isVolunteerWork": isVolunteerWork
+        ]
+    }
 }
 
 struct ShiftSettings: Codable {
@@ -288,7 +312,7 @@ class ShiftManager: ObservableObject {
     @Published var schedules: [ShiftSchedule] = []
     @Published var settings = ShiftSettings()
     
-    private let userDefaults = UserDefaults.standard
+    private let userDefaults = UserDefaults(suiteName: "group.com.chaeeun.ShiftCalendarApp")!
     private let schedulesKey = "shiftSchedules"
     private let settingsKey = "shiftSettings"
     
@@ -580,37 +604,74 @@ class ShiftManager: ObservableObject {
     func saveData() {
         print("=== ShiftManager saveData ===")
         
+        print("Saving \(schedules.count) schedules")
+        for (index, schedule) in schedules.enumerated() {
+            print("Schedule \(index): date=\(schedule.date), shiftType=\(schedule.shiftType.rawValue), isVacation=\(schedule.isVacation), isVolunteerWork=\(schedule.isVolunteerWork)")
+        }
+        
         if let encoded = try? JSONEncoder().encode(schedules) {
             userDefaults.set(encoded, forKey: schedulesKey)
-            print("Schedules saved successfully")
+            print("Schedules saved successfully - \(encoded.count) bytes")
         } else {
             print("Error: Failed to encode schedules")
         }
         
+        print("Settings: team=\(settings.team), patternType=\(settings.shiftPatternType.rawValue)")
+        print("Settings custom pattern: \(settings.customPattern != nil)")
+        if let customPattern = settings.customPattern {
+            print("Custom pattern name: \(customPattern.name)")
+            print("Custom pattern day shifts: \(customPattern.dayShifts.map { $0.rawValue })")
+            print("Custom pattern startDate: \(customPattern.startDate)")
+            print("Custom pattern cycleLength: \(customPattern.cycleLength)")
+        }
+        
         if let encoded = try? JSONEncoder().encode(settings) {
             userDefaults.set(encoded, forKey: settingsKey)
-            print("Settings saved successfully")
-            print("Settings custom pattern: \(settings.customPattern != nil)")
-            if let customPattern = settings.customPattern {
-                print("Custom pattern name: \(customPattern.name)")
-                print("Custom pattern day shifts: \(customPattern.dayShifts)")
-            }
+            print("Settings saved successfully - \(encoded.count) bytes")
         } else {
             print("Error: Failed to encode settings")
         }
         
         userDefaults.synchronize()
         print("UserDefaults synchronized")
+        
+        // 위젯 즉시 업데이트
+        WidgetCenter.shared.reloadAllTimelines()
+        print("Widget timelines reloaded")
     }
     
     private func loadData() {
-        if let data = userDefaults.data(forKey: schedulesKey),
-           let decoded = try? JSONDecoder().decode([ShiftSchedule].self, from: data) {
-            schedules = decoded
+        print("=== ShiftManager loadData ===")
+        
+        if let data = userDefaults.data(forKey: schedulesKey) {
+            print("Found schedules data: \(data.count) bytes")
+            if let decoded = try? JSONDecoder().decode([ShiftSchedule].self, from: data) {
+                schedules = decoded
+                print("Loaded \(decoded.count) schedules")
+                for (index, schedule) in decoded.enumerated() {
+                    print("Loaded schedule \(index): date=\(schedule.date), shiftType=\(schedule.shiftType.rawValue), isVacation=\(schedule.isVacation), isVolunteerWork=\(schedule.isVolunteerWork)")
+                }
+            } else {
+                print("Error: Failed to decode schedules")
+            }
+        } else {
+            print("No schedules data found")
         }
-        if let data = userDefaults.data(forKey: settingsKey),
-           let decoded = try? JSONDecoder().decode(ShiftSettings.self, from: data) {
-            settings = decoded
+        
+        if let data = userDefaults.data(forKey: settingsKey) {
+            print("Found settings data: \(data.count) bytes")
+            if let decoded = try? JSONDecoder().decode(ShiftSettings.self, from: data) {
+                settings = decoded
+                print("Loaded settings: team=\(decoded.team), patternType=\(decoded.shiftPatternType.rawValue)")
+                print("Loaded custom pattern: \(decoded.customPattern != nil)")
+                if let customPattern = decoded.customPattern {
+                    print("Loaded custom pattern: \(customPattern.dayShifts.map { $0.rawValue })")
+                }
+            } else {
+                print("Error: Failed to decode settings")
+            }
+        } else {
+            print("No settings data found")
         }
     }
     

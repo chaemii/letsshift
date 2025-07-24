@@ -267,8 +267,8 @@ struct SettingsView: View {
                             
 
                             
-                            // 데이터 내보내기 카드
-                            Button(action: { showingDataExport = true }) {
+                            // 근무표 공유하기 카드
+                            Button(action: { shareSchedule() }) {
                                 HStack {
                                     Image(systemName: "square.and.arrow.up")
                                         .foregroundColor(Color(hex: "1A1A1A"))
@@ -276,11 +276,11 @@ struct SettingsView: View {
                                         .frame(width: 24)
                                     
                                     VStack(alignment: .leading, spacing: 2) {
-                                        Text("데이터 내보내기")
+                                        Text("근무표 공유하기")
                                             .font(.subheadline)
                                             .fontWeight(.medium)
                                             .foregroundColor(.charcoalBlack)
-                                        Text("근무 데이터를 파일로 저장")
+                                        Text("근무표를 링크로 공유")
                                             .font(.caption)
                                             .foregroundColor(.charcoalBlack.opacity(0.7))
                                     }
@@ -362,6 +362,70 @@ struct SettingsView: View {
             DataResetView()
         }
 
+    }
+    
+    // MARK: - Share Schedule Function
+    private func shareSchedule() {
+        // 근무표 데이터를 딥링크 URL로 인코딩
+        let scheduleData = createScheduleShareData()
+        
+        // 딥링크 URL 생성
+        let deepLinkURL = "letsshift://schedule?data=\(scheduleData)"
+        
+        // 공유할 텍스트 생성
+        let shareText = """
+        📅 Shift Calendar App - 근무표 공유
+        
+        내 근무표를 확인해보세요!
+        
+        \(deepLinkURL)
+        
+        앱이 설치되어 있지 않다면 App Store에서 다운로드하세요.
+        """
+        
+        // UIActivityViewController를 통해 공유
+        let activityVC = UIActivityViewController(
+            activityItems: [shareText],
+            applicationActivities: nil
+        )
+        
+        // iPad에서 팝오버로 표시하기 위한 설정
+        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+           let window = windowScene.windows.first {
+            if let popover = activityVC.popoverPresentationController {
+                popover.sourceView = window
+                popover.sourceRect = CGRect(x: window.bounds.midX, y: window.bounds.midY, width: 0, height: 0)
+                popover.permittedArrowDirections = []
+            }
+        }
+        
+        // 현재 뷰에서 공유 시트 표시
+        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+           let window = windowScene.windows.first,
+           let rootViewController = window.rootViewController {
+            rootViewController.present(activityVC, animated: true)
+        }
+    }
+    
+    private func createScheduleShareData() -> String {
+        // 핵심 설정만 공유 (스케줄 제외)
+        var shareData: [String: Any] = [
+            "patternType": shiftManager.settings.shiftPatternType.rawValue,
+            "team": shiftManager.settings.team
+        ]
+        
+        // 커스텀 패턴이 있는 경우만 추가
+        if let customPattern = shiftManager.settings.customPattern {
+            shareData["customPattern"] = customPattern.toDictionary()
+        }
+        
+        do {
+            let jsonData = try JSONSerialization.data(withJSONObject: shareData)
+            return jsonData.base64EncodedString()
+        } catch {
+            print("Error encoding schedule data: \(error)")
+            return ""
+        }
     }
 }
 
