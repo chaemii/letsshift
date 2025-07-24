@@ -448,6 +448,7 @@ class ShiftManager: ObservableObject {
     
     func updateCustomPattern(_ pattern: CustomShiftPattern) {
         settings.customPattern = pattern
+        settings.shiftPatternType = .custom // 근무 유형을 커스텀으로 설정
         saveData()
         regenerateSchedule()
     }
