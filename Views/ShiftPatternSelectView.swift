@@ -76,6 +76,11 @@ struct ShiftPatternSelectView: View {
     }
     
     private func applyPattern() {
+        // 커스텀 패턴에서 다른 패턴으로 변경하는 경우, 기존 커스텀 패턴 삭제
+        if shiftManager.settings.shiftPatternType == .custom && selectedPattern != .custom {
+            shiftManager.settings.customPattern = nil
+        }
+        
         shiftManager.settings.shiftPatternType = selectedPattern
         shiftManager.regenerateSchedule()
         shiftManager.saveData()

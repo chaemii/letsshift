@@ -111,14 +111,47 @@ enum ShiftType: String, CaseIterable, Codable {
 struct CustomShiftPattern: Codable, Identifiable {
     var id = UUID()
     var name: String
-    var shifts: [ShiftType]
+    var dayShifts: [ShiftType] // 각 일차별 근무 요소 (1일차, 2일차, 3일차...)
     var cycleLength: Int // 패턴이 반복되는 주기 (일 단위)
+    var startDate: Date // 패턴이 시작되는 날짜
     var description: String
     
+    // 기존 호환성을 위한 computed property
+    var shifts: [ShiftType] {
+        return dayShifts
+    }
+    
+    init(name: String, dayShifts: [ShiftType], cycleLength: Int, startDate: Date, description: String = "") {
+        self.name = name
+        
+        // dayShifts 검증 및 안전장치
+        if dayShifts.isEmpty {
+            print("Warning: dayShifts is empty, using default pattern")
+            self.dayShifts = [.주간, .야간, .휴무]
+        } else {
+            self.dayShifts = dayShifts
+        }
+        
+        // cycleLength 검증
+        if cycleLength <= 0 {
+            print("Warning: cycleLength is invalid, using dayShifts count")
+            self.cycleLength = self.dayShifts.count
+        } else {
+            self.cycleLength = cycleLength
+        }
+        
+        self.startDate = startDate
+        self.description = description.isEmpty ? "\(self.dayShifts.count)일 주기" : description
+        
+        print("CustomShiftPattern initialized: \(self.dayShifts.count) shifts, \(self.cycleLength) cycle length")
+    }
+    
+    // 기존 호환성을 위한 initializer
     init(name: String, shifts: [ShiftType], cycleLength: Int, description: String = "") {
         self.name = name
-        self.shifts = shifts
+        self.dayShifts = shifts
         self.cycleLength = cycleLength
+        self.startDate = Date() // 기본값으로 오늘 날짜
         self.description = description.isEmpty ? "\(shifts.count)일 주기" : description
     }
 }
@@ -261,22 +294,43 @@ class ShiftManager: ObservableObject {
         let today = Date()
         let startOfMonth = calendar.startOfMonth(for: today)
         
-        let shiftPattern: [ShiftType]
+        // 1. 패턴 결정 - 완전히 안전한 방식
+        let (shiftPattern, patternStartDate) = getSafeShiftPattern()
         
-        if settings.shiftPatternType == .custom, let customPattern = settings.customPattern {
-            shiftPattern = customPattern.shifts
-        } else {
-            shiftPattern = settings.shiftPatternType.generatePattern()
-        }
+        // 2. 최종 패턴 검증 - 절대 빈 배열이 되지 않도록
+        let finalShiftPattern = validateAndGetFinalPattern(shiftPattern)
         
-        guard !shiftPattern.isEmpty else { return }
+        print("=== Schedule Generation Debug ===")
+        print("Pattern Type: \(settings.shiftPatternType)")
+        print("Final Pattern Count: \(finalShiftPattern.count)")
+        print("Final Pattern: \(finalShiftPattern)")
         
         var currentDate = startOfMonth
         var patternIndex = 0
         
+        // 커스텀 패턴의 경우 시작일부터 패턴 계산
+        if settings.shiftPatternType == .custom {
+            // 시작일이 현재 월보다 나중인 경우, 시작일부터 스케줄 생성
+            if patternStartDate > startOfMonth {
+                print("Warning: patternStartDate (\(patternStartDate)) is after current month start (\(startOfMonth))")
+                print("Starting schedule from patternStartDate")
+                currentDate = patternStartDate
+                patternIndex = 0
+            } else {
+                let daysFromStart = calendar.dateComponents([.day], from: patternStartDate, to: currentDate).day ?? 0
+                patternIndex = daysFromStart % finalShiftPattern.count
+                print("Pattern calculation - daysFromStart: \(daysFromStart), patternIndex: \(patternIndex)")
+            }
+        }
+        
         // Generate schedule for the current month
         while calendar.isDate(currentDate, equalTo: startOfMonth, toGranularity: .month) {
-            let shiftType = shiftPattern[patternIndex % shiftPattern.count]
+            // 절대적인 안전장치: patternIndex가 음수이거나 배열 범위를 벗어나지 않도록
+            let safeIndex = max(0, patternIndex) % finalShiftPattern.count
+            let shiftType = finalShiftPattern[safeIndex]
+            
+            print("Schedule generation - currentDate: \(currentDate), patternIndex: \(patternIndex), safeIndex: \(safeIndex), shiftType: \(shiftType)")
+            
             let schedule = ShiftSchedule(date: currentDate, shiftType: shiftType)
             schedules.append(schedule)
             
@@ -287,23 +341,109 @@ class ShiftManager: ObservableObject {
         saveData()
     }
     
+    // 안전한 패턴 가져오기
+    private func getSafeShiftPattern() -> ([ShiftType], Date) {
+        if settings.shiftPatternType == .custom, let customPattern = settings.customPattern {
+            print("Using custom pattern: \(customPattern.dayShifts)")
+            return (customPattern.dayShifts, customPattern.startDate)
+        } else {
+            let pattern = settings.shiftPatternType.generatePattern()
+            print("Using generated pattern: \(pattern)")
+            return (pattern, Date())
+        }
+    }
+    
+    // 패턴 검증 및 최종 패턴 반환
+    private func validateAndGetFinalPattern(_ pattern: [ShiftType]) -> [ShiftType] {
+        // 1차 검증: 패턴이 비어있지 않은지 확인
+        guard !pattern.isEmpty else {
+            print("Warning: Pattern is empty, using default 3-day pattern")
+            return [.주간, .야간, .휴무]
+        }
+        
+        // 2차 검증: 패턴에 유효한 값만 있는지 확인
+        let validPattern = pattern.filter { shiftType in
+            switch shiftType {
+            case .주간, .야간, .심야, .오후, .당직, .휴무, .비번:
+                return true
+            }
+        }
+        
+        guard !validPattern.isEmpty else {
+            print("Warning: Pattern contains no valid shift types, using default")
+            return [.주간, .야간, .휴무]
+        }
+        
+        // 3차 검증: 패턴 길이가 0이 아닌지 확인 (이중 안전장치)
+        guard validPattern.count > 0 else {
+            print("Critical Error: Valid pattern count is 0, using emergency default")
+            return [.주간, .야간, .휴무]
+        }
+        
+        print("Valid pattern confirmed: \(validPattern) (count: \(validPattern.count))")
+        return validPattern
+    }
+    
     func regenerateSchedule() {
         schedules.removeAll()
+        
+        // 커스텀 패턴 타입이지만 커스텀 패턴이 없는 경우 처리
+        if settings.shiftPatternType == .custom && settings.customPattern == nil {
+            print("Warning: Custom pattern type selected but no custom pattern exists. Resetting to default pattern.")
+            settings.shiftPatternType = .fiveTeamThreeShift
+        }
+        
         generateDefaultSchedule()
     }
     
     // 커스텀 패턴 관련 함수들
-    func createCustomPattern(name: String, shifts: [ShiftType], cycleLength: Int, description: String = "") {
+    func createCustomPattern(name: String, dayShifts: [ShiftType], cycleLength: Int, startDate: Date, description: String = "") {
+        print("=== ShiftManager createCustomPattern ===")
+        print("Name: \(name)")
+        print("Day Shifts: \(dayShifts)")
+        print("Cycle Length: \(cycleLength)")
+        print("Start Date: \(startDate)")
+        print("Description: \(description)")
+        
+        // 입력 데이터 검증
+        guard !dayShifts.isEmpty else {
+            print("Error: dayShifts cannot be empty")
+            return
+        }
+        
+        guard cycleLength > 0 else {
+            print("Error: cycleLength must be greater than 0")
+            return
+        }
+        
         let customPattern = CustomShiftPattern(
             name: name,
-            shifts: shifts,
+            dayShifts: dayShifts,
             cycleLength: cycleLength,
+            startDate: startDate,
             description: description
         )
+        
+        print("Custom Pattern Created: \(customPattern)")
+        print("Final dayShifts count: \(customPattern.dayShifts.count)")
+        
         settings.customPattern = customPattern
         settings.shiftPatternType = .custom
+        settings.team = "1조" // 커스텀 패턴 시 항상 1조로 설정
+        
+        print("Settings updated - Custom Pattern: \(settings.customPattern != nil)")
+        print("Settings updated - Pattern Type: \(settings.shiftPatternType)")
+        print("Settings updated - Team: \(settings.team)")
+        
         saveData()
         regenerateSchedule()
+        
+        print("Custom pattern creation completed!")
+    }
+    
+    // 기존 호환성을 위한 함수
+    func createCustomPattern(name: String, shifts: [ShiftType], cycleLength: Int, description: String = "") {
+        createCustomPattern(name: name, dayShifts: shifts, cycleLength: cycleLength, startDate: Date(), description: description)
     }
     
     func updateCustomPattern(_ pattern: CustomShiftPattern) {
@@ -329,7 +469,7 @@ class ShiftManager: ObservableObject {
         case .fiveTeamThreeShift: return 5
         case .irregular: return 6
         case .custom:
-            return settings.customPattern?.shifts.count ?? 0
+            return settings.customPattern?.cycleLength ?? 0
         }
     }
     
@@ -376,12 +516,29 @@ class ShiftManager: ObservableObject {
     }
     
     func saveData() {
+        print("=== ShiftManager saveData ===")
+        
         if let encoded = try? JSONEncoder().encode(schedules) {
             userDefaults.set(encoded, forKey: schedulesKey)
+            print("Schedules saved successfully")
+        } else {
+            print("Error: Failed to encode schedules")
         }
+        
         if let encoded = try? JSONEncoder().encode(settings) {
             userDefaults.set(encoded, forKey: settingsKey)
+            print("Settings saved successfully")
+            print("Settings custom pattern: \(settings.customPattern != nil)")
+            if let customPattern = settings.customPattern {
+                print("Custom pattern name: \(customPattern.name)")
+                print("Custom pattern day shifts: \(customPattern.dayShifts)")
+            }
+        } else {
+            print("Error: Failed to encode settings")
         }
+        
+        userDefaults.synchronize()
+        print("UserDefaults synchronized")
     }
     
     private func loadData() {

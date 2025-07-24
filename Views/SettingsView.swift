@@ -34,6 +34,7 @@ struct SettingsView: View {
     @State private var showingSalarySetup = false
     @State private var showingPatternSelection = false
     @State private var showingCustomPattern = false
+    @State private var showingTeamSchedule = false
     
     enum SetupStep {
         case shiftType
@@ -71,10 +72,16 @@ struct SettingsView: View {
                     }
                     .foregroundColor(.blue)
                     
-                    if shiftManager.settings.shiftPatternType == .custom,
-                       let _ = shiftManager.settings.customPattern {
-                        Button("커스텀 패턴 편집") {
-                            showingCustomPattern = true
+                    if shiftManager.settings.shiftPatternType == .custom {
+                        if let _ = shiftManager.settings.customPattern {
+                            Button("커스텀 패턴 편집") {
+                                showingCustomPattern = true
+                            }
+                            .foregroundColor(.blue)
+                        }
+                        
+                        Button("팀근무표 보기") {
+                            showingTeamSchedule = true
                         }
                         .foregroundColor(.blue)
                     }
@@ -214,6 +221,10 @@ struct SettingsView: View {
             }
             .sheet(isPresented: $showingCustomPattern) {
                 CustomPatternViewInline()
+                    .environmentObject(shiftManager)
+            }
+            .sheet(isPresented: $showingTeamSchedule) {
+                TeamScheduleViewInline()
                     .environmentObject(shiftManager)
             }
             .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("ShowCustomPattern"))) { _ in
@@ -946,11 +957,12 @@ struct CustomPatternViewInline: View {
     @Environment(\.dismiss) var dismiss
     
     @State private var patternName: String = ""
-    @State private var selectedShifts: [ShiftType] = []
-    @State private var cycleLength: Int = 7
+    @State private var dayShifts: [ShiftType] = [.주간, .야간, .휴무] // Non-optional로 변경
+    @State private var cycleLength: Int = 3
+    @State private var startDate: Date = Date()
     @State private var description: String = ""
     @State private var showingShiftSelector = false
-    @State private var currentEditingIndex: Int?
+    @State private var currentEditingDay: Int? // 현재 편집 중인 일차
     @State private var isEditing: Bool = false
     
     var body: some View {
@@ -1001,8 +1013,11 @@ struct CustomPatternViewInline: View {
                                 .font(.subheadline)
                                 .foregroundColor(.charcoalBlack)
                             Spacer()
-                            Stepper("", value: $cycleLength, in: 2...14)
+                            Stepper("", value: $cycleLength, in: 2...7)
                                 .labelsHidden()
+                                .onChange(of: cycleLength) { _, newValue in
+                                    updateDayShiftsArray(newLength: newValue)
+                                }
                         }
                         .padding(.horizontal, 16)
                         .padding(.vertical, 12)
@@ -1011,34 +1026,44 @@ struct CustomPatternViewInline: View {
                         .frame(height: 50)
                     }
                     
-                    // 근무 요소 선택
+                    // 시작일 설정
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("패턴 시작일")
+                            .font(.headline)
+                            .foregroundColor(.charcoalBlack)
+                        DatePicker("", selection: $startDate, displayedComponents: .date)
+                            .datePickerStyle(CompactDatePickerStyle())
+                            .labelsHidden()
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 12)
+                            .background(Color.backgroundWhite)
+                            .cornerRadius(12)
+                            .frame(height: 50)
+                    }
+                    
+                    // 일차별 근무 요소 선택
                     VStack(alignment: .leading, spacing: 12) {
                         HStack {
-                            Text("근무 요소")
+                            Text("일차별 근무 요소")
                                 .font(.headline)
                                 .foregroundColor(.charcoalBlack)
                             Spacer()
-                            Button("추가") {
-                                showingShiftSelector = true
-                            }
-                            .font(.subheadline)
-                            .foregroundColor(.mainColorButton)
-                            .padding(.horizontal, 12)
-                            .padding(.vertical, 6)
-                            .background(Color.mainColor)
-                            .cornerRadius(8)
+                            Text("\(cycleLength)일 주기")
+                                .font(.caption)
+                                .foregroundColor(.charcoalBlack.opacity(0.7))
                         }
                         
-                        if selectedShifts.isEmpty {
-                            Text("근무 요소를 추가해주세요")
-                                .font(.subheadline)
-                                .foregroundColor(.charcoalBlack.opacity(0.6))
-                                .frame(maxWidth: .infinity)
-                                .padding(.vertical, 40)
-                                .background(Color.backgroundLight)
-                                .cornerRadius(12)
-                        } else {
-                            ShiftListView(shifts: $selectedShifts, currentEditingIndex: $currentEditingIndex, showingShiftSelector: $showingShiftSelector)
+                        VStack(spacing: 8) {
+                            ForEach(0..<cycleLength, id: \.self) { dayIndex in
+                                DayShiftCard(
+                                    dayNumber: dayIndex + 1,
+                                    shiftType: dayIndex < dayShifts.count ? dayShifts[dayIndex] : .주간,
+                                    onTap: {
+                                        currentEditingDay = dayIndex
+                                        showingShiftSelector = true
+                                    }
+                                )
+                            }
                         }
                     }
                     
@@ -1110,15 +1135,18 @@ struct CustomPatternViewInline: View {
     }
     
     private var canSave: Bool {
-        !patternName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && !selectedShifts.isEmpty
+        !patternName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && 
+        dayShifts.count == cycleLength // Non-optional이므로 nil 체크 불필요
     }
     
     private func loadExistingPattern() {
         if let existingPattern = shiftManager.settings.customPattern {
             isEditing = true
             patternName = existingPattern.name
-            selectedShifts = existingPattern.shifts
+            // ShiftType 배열을 그대로 사용 (이제 Non-optional)
+            dayShifts = existingPattern.dayShifts
             cycleLength = existingPattern.cycleLength
+            startDate = existingPattern.startDate
             description = existingPattern.description
         }
     }
@@ -1127,22 +1155,69 @@ struct CustomPatternViewInline: View {
         let trimmedName = patternName.trimmingCharacters(in: .whitespacesAndNewlines)
         let trimmedDescription = description.trimmingCharacters(in: .whitespacesAndNewlines)
         
+        print("=== Custom Pattern Save Debug ===")
+        print("Pattern Name: '\(trimmedName)'")
+        print("Cycle Length: \(cycleLength)")
+        print("Day Shifts Count: \(dayShifts.count)")
+        print("Day Shifts: \(dayShifts)")
+        print("Can Save: \(canSave)")
+        
+        // 1차 검증: 기본 조건 확인
+        guard !trimmedName.isEmpty else {
+            print("Error: Pattern name cannot be empty")
+            return
+        }
+        
+        guard cycleLength > 0 else {
+            print("Error: Cycle length must be greater than 0")
+            return
+        }
+        
+        guard dayShifts.count == cycleLength else {
+            print("Error: Day shifts count doesn't match cycle length. Expected: \(cycleLength), Got: \(dayShifts.count)")
+            return
+        }
+        
+        // 2차 검증: dayShifts가 비어있지 않은지 확인
+        guard !dayShifts.isEmpty else {
+            print("Error: Day shifts cannot be empty")
+            return
+        }
+        
+        // 3차 검증: 모든 dayShifts가 유효한 값인지 확인
+        let validShifts = dayShifts.filter { shiftType in
+            switch shiftType {
+            case .주간, .야간, .심야, .오후, .당직, .휴무, .비번:
+                return true
+            }
+        }
+        
+        guard validShifts.count == dayShifts.count else {
+            print("Error: Some day shifts are invalid")
+            return
+        }
+        
+        print("All validations passed. Creating/Updating custom pattern...")
+        
         if isEditing {
             shiftManager.updateCustomPattern(CustomShiftPattern(
                 name: trimmedName,
-                shifts: selectedShifts,
+                dayShifts: dayShifts,
                 cycleLength: cycleLength,
+                startDate: startDate,
                 description: trimmedDescription
             ))
         } else {
             shiftManager.createCustomPattern(
                 name: trimmedName,
-                shifts: selectedShifts,
+                dayShifts: dayShifts,
                 cycleLength: cycleLength,
+                startDate: startDate,
                 description: trimmedDescription
             )
         }
         
+        print("Custom pattern saved successfully!")
         dismiss()
     }
     
@@ -1152,24 +1227,84 @@ struct CustomPatternViewInline: View {
     }
     
     private func getSelectedShift() -> ShiftType? {
-        guard let index = currentEditingIndex, index < selectedShifts.count else { return nil }
-        return selectedShifts[index]
+        guard let day = currentEditingDay, day < dayShifts.count else { return nil }
+        return dayShifts[day] // 이제 Non-optional이므로 그대로 반환
     }
     
     private func handleShiftSelection(_ shift: ShiftType) {
-        if let index = currentEditingIndex {
-            selectedShifts[index] = shift
-            currentEditingIndex = nil
-        } else {
-            selectedShifts.append(shift)
+        if let day = currentEditingDay {
+            if day < dayShifts.count {
+                dayShifts[day] = shift
+            } else {
+                // 배열 크기를 늘려서 해당 일차까지 확장 (기본값으로 주간 근무)
+                while dayShifts.count <= day {
+                    dayShifts.append(.주간)
+                }
+                dayShifts[day] = shift
+            }
+            currentEditingDay = nil
         }
         showingShiftSelector = false
+    }
+    
+    private func updateDayShiftsArray(newLength: Int) {
+        if newLength > dayShifts.count {
+            // 주기가 늘어나면 기본값으로 슬롯 추가
+            while dayShifts.count < newLength {
+                dayShifts.append(.주간)
+            }
+        } else if newLength < dayShifts.count {
+            // 주기가 줄어들면 초과하는 요소 제거
+            dayShifts = Array(dayShifts.prefix(newLength))
+        }
+    }
+}
+
+// MARK: - Day Shift Card
+struct DayShiftCard: View {
+    let dayNumber: Int
+    let shiftType: ShiftType // Non-optional로 변경
+    let onTap: () -> Void
+    
+    var body: some View {
+        Button(action: onTap) {
+            HStack {
+                Text("\(dayNumber)일차")
+                    .font(.subheadline)
+                    .fontWeight(.medium)
+                    .foregroundColor(.charcoalBlack)
+                
+                Spacer()
+                
+                Text(shiftType.rawValue)
+                    .font(.caption)
+                    .fontWeight(.medium)
+                    .foregroundColor(.white)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
+                    .background(shiftType.color)
+                    .cornerRadius(6)
+                
+                Image(systemName: "chevron.right")
+                    .font(.caption)
+                    .foregroundColor(.charcoalBlack.opacity(0.5))
+            }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 12)
+            .background(Color.backgroundWhite)
+            .cornerRadius(12)
+            .overlay(
+                RoundedRectangle(cornerRadius: 12)
+                    .stroke(Color.mainColor, lineWidth: 1)
+            )
+        }
+        .buttonStyle(PlainButtonStyle())
     }
 }
 
 // MARK: - Shift Selector View Inline
 struct ShiftSelectorViewInline: View {
-    let selectedShift: ShiftType?
+    let selectedShift: ShiftType? // 여전히 optional (선택되지 않은 상태일 수 있음)
     let onSelect: (ShiftType) -> Void
     @Environment(\.dismiss) var dismiss
     
@@ -1310,5 +1445,182 @@ struct ShiftElementCardInline: View {
         .padding(.vertical, 8)
         .background(Color.backgroundWhite)
         .cornerRadius(8)
+    }
+}
+
+// MARK: - Team Schedule View Inline
+struct TeamScheduleViewInline: View {
+    @EnvironmentObject var shiftManager: ShiftManager
+    @Environment(\.dismiss) var dismiss
+    
+    var body: some View {
+        NavigationView {
+            ScrollView {
+                VStack(spacing: 20) {
+                    if let customPattern = shiftManager.settings.customPattern {
+                        // 패턴 정보
+                        VStack(alignment: .leading, spacing: 12) {
+                            Text("패턴 정보")
+                                .font(.headline)
+                                .foregroundColor(.charcoalBlack)
+                            
+                            VStack(alignment: .leading, spacing: 8) {
+                                HStack {
+                                    Text("패턴명:")
+                                        .font(.subheadline)
+                                        .fontWeight(.medium)
+                                    Text(customPattern.name)
+                                        .font(.subheadline)
+                                        .foregroundColor(.charcoalBlack.opacity(0.8))
+                                }
+                                
+                                HStack {
+                                    Text("반복주기:")
+                                        .font(.subheadline)
+                                        .fontWeight(.medium)
+                                    Text("\(customPattern.cycleLength)일")
+                                        .font(.subheadline)
+                                        .foregroundColor(.charcoalBlack.opacity(0.8))
+                                }
+                                
+                                HStack {
+                                    Text("시작일:")
+                                        .font(.subheadline)
+                                        .fontWeight(.medium)
+                                    Text(formatDate(customPattern.startDate))
+                                        .font(.subheadline)
+                                        .foregroundColor(.charcoalBlack.opacity(0.8))
+                                }
+                                
+                                HStack {
+                                    Text("소속팀:")
+                                        .font(.subheadline)
+                                        .fontWeight(.medium)
+                                    Text(shiftManager.settings.team)
+                                        .font(.subheadline)
+                                        .foregroundColor(.charcoalBlack.opacity(0.8))
+                                }
+                            }
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 12)
+                            .background(Color.mainColor)
+                            .cornerRadius(12)
+                        }
+                        
+                        // 팀별 근무표
+                        VStack(alignment: .leading, spacing: 12) {
+                            Text("팀별 근무표")
+                                .font(.headline)
+                                .foregroundColor(.charcoalBlack)
+                            
+                            VStack(spacing: 8) {
+                                ForEach(1...customPattern.cycleLength, id: \.self) { teamNumber in
+                                    TeamScheduleCardInline(
+                                        teamNumber: teamNumber,
+                                        shifts: customPattern.dayShifts,
+                                        isUserTeam: teamNumber == 1
+                                    )
+                                }
+                            }
+                        }
+                    } else {
+                        VStack(spacing: 16) {
+                            Text("커스텀 패턴이 설정되지 않았습니다.")
+                                .font(.subheadline)
+                                .foregroundColor(.charcoalBlack.opacity(0.6))
+                                .frame(maxWidth: .infinity)
+                            
+                            // 디버깅 정보 추가
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text("현재 패턴 유형: \(shiftManager.settings.shiftPatternType.displayName)")
+                                    .font(.caption)
+                                    .foregroundColor(.charcoalBlack.opacity(0.5))
+                                
+                                Text("커스텀 패턴 존재: \(shiftManager.settings.customPattern != nil ? "예" : "아니오")")
+                                    .font(.caption)
+                                    .foregroundColor(.charcoalBlack.opacity(0.5))
+                            }
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 12)
+                            .background(Color.backgroundWhite)
+                            .cornerRadius(8)
+                        }
+                        .padding(.vertical, 40)
+                    }
+                }
+                .padding(20)
+            }
+            .background(Color.backgroundLight)
+            .navigationTitle("팀근무표")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("닫기") {
+                        dismiss()
+                    }
+                    .foregroundColor(.charcoalBlack)
+                }
+            }
+        }
+    }
+    
+    private func formatDate(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.locale = Locale(identifier: "ko_KR")
+        return formatter.string(from: date)
+    }
+}
+
+struct TeamScheduleCardInline: View {
+    let teamNumber: Int
+    let shifts: [ShiftType]
+    let isUserTeam: Bool
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                Text("\(teamNumber)조")
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
+                    .foregroundColor(.charcoalBlack)
+                
+                if isUserTeam {
+                    Text("(내 팀)")
+                        .font(.caption)
+                        .foregroundColor(.pointColor)
+                        .fontWeight(.medium)
+                }
+                
+                Spacer()
+            }
+            
+            HStack(spacing: 8) {
+                ForEach(Array(shifts.enumerated()), id: \.offset) { index, shiftType in
+                    VStack(spacing: 4) {
+                        Text("\(index + 1)일차")
+                            .font(.caption2)
+                            .foregroundColor(.charcoalBlack.opacity(0.7))
+                        
+                        Text(shiftType.rawValue)
+                            .font(.caption)
+                            .fontWeight(.medium)
+                            .foregroundColor(.white)
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 3)
+                            .background(shiftType.color)
+                            .cornerRadius(4)
+                    }
+                }
+            }
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
+        .background(isUserTeam ? Color.pointColor.opacity(0.1) : Color.backgroundWhite)
+        .cornerRadius(12)
+        .overlay(
+            RoundedRectangle(cornerRadius: 12)
+                .stroke(isUserTeam ? Color.pointColor : Color.mainColor, lineWidth: isUserTeam ? 2 : 1)
+        )
     }
 }

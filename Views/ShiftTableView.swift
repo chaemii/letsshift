@@ -286,7 +286,30 @@ struct ShiftTableRow: View {
         let teamOffset = (team - 1) * 2 // 각 조는 2일씩 차이
         let adjustedDayOfYear = dayOfYear + shiftOffset // 전체 근무 패턴을 밀고 당김
         
-        let shiftPattern = shiftManager.settings.shiftPatternType.generatePattern()
+        // 안전한 패턴 가져오기
+        var shiftPattern: [ShiftType]
+        
+        if shiftManager.settings.shiftPatternType == .custom, let customPattern = shiftManager.settings.customPattern {
+            // 커스텀 패턴 사용
+            shiftPattern = customPattern.dayShifts
+            print("Using custom pattern in getShiftTypeForTeam: \(shiftPattern)")
+        } else {
+            // 기본 패턴 사용
+            shiftPattern = shiftManager.settings.shiftPatternType.generatePattern()
+            print("Using generated pattern in getShiftTypeForTeam: \(shiftPattern)")
+        }
+        
+        // 패턴이 비어있으면 기본 패턴 사용
+        if shiftPattern.isEmpty {
+            print("Warning: shiftPattern is empty in getShiftTypeForTeam, using default pattern")
+            shiftPattern = [.주간, .야간, .휴무]
+        }
+        
+        // 절대적인 안전장치: 패턴이 여전히 비어있으면 기본값 반환
+        guard !shiftPattern.isEmpty else {
+            print("Critical Error: shiftPattern is still empty, returning default shift type")
+            return .주간
+        }
         
         let adjustedDay = (adjustedDayOfYear + teamOffset) % shiftPattern.count
         let positiveIndex = adjustedDay >= 0 ? adjustedDay : shiftPattern.count + adjustedDay
