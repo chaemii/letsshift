@@ -63,7 +63,7 @@ struct SettingsView: View {
                             // 소속 팀 카드
                             Button(action: { showingTeamSelection = true }) {
                                 HStack {
-                                    Image(systemName: "person.3")
+                                    Image(systemName: "person.2")
                                         .foregroundColor(Color(hex: "1A1A1A"))
                                         .font(.title3)
                                         .frame(width: 20)
@@ -1254,11 +1254,6 @@ struct ShiftTypePickerView: View {
     var body: some View {
         NavigationView {
             VStack(spacing: 20) {
-                Text("근무 요소 선택")
-                    .font(.title2)
-                    .fontWeight(.bold)
-                    .foregroundColor(.charcoalBlack)
-                
                 LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 2), spacing: 16) {
                     ForEach(ShiftType.allCases, id: \.self) { shiftType in
                         Button(action: {
