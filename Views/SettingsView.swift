@@ -130,15 +130,15 @@ struct SettingsView: View {
                                         .foregroundColor(.charcoalBlack)
                                 }
                                 
-                                // 근무 유형별 카드
-                                ForEach(ShiftType.allCases, id: \.self) { shiftType in
+                                // 근무 유형별 카드 (현재 패턴에 해당하는 것만)
+                                ForEach(shiftManager.getShiftTypesForCurrentPattern(), id: \.self) { shiftType in
                                     Button(action: {
                                         selectedShiftType = shiftType
                                         showingColorPicker = true
                                     }) {
                                         HStack {
                                             Circle()
-                                                .fill(shiftType.color)
+                                                .fill(shiftManager.getColor(for: shiftType))
                                                 .frame(width: 24, height: 24)
                                                 .overlay(
                                                     Circle()
@@ -146,7 +146,7 @@ struct SettingsView: View {
                                                 )
                                                 .shadow(color: Color.black.opacity(0.1), radius: 1, x: 0, y: 1)
                                             
-                                            Text(shiftType.rawValue)
+                                            Text(shiftManager.getShiftName(for: shiftType))
                                                 .font(.subheadline)
                                                 .fontWeight(.medium)
                                                 .foregroundColor(.charcoalBlack)
@@ -1341,5 +1341,3 @@ struct DataResetView: View {
         }
     }
 }
-
-

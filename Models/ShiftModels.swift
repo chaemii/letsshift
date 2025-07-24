@@ -500,19 +500,43 @@ class ShiftManager: ObservableObject {
         }
     }
     
-    func updateColor(for shiftType: ShiftType, newColor: Color) {
-        setColor(newColor, for: shiftType)
+    // 현재 근무 패턴에 해당하는 근무 유형들만 반환
+    func getShiftTypesForCurrentPattern() -> [ShiftType] {
+        switch settings.shiftPatternType {
+        case .twoShift:
+            return [.주간, .야간, .휴무]
+        case .threeShift:
+            return [.주간, .오후, .야간, .휴무]
+        case .threeTeamTwoShift:
+            return [.당직, .비번, .휴무]
+        case .fourTeamTwoShift:
+            return [.주간, .야간, .휴무]
+        case .fourTeamThreeShift:
+            return [.주간, .오후, .야간, .휴무]
+        case .fiveTeamThreeShift:
+            return [.주간, .오후, .야간, .휴무]
+        case .irregular:
+            return ShiftType.allCases
+        case .custom:
+            return settings.customPattern?.dayShifts ?? []
+        }
     }
     
+    // 근무요소 이름 가져오기
     func getShiftName(for shiftType: ShiftType) -> String {
         let nameKey = getNameKey(for: shiftType)
         return settings.shiftNames[nameKey] ?? shiftType.rawValue
     }
     
-    func updateShiftName(for shiftType: ShiftType, newName: String) {
+    // 근무요소 이름 업데이트
+    func updateShiftName(_ newName: String, for shiftType: ShiftType) {
         let nameKey = getNameKey(for: shiftType)
         settings.shiftNames[nameKey] = newName
         saveData()
+    }
+    
+    func updateColor(for shiftType: ShiftType, newColor: Color) {
+        setColor(newColor, for: shiftType)
     }
     
     private func getNameKey(for shiftType: ShiftType) -> String {

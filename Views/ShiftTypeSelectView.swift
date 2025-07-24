@@ -79,7 +79,7 @@ struct ShiftTypeSelectView: View {
                 Button("취소", role: .cancel) { }
                 Button("저장") {
                     if let selectedType = selectedShiftType {
-                        shiftManager.updateShiftName(for: selectedType, newName: editingShiftName)
+                        shiftManager.updateShiftName(editingShiftName, for: selectedType)
                     }
                 }
             } message: {
@@ -303,7 +303,7 @@ struct NameEditSheet: View {
     }
     
     private func saveCustomName() {
-        shiftManager.updateShiftName(for: shiftType, newName: customName)
+        shiftManager.updateShiftName(customName, for: shiftType)
     }
 }
 
