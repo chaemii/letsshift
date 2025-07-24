@@ -10,6 +10,7 @@ struct SettingsView: View {
     @State private var showingCustomPatternEdit = false
     @State private var showingDataExport = false
     @State private var showingDataReset = false
+    @State private var showingWidgetPreview = false
     
     var body: some View {
         NavigationView {
@@ -265,6 +266,37 @@ struct SettingsView: View {
                                     .foregroundColor(.charcoalBlack)
                             }
                             
+                            // 위젯 미리보기 카드
+                            Button(action: { showingWidgetPreview = true }) {
+                                HStack {
+                                    Image(systemName: "rectangle.3.group")
+                                        .foregroundColor(Color(hex: "1A1A1A"))
+                                        .font(.title3)
+                                        .frame(width: 24)
+                                    
+                                    VStack(alignment: .leading, spacing: 2) {
+                                        Text("위젯 미리보기")
+                                            .font(.subheadline)
+                                            .fontWeight(.medium)
+                                            .foregroundColor(.charcoalBlack)
+                                        Text("위젯 디자인 확인")
+                                            .font(.caption)
+                                            .foregroundColor(.charcoalBlack.opacity(0.7))
+                                    }
+                                    
+                                    Spacer()
+                                    
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption)
+                                        .foregroundColor(.charcoalBlack.opacity(0.5))
+                                }
+                                .padding(20)
+                                .background(Color.white)
+                                .cornerRadius(16)
+                                .shadow(color: Color.black.opacity(0.05), radius: 2, x: 0, y: 1)
+                            }
+                            .buttonStyle(PlainButtonStyle())
+                            
                             // 데이터 내보내기 카드
                             Button(action: { showingDataExport = true }) {
                                 HStack {
@@ -358,6 +390,9 @@ struct SettingsView: View {
         }
         .sheet(isPresented: $showingDataReset) {
             DataResetView()
+        }
+        .sheet(isPresented: $showingWidgetPreview) {
+            SimpleWidgetPreviewView()
         }
     }
 }
@@ -1383,6 +1418,136 @@ struct DataResetView: View {
             .background(Color(hex: "EFF0F2"))
             .navigationTitle("데이터 초기화")
             .navigationBarTitleDisplayMode(.inline)
+        }
+    }
+}
+
+// MARK: - Simple Widget Preview View
+struct SimpleWidgetPreviewView: View {
+    @Environment(\.dismiss) var dismiss
+    
+    var body: some View {
+        NavigationView {
+            VStack(spacing: 20) {
+                Text("위젯 미리보기")
+                    .font(.title2)
+                    .fontWeight(.bold)
+                    .foregroundColor(.charcoalBlack)
+                
+                // 일주일 스케줄 위젯 미리보기
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack {
+                        Text("일주일 스케줄")
+                            .font(.headline)
+                            .fontWeight(.bold)
+                            .foregroundColor(.primary)
+                        
+                        Spacer()
+                        
+                        Text("7월 24일")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                    
+                    LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7), spacing: 8) {
+                        ForEach(["월", "화", "수", "목", "금", "토", "일"], id: \.self) { day in
+                            VStack(spacing: 4) {
+                                Text(day)
+                                    .font(.caption2)
+                                    .fontWeight(.medium)
+                                    .foregroundColor(.secondary)
+                                
+                                Circle()
+                                    .fill(getShiftColor(for: day))
+                                    .frame(width: 20, height: 20)
+                                    .overlay(
+                                        Text(getShiftText(for: day))
+                                            .font(.system(size: 8))
+                                            .fontWeight(.bold)
+                                            .foregroundColor(.white)
+                                    )
+                            }
+                        }
+                    }
+                }
+                .padding()
+                .background(Color.white)
+                .cornerRadius(12)
+                .shadow(radius: 5)
+                
+                // 오늘 스케줄 위젯 미리보기
+                VStack(spacing: 12) {
+                    HStack {
+                        Text("오늘")
+                            .font(.headline)
+                            .fontWeight(.bold)
+                            .foregroundColor(.primary)
+                        
+                        Spacer()
+                        
+                        Text("7월 24일")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                    
+                    VStack(spacing: 8) {
+                        Circle()
+                            .fill(Color(hex: "4CAF50"))
+                            .frame(width: 80, height: 80)
+                            .overlay(
+                                Text("주")
+                                    .font(.system(size: 24))
+                                    .fontWeight(.bold)
+                                    .foregroundColor(.white)
+                            )
+                        
+                        Text("주간근무")
+                            .font(.system(size: 16))
+                            .fontWeight(.semibold)
+                            .foregroundColor(.primary)
+                        
+                        Text("09:00 - 18:00")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                            .multilineTextAlignment(.center)
+                    }
+                }
+                .padding()
+                .background(Color.white)
+                .cornerRadius(12)
+                .shadow(radius: 5)
+                
+                Spacer()
+            }
+            .padding()
+            .background(Color(hex: "EFF0F2"))
+            .navigationTitle("위젯 미리보기")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("완료") {
+                        dismiss()
+                    }
+                }
+            }
+        }
+    }
+    
+    private func getShiftColor(for day: String) -> Color {
+        switch day {
+        case "월", "목", "일": return Color(hex: "4CAF50") // 주간
+        case "화", "금": return Color(hex: "2196F3") // 야간
+        case "수", "토": return Color(hex: "FF9800") // 휴무
+        default: return Color(hex: "E0E0E0")
+        }
+    }
+    
+    private func getShiftText(for day: String) -> String {
+        switch day {
+        case "월", "목", "일": return "주"
+        case "화", "금": return "야"
+        case "수", "토": return "휴"
+        default: return "?"
         }
     }
 }
