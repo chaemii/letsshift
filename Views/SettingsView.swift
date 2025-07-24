@@ -339,7 +339,7 @@ struct SettingsView: View {
             .navigationBarHidden(true)
         }
         .sheet(isPresented: $showingPatternSelection) {
-            ShiftPatternSelectionSheet()
+            ShiftPatternSelectionSheet(shiftManager: shiftManager)
         }
         .sheet(isPresented: $showingTeamSelection) {
             TeamSelectionSheet()
@@ -413,9 +413,9 @@ struct ShiftPatternSelectionSheet: View {
         case team
     }
     
-    init() {
-        _selectedPattern = State(initialValue: ShiftManager.shared.settings.shiftPatternType)
-        _selectedTeam = State(initialValue: ShiftManager.shared.settings.team)
+    init(shiftManager: ShiftManager) {
+        _selectedPattern = State(initialValue: shiftManager.settings.shiftPatternType)
+        _selectedTeam = State(initialValue: shiftManager.settings.team)
     }
     
     var body: some View {
@@ -548,6 +548,8 @@ struct ShiftPatternSelectionSheet: View {
     private func backToPatternSelection() {
         currentStep = .pattern
     }
+    
+
     
     private func applySettings() {
         shiftManager.settings.shiftPatternType = selectedPattern
