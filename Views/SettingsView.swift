@@ -338,9 +338,9 @@ struct SettingsView: View {
             .background(Color(hex: "EFF0F2"))
             .navigationBarHidden(true)
         }
-        .sheet(isPresented: $showingPatternSelection) {
-            ShiftPatternSelectionSheet(shiftManager: shiftManager)
-        }
+                    .sheet(isPresented: $showingPatternSelection) {
+                ShiftPatternSelectionSheet(shiftManager: shiftManager, showingCustomPatternEdit: $showingCustomPatternEdit)
+            }
         .sheet(isPresented: $showingTeamSelection) {
             TeamSelectionSheet()
         }
@@ -407,15 +407,17 @@ struct ShiftPatternSelectionSheet: View {
     @State private var selectedPattern: ShiftPatternType
     @State private var selectedTeam: String
     @State private var currentStep: SelectionStep = .pattern
+    @Binding var showingCustomPatternEdit: Bool
     
     enum SelectionStep {
         case pattern
         case team
     }
     
-    init(shiftManager: ShiftManager) {
+    init(shiftManager: ShiftManager, showingCustomPatternEdit: Binding<Bool>) {
         _selectedPattern = State(initialValue: shiftManager.settings.shiftPatternType)
         _selectedTeam = State(initialValue: shiftManager.settings.team)
+        _showingCustomPatternEdit = showingCustomPatternEdit
     }
     
     var body: some View {
@@ -542,7 +544,13 @@ struct ShiftPatternSelectionSheet: View {
     }
     
     private func nextToTeamSelection() {
-        currentStep = .team
+        if selectedPattern == .custom {
+            // 커스텀 패턴인 경우 커스텀 패턴 설정 페이지로 이동
+            showingCustomPatternEdit = true
+            dismiss()
+        } else {
+            currentStep = .team
+        }
     }
     
     private func backToPatternSelection() {
