@@ -61,7 +61,8 @@ struct MainCalendarView: View {
                                     isSelected: calendar.isDate(date, inSameDayAs: selectedDate),
                                     isToday: calendar.isDateInToday(date),
                                     overtimeHours: getOvertimeHours(for: date),
-                                    isVacation: getIsVacation(for: date)
+                                    isVacation: getIsVacation(for: date),
+                                    isVolunteerWork: getIsVolunteerWork(for: date)
                                 ) {
                                     selectedDate = date
                                     showingOverlay = true
@@ -167,6 +168,10 @@ struct MainCalendarView: View {
         return shiftManager.schedules.first { calendar.isDate($0.date, inSameDayAs: date) }?.isVacation ?? false
     }
     
+    private func getIsVolunteerWork(for date: Date) -> Bool {
+        return shiftManager.schedules.first { calendar.isDate($0.date, inSameDayAs: date) }?.isVolunteerWork ?? false
+    }
+    
     // Monthly statistics
     private var monthlyWorkDays: Int {
         let startOfMonth = calendar.startOfMonth(for: selectedDate)
@@ -220,6 +225,7 @@ struct CalendarDayView: View {
     let isToday: Bool
     let overtimeHours: Int
     let isVacation: Bool
+    let isVolunteerWork: Bool
     let action: () -> Void
     @EnvironmentObject var shiftManager: ShiftManager
     
@@ -236,10 +242,10 @@ struct CalendarDayView: View {
                 // Shift type label - 고정 높이 설정
                 Text(shiftType.rawValue)
                     .font(.system(size: 11, weight: .medium))
-                    .foregroundColor(.white)
+                    .foregroundColor(getShiftTypeTextColor())
                     .padding(.horizontal, 4)
                     .padding(.vertical, 2)
-                    .background(shiftManager.getColor(for: shiftType))
+                    .background(getShiftTypeBackground())
                     .cornerRadius(4)
                     .frame(height: 18)
                     .frame(maxWidth: .infinity, alignment: .center)
@@ -261,11 +267,13 @@ struct CalendarDayView: View {
                 if isVacation {
                     Text("휴가")
                         .font(.system(size: 9, weight: .bold))
-                        .foregroundColor(.white)
-                        .padding(.horizontal, 3)
-                        .padding(.vertical, 1)
-                        .background(Color.pointColor)
-                        .cornerRadius(3)
+                        .foregroundColor(.pointColor)
+                        .frame(height: 14)
+                        .frame(maxWidth: .infinity, alignment: .center)
+                } else if isVolunteerWork {
+                    Text("자원 근무")
+                        .font(.system(size: 9, weight: .bold))
+                        .foregroundColor(.pointColor)
                         .frame(height: 14)
                         .frame(maxWidth: .infinity, alignment: .center)
                 } else {
@@ -303,6 +311,14 @@ struct CalendarDayView: View {
         } else {
             return .charcoalBlack.opacity(0.7)
         }
+    }
+    
+    private func getShiftTypeTextColor() -> Color {
+        return .white
+    }
+    
+    private func getShiftTypeBackground() -> Color {
+        return shiftManager.getColor(for: shiftType)
     }
 }
 
