@@ -252,6 +252,7 @@ struct ShiftSettings: Codable {
     var team: String = "1조"
     var shiftPatternType: ShiftPatternType = .fiveTeamThreeShift
     var colors: [String: String] = [:]
+    var shiftNames: [String: String] = [:]
     
     // 커스텀 패턴 추가
     var customPattern: CustomShiftPattern?
@@ -496,6 +497,33 @@ class ShiftManager: ObservableObject {
         if let hexString = color.toHex() {
             settings.colors[colorKey] = hexString
             saveData()
+        }
+    }
+    
+    func updateColor(for shiftType: ShiftType, newColor: Color) {
+        setColor(newColor, for: shiftType)
+    }
+    
+    func getShiftName(for shiftType: ShiftType) -> String {
+        let nameKey = getNameKey(for: shiftType)
+        return settings.shiftNames[nameKey] ?? shiftType.rawValue
+    }
+    
+    func updateShiftName(for shiftType: ShiftType, newName: String) {
+        let nameKey = getNameKey(for: shiftType)
+        settings.shiftNames[nameKey] = newName
+        saveData()
+    }
+    
+    private func getNameKey(for shiftType: ShiftType) -> String {
+        switch shiftType {
+        case .야간: return "nightShift"
+        case .심야: return "deepNightShift"
+        case .주간: return "dayShift"
+        case .오후: return "afternoonShift"
+        case .당직: return "dutyShift"
+        case .휴무: return "offDuty"
+        case .비번: return "standby"
         }
     }
     
