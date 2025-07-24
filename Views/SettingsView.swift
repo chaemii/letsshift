@@ -27,14 +27,12 @@ struct SettingsView: View {
     @EnvironmentObject var shiftManager: ShiftManager
     @State private var showingColorPicker = false
     @State private var selectedShiftType: ShiftType = .야간
-    @State private var showingCustomShiftInput = false
     @State private var showingShiftTypeSelection = false
     @State private var showingTeamSelection = false
     @State private var currentSetupStep: SetupStep = .shiftType
     @State private var showingSalarySetup = false
     @State private var showingPatternSelection = false
     @State private var showingCustomPattern = false
-    @State private var showingTeamSchedule = false
     
     enum SetupStep {
         case shiftType
@@ -43,7 +41,11 @@ struct SettingsView: View {
     
     var body: some View {
         NavigationView {
-            List {
+            ZStack {
+                Color(hex: "EFF0F2")
+                    .ignoresSafeArea()
+                
+                List {
                 Section(header: Text("근무 설정")) {
                     HStack {
                         Text("근무 패턴")
@@ -79,11 +81,6 @@ struct SettingsView: View {
                             }
                             .foregroundColor(.blue)
                         }
-                        
-                        Button("팀근무표 보기") {
-                            showingTeamSchedule = true
-                        }
-                        .foregroundColor(.blue)
                     }
                 }
                 
@@ -159,11 +156,6 @@ struct SettingsView: View {
 
                 
                 Section(header: Text("기타")) {
-                    Button("비주기적 근무 입력") {
-                        showingCustomShiftInput = true
-                    }
-                    .foregroundColor(.blue)
-                    
                     Button("데이터 내보내기") {
                         exportData()
                     }
@@ -174,11 +166,10 @@ struct SettingsView: View {
                     }
                     .foregroundColor(.red)
                 }
+                }
             }
-            .background(Color(hex: "EFF0F2"))
             .listStyle(InsetGroupedListStyle())
             .scrollContentBackground(.hidden)
-            .padding(.bottom, 80) // 네비게이션 바 높이만큼 여백
             .sheet(isPresented: $showingColorPicker) {
                 ColorPickerView(
                     shiftType: selectedShiftType,
@@ -191,10 +182,7 @@ struct SettingsView: View {
                 )
                 .environmentObject(shiftManager)
             }
-            .sheet(isPresented: $showingCustomShiftInput) {
-                CustomShiftInputView()
-                    .environmentObject(shiftManager)
-            }
+
             .sheet(isPresented: $showingShiftTypeSelection) {
                 ShiftTypeSelectionSheet(
                     currentStep: $currentSetupStep,
@@ -223,10 +211,7 @@ struct SettingsView: View {
                 CustomPatternViewInline()
                     .environmentObject(shiftManager)
             }
-            .sheet(isPresented: $showingTeamSchedule) {
-                TeamScheduleViewInline()
-                    .environmentObject(shiftManager)
-            }
+
             .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("ShowCustomPattern"))) { _ in
                 showingCustomPattern = true
             }
