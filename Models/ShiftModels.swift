@@ -504,17 +504,17 @@ class ShiftManager: ObservableObject {
     func getShiftTypesForCurrentPattern() -> [ShiftType] {
         switch settings.shiftPatternType {
         case .twoShift:
-            return [.주간, .야간, .휴무]
+            return [.주간, .야간]
         case .threeShift:
-            return [.주간, .오후, .야간, .휴무]
+            return [.주간, .오후, .야간]
         case .threeTeamTwoShift:
             return [.당직, .비번, .휴무]
         case .fourTeamTwoShift:
-            return [.주간, .야간, .휴무]
+            return [.주간, .야간, .비번, .휴무]
         case .fourTeamThreeShift:
             return [.주간, .오후, .야간, .휴무]
         case .fiveTeamThreeShift:
-            return [.주간, .오후, .야간, .휴무]
+            return [.주간, .야간, .심야, .비번, .휴무]
         case .irregular:
             return ShiftType.allCases
         case .custom:

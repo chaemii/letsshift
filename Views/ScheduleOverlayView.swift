@@ -181,15 +181,7 @@ struct ScheduleOverlayView: View {
     }
     
     private func getCurrentPatternShiftTypes() -> [ShiftType] {
-        let pattern = shiftManager.settings.shiftPatternType.generatePattern()
-        // 중복 제거하고 순서 유지
-        var uniqueTypes: [ShiftType] = []
-        for shiftType in pattern {
-            if !uniqueTypes.contains(shiftType) {
-                uniqueTypes.append(shiftType)
-            }
-        }
-        return uniqueTypes
+        return shiftManager.getShiftTypesForCurrentPattern()
     }
     
     private func loadCurrentSchedule() {
