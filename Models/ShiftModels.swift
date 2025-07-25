@@ -331,13 +331,20 @@ class ShiftManager: ObservableObject {
     // 안전한 패턴 가져오기
     private func getSafeShiftPattern() -> ([ShiftType], Date) {
         if settings.shiftPatternType == .custom, let customPattern = settings.customPattern {
-            print("Using custom pattern: \(customPattern.dayShifts)")
+            print("=== getSafeShiftPattern: Custom Pattern ===")
+            print("Custom Pattern Name: \(customPattern.name)")
+            print("Custom Pattern Start Date: \(customPattern.startDate)")
+            print("Custom Pattern Day Shifts: \(customPattern.dayShifts)")
+            print("Custom Pattern Cycle Length: \(customPattern.cycleLength)")
             return (customPattern.dayShifts, customPattern.startDate)
         } else {
             let pattern = settings.shiftPatternType.generatePattern()
-            print("Using generated pattern: \(pattern)")
+            print("=== getSafeShiftPattern: Regular Pattern ===")
+            print("Pattern Type: \(settings.shiftPatternType)")
+            print("Generated Pattern: \(pattern)")
             // 일반 패턴의 경우 2024년 1월 1일부터 시작
             let patternStartDate = Calendar.current.date(from: DateComponents(year: 2024, month: 1, day: 1)) ?? Date()
+            print("Regular Pattern Start Date: \(patternStartDate)")
             return (pattern, patternStartDate)
         }
     }

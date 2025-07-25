@@ -1263,11 +1263,23 @@ struct CustomPatternEditView: View {
         let validDayShifts = dayShifts.compactMap { $0 }
         guard validDayShifts.count == cycleLength else { return }
         
+        print("=== CustomPatternEditView saveCustomPattern ===")
+        print("Cycle Length: \(cycleLength)")
+        print("Start Date: \(startDate)")
+        print("Valid Day Shifts: \(validDayShifts)")
+        print("Day Shifts Count: \(validDayShifts.count)")
+        
         let customPattern = CustomShiftPattern(
             cycleLength: cycleLength,
             startDate: startDate,
             dayShifts: validDayShifts
         )
+        
+        print("Created Custom Pattern:")
+        print("- Name: \(customPattern.name)")
+        print("- Start Date: \(customPattern.startDate)")
+        print("- Day Shifts: \(customPattern.dayShifts)")
+        print("- Cycle Length: \(customPattern.cycleLength)")
         
         shiftManager.settings.customPattern = customPattern
         shiftManager.settings.shiftPatternType = .custom
