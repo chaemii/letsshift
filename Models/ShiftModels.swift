@@ -926,11 +926,22 @@ class ShiftManager: ObservableObject {
             }
             
             let dayOfYear = calendar.ordinality(of: .day, in: .year, for: date) ?? 1
-            let teamOffset = (team - 1) * 2 // 각 조는 2일씩 차이
             let adjustedDayOfYear = dayOfYear + shiftOffset // 전체 근무 패턴을 밀고 당김
             
+            // 팀별로 근무가 하나씩 밀려서 엇갈리게 구성
+            // 같은 날에 1팀이 주간이면 2팀은 야간, 3팀은 비번, 4팀은 휴무 순서
+            let teamOffset = (team - 1) // 각 조는 1일씩 차이
             let adjustedDay = (adjustedDayOfYear + teamOffset) % shiftPattern.count
             let positiveIndex = adjustedDay >= 0 ? adjustedDay : shiftPattern.count + adjustedDay
+            
+            print("=== Standard Pattern Debug ===")
+            print("Pattern type: \(settings.shiftPatternType.rawValue)")
+            print("Pattern: \(shiftPattern.map { $0.rawValue })")
+            print("Day of year: \(dayOfYear), Shift offset: \(shiftOffset)")
+            print("Team: \(team), Team offset: \(teamOffset)")
+            print("Adjusted day: \(adjustedDay), Positive index: \(positiveIndex)")
+            print("Returning shift type: \(shiftPattern[positiveIndex % shiftPattern.count].rawValue)")
+            
             return shiftPattern[positiveIndex % shiftPattern.count]
         }
     }
