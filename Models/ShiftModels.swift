@@ -350,25 +350,60 @@ class ShiftManager: ObservableObject {
         let (shiftPattern, patternStartDate) = getSafeShiftPattern()
         let finalShiftPattern = validateAndGetFinalPattern(shiftPattern)
         
-        // 2. 스케줄 생성 범위
-        let startDate = calendar.date(from: DateComponents(year: 2024, month: 1, day: 1)) ?? today
+        print("=== Schedule Generation Debug ===")
+        print("Pattern Type: \(settings.shiftPatternType)")
+        print("Pattern Start Date: \(patternStartDate)")
+        print("Final Pattern Count: \(finalShiftPattern.count)")
+        print("Final Pattern: \(finalShiftPattern)")
+        
+        // 2. 스케줄 생성 범위 결정
+        let startDate: Date
         let endDate = calendar.date(from: DateComponents(year: 2026, month: 12, day: 31)) ?? today
+        
+        if settings.shiftPatternType == .custom {
+            // 커스텀 패턴의 경우: 시작일부터 스케줄 생성
+            startDate = patternStartDate
+            print("Custom pattern: Starting from pattern start date: \(startDate)")
+        } else {
+            // 일반 패턴의 경우: 2024년 1월 1일부터 스케줄 생성
+            startDate = calendar.date(from: DateComponents(year: 2024, month: 1, day: 1)) ?? today
+            print("Regular pattern: Starting from 2024-01-01")
+        }
         
         var currentDate = startDate
         var newSchedules: [ShiftSchedule] = []
         let patternCount = finalShiftPattern.count
         
         while currentDate <= endDate {
-            let daysFromStart = calendar.dateComponents([.day], from: patternStartDate, to: currentDate).day ?? 0
-            // 음수 인덱스 보정
-            let patternIndex = ((daysFromStart % patternCount) + patternCount) % patternCount
-            let shiftType = finalShiftPattern[patternIndex]
-            
-            let schedule = ShiftSchedule(date: currentDate, shiftType: shiftType)
-            newSchedules.append(schedule)
+            if settings.shiftPatternType == .custom {
+                // 커스텀 패턴: 시작일부터 패턴 적용
+                let daysFromStart = calendar.dateComponents([.day], from: patternStartDate, to: currentDate).day ?? 0
+                if daysFromStart >= 0 {
+                    // 시작일 이후에만 패턴 적용
+                    let patternIndex = daysFromStart % patternCount
+                    let shiftType = finalShiftPattern[patternIndex]
+                    let schedule = ShiftSchedule(date: currentDate, shiftType: shiftType)
+                    newSchedules.append(schedule)
+                }
+                // 시작일 이전에는 스케줄을 생성하지 않음
+            } else {
+                // 일반 패턴: 전체 기간에 패턴 적용
+                let daysFromStart = calendar.dateComponents([.day], from: patternStartDate, to: currentDate).day ?? 0
+                let patternIndex = ((daysFromStart % patternCount) + patternCount) % patternCount
+                let shiftType = finalShiftPattern[patternIndex]
+                let schedule = ShiftSchedule(date: currentDate, shiftType: shiftType)
+                newSchedules.append(schedule)
+            }
             
             // 다음 날짜로 이동
             currentDate = calendar.date(byAdding: .day, value: 1, to: currentDate)!
+        }
+        
+        print("=== Schedule Generation Complete ===")
+        print("Total schedules generated: \(newSchedules.count)")
+        if !newSchedules.isEmpty {
+            print("First schedule: \(newSchedules.first!.date) - \(newSchedules.first!.shiftType)")
+            print("Last schedule: \(newSchedules.last!.date) - \(newSchedules.last!.shiftType)")
         }
         
         self.schedules = newSchedules
