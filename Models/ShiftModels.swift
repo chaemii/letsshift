@@ -316,10 +316,12 @@ class ShiftManager: ObservableObject {
     
     @Published var schedules: [ShiftSchedule] = []
     @Published var settings = ShiftSettings()
+    @Published var shiftOffset: Int = 0 // 하루 밀기/당기기 오프셋
     
     private let userDefaults = UserDefaults(suiteName: "group.com.chaeeun.ShiftCalendarApp")!
     private let schedulesKey = "shiftSchedules"
     private let settingsKey = "shiftSettings"
+    private let shiftOffsetKey = "shiftOffset"
     
     init() {
         loadData()
@@ -506,8 +508,8 @@ class ShiftManager: ObservableObject {
     }
     
     // 기존 호환성을 위한 함수
-    func createCustomPattern(name: String, shifts: [ShiftType], cycleLength: Int, description: String = "") {
-        createCustomPattern(name: name, dayShifts: shifts, cycleLength: cycleLength, startDate: Date(), description: description)
+    func createCustomPattern(name: String, shifts: [ShiftType], cycleLength: Int, startDate: Date, description: String = "") {
+        createCustomPattern(name: name, dayShifts: shifts, cycleLength: cycleLength, startDate: startDate, description: description)
     }
     
     func updateCustomPattern(_ pattern: CustomShiftPattern) {
@@ -665,6 +667,10 @@ class ShiftManager: ObservableObject {
             print("Error: Failed to encode settings")
         }
         
+        // shiftOffset 저장
+        userDefaults.set(shiftOffset, forKey: shiftOffsetKey)
+        print("ShiftOffset saved: \(shiftOffset)")
+        
         userDefaults.synchronize()
         print("UserDefaults synchronized")
         
@@ -706,6 +712,10 @@ class ShiftManager: ObservableObject {
         } else {
             print("No settings data found")
         }
+        
+        // shiftOffset 로드
+        shiftOffset = userDefaults.integer(forKey: shiftOffsetKey)
+        print("Loaded shiftOffset: \(shiftOffset)")
     }
     
     private let calendar = Calendar.current
@@ -864,6 +874,100 @@ class ShiftManager: ObservableObject {
             settings.colors[shiftType.rawValue] = hexString
             saveData()
         }
+    }
+    
+    // 팀별 근무 타입 가져오기
+    func getShiftTypeForTeam(team: Int, date: Date, shiftOffset: Int = 0) -> ShiftType? {
+        let calendar = Calendar.current
+        
+        // 안전한 패턴 가져오기
+        var shiftPattern: [ShiftType]
+        
+        if settings.shiftPatternType == .custom, let customPattern = settings.customPattern {
+            // 커스텀 패턴 사용
+            shiftPattern = customPattern.dayShifts
+            
+            // 커스텀 패턴의 경우 시작일 이전에는 nil 반환 (근무 없음)
+            let startOfDay = calendar.startOfDay(for: customPattern.startDate)
+            let targetStartOfDay = calendar.startOfDay(for: date)
+            let daysFromStart = calendar.dateComponents([.day], from: startOfDay, to: targetStartOfDay).day ?? 0
+            
+            print("=== Custom Pattern Debug ===")
+            print("Start date: \(customPattern.startDate)")
+            print("Target date: \(date)")
+            print("Days from start: \(daysFromStart)")
+            print("Pattern: \(shiftPattern.map { $0.rawValue })")
+            
+            if daysFromStart < 0 {
+                // 시작일 이전에는 nil 반환 (근무 없음)
+                print("Before start date, returning nil")
+                return nil
+            }
+            
+            // 커스텀 패턴: 시작일부터의 일수를 사용
+            // 팀별로 근무가 하나씩 밀려서 엇갈리게 구성
+            let teamOffset = (team - 1) // 각 조는 1일씩 차이
+            let adjustedDay = daysFromStart + teamOffset + shiftOffset
+            let patternIndex = adjustedDay % shiftPattern.count
+            let positiveIndex = patternIndex >= 0 ? patternIndex : shiftPattern.count + patternIndex
+            
+            print("Team: \(team), Team offset: \(teamOffset), Shift offset: \(shiftOffset)")
+            print("Adjusted day: \(adjustedDay), Pattern index: \(patternIndex), Positive index: \(positiveIndex)")
+            print("Returning shift type: \(shiftPattern[positiveIndex % shiftPattern.count].rawValue)")
+            
+            return shiftPattern[positiveIndex % shiftPattern.count]
+        } else {
+            // 기본 패턴 사용
+            shiftPattern = settings.shiftPatternType.generatePattern()
+            
+            // 패턴이 비어있으면 기본 패턴 사용
+            if shiftPattern.isEmpty {
+                shiftPattern = [.주간, .야간, .휴무]
+            }
+            
+            let dayOfYear = calendar.ordinality(of: .day, in: .year, for: date) ?? 1
+            let teamOffset = (team - 1) * 2 // 각 조는 2일씩 차이
+            let adjustedDayOfYear = dayOfYear + shiftOffset // 전체 근무 패턴을 밀고 당김
+            
+            let adjustedDay = (adjustedDayOfYear + teamOffset) % shiftPattern.count
+            let positiveIndex = adjustedDay >= 0 ? adjustedDay : shiftPattern.count + adjustedDay
+            return shiftPattern[positiveIndex % shiftPattern.count]
+        }
+    }
+    
+    // 팀별 근무 업데이트 (내스케줄과 연동)
+    func updateShiftForTeam(date: Date, team: Int, shiftType: ShiftType) {
+        let calendar = Calendar.current
+        
+        // 해당 날짜의 스케줄을 찾거나 생성
+        if let index = schedules.firstIndex(where: { calendar.isDate($0.date, inSameDayAs: date) }) {
+            // 기존 스케줄이 있으면 업데이트
+            schedules[index].shiftType = shiftType
+        } else {
+            // 새 스케줄 생성
+            let newSchedule = ShiftSchedule(date: date, shiftType: shiftType)
+            schedules.append(newSchedule)
+        }
+        
+        // 데이터 저장
+        saveData()
+        print("Updated shift for team \(team) on \(date): \(shiftType.rawValue)")
+    }
+    
+    // 현재 사용자의 팀 번호 가져오기
+    func getCurrentTeamNumber() -> Int {
+        let teamString = settings.team
+        if teamString.hasSuffix("조") {
+            let numberString = String(teamString.dropLast())
+            return Int(numberString) ?? 1
+        }
+        return 1
+    }
+    
+    // 현재 사용자의 근무 타입 가져오기 (내스케줄용)
+    func getCurrentUserShiftType(for date: Date, shiftOffset: Int = 0) -> ShiftType {
+        let currentTeam = getCurrentTeamNumber()
+        return getShiftTypeForTeam(team: currentTeam, date: date, shiftOffset: shiftOffset) ?? .휴무 // 근무 없을 경우 휴무 반환
     }
 }
 

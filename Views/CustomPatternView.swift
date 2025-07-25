@@ -8,6 +8,7 @@ struct CustomPatternView: View {
     @State private var selectedShifts: [ShiftType] = []
     @State private var cycleLength: Int = 7
     @State private var description: String = ""
+    @State private var startDate: Date = Date() // 시작일 추가
     @State private var showingShiftSelector = false
     @State private var currentEditingIndex: Int?
     @State private var isEditing: Bool = false
@@ -67,6 +68,20 @@ struct CustomPatternView: View {
                         .background(Color.backgroundWhite)
                         .cornerRadius(12)
                         .frame(height: 50)
+                    }
+                    
+                    // 시작일 설정
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("시작일")
+                            .font(.headline)
+                            .foregroundColor(.charcoalBlack)
+                        DatePicker("시작일", selection: $startDate, displayedComponents: .date)
+                            .datePickerStyle(CompactDatePickerStyle())
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 12)
+                            .background(Color.backgroundWhite)
+                            .cornerRadius(12)
+                            .frame(height: 50)
                     }
                     
                     // 근무 요소 선택
@@ -202,6 +217,7 @@ struct CustomPatternView: View {
                 name: patternName,
                 shifts: selectedShifts,
                 cycleLength: cycleLength,
+                startDate: startDate,
                 description: description
             )
         }

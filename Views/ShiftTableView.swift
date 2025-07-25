@@ -3,10 +3,19 @@ import SwiftUI
 struct ShiftTableView: View {
     @EnvironmentObject var shiftManager: ShiftManager
     @State private var selectedMonth = Date()
-    @State private var shiftOffset: Int = 0
     @State private var hasUnsavedChanges: Bool = false
+    @State private var isEditMode: Bool = false
+    @State private var selectedDate: Date?
+    @State private var selectedTeam: Int?
+    @State private var showingShiftEditSheet: Bool = false
     
     private let calendar = Calendar.current
+    private let daysInWeek = ["일", "월", "화", "수", "목", "금", "토"]
+    
+    // shiftOffset을 ShiftManager에서 가져오기
+    private var shiftOffset: Int {
+        return shiftManager.shiftOffset
+    }
     
     var body: some View {
         NavigationView {
@@ -61,7 +70,13 @@ struct ShiftTableView: View {
                             ShiftTableRow(
                                 date: date,
                                 currentTeam: getTeamNumber(),
-                                shiftOffset: shiftOffset
+                                shiftOffset: shiftOffset,
+                                isEditMode: isEditMode,
+                                onShiftTap: { team in
+                                    selectedDate = date
+                                    selectedTeam = team
+                                    showingShiftEditSheet = true
+                                }
                             )
                         }
                     }
@@ -70,6 +85,28 @@ struct ShiftTableView: View {
                 }
             }
             .background(Color.white)
+            .navigationTitle("팀 근무표")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(isEditMode ? "완료" : "편집") {
+                        isEditMode.toggle()
+                    }
+                    .foregroundColor(.charcoalBlack)
+                }
+            }
+            .sheet(isPresented: $showingShiftEditSheet) {
+                if let date = selectedDate, let team = selectedTeam {
+                    TeamShiftEditView(
+                        date: date,
+                        team: team,
+                        currentShiftType: getShiftTypeForTeam(team: team, date: date)
+                    ) { newShiftType in
+                        updateShiftForTeam(date: date, team: team, shiftType: newShiftType)
+                    }
+                    .environmentObject(shiftManager)
+                }
+            }
             .overlay(
                 // 플로팅 버튼과 그라디언트 배경
                 VStack {
@@ -79,7 +116,7 @@ struct ShiftTableView: View {
                     // 플로팅 버튼들
                     HStack(spacing: 10) {
                         Button(action: {
-                            shiftOffset -= 1
+                            shiftManager.shiftOffset -= 1
                             hasUnsavedChanges = true
                         }) {
                             HStack(spacing: 6) {
@@ -96,7 +133,7 @@ struct ShiftTableView: View {
                         }
                         
                         Button(action: {
-                            shiftOffset += 1
+                            shiftManager.shiftOffset += 1
                             hasUnsavedChanges = true
                         }) {
                             HStack(spacing: 6) {
@@ -114,7 +151,8 @@ struct ShiftTableView: View {
                         
                         if hasUnsavedChanges {
                             Button(action: {
-                                // TODO: 실제 근무 스케줄에 변경사항 저장
+                                // ShiftManager의 데이터 저장
+                                shiftManager.saveData()
                                 hasUnsavedChanges = false
                             }) {
                                 Text("저장")
@@ -192,12 +230,24 @@ struct ShiftTableView: View {
             selectedMonth = newDate
         }
     }
+    
+    // 팀별 근무 타입 가져오기 (ShiftTableRow와 동일한 로직)
+    private func getShiftTypeForTeam(team: Int, date: Date) -> ShiftType {
+        return shiftManager.getShiftTypeForTeam(team: team, date: date, shiftOffset: shiftOffset) ?? .휴무
+    }
+    
+    // 팀별 근무 업데이트
+    private func updateShiftForTeam(date: Date, team: Int, shiftType: ShiftType) {
+        shiftManager.updateShiftForTeam(date: date, team: team, shiftType: shiftType)
+    }
 }
 
 struct ShiftTableRow: View {
     let date: Date
     let currentTeam: Int
     let shiftOffset: Int
+    let isEditMode: Bool
+    let onShiftTap: (Int) -> Void
     @EnvironmentObject var shiftManager: ShiftManager
     
     private let calendar = Calendar.current
@@ -238,6 +288,11 @@ struct ShiftTableRow: View {
                         RoundedRectangle(cornerRadius: 4)
                             .fill(getBackgroundColor(isCurrentTeam: isCurrentTeam, isTodayColumn: isTodayColumn, isHighlighted: isHighlighted, shiftType: shiftType))
                     )
+                    .onTapGesture {
+                        if isEditMode {
+                            onShiftTap(team)
+                        }
+                    }
             }
         }
         .padding(.vertical, 2)
@@ -282,37 +337,111 @@ struct ShiftTableRow: View {
     
     // 조별로 근무가 교대되도록 계산 (offset 적용)
     private func getShiftTypeForTeam(team: Int, date: Date) -> ShiftType {
-        let dayOfYear = calendar.ordinality(of: .day, in: .year, for: date) ?? 1
-        let teamOffset = (team - 1) * 2 // 각 조는 2일씩 차이
-        let adjustedDayOfYear = dayOfYear + shiftOffset // 전체 근무 패턴을 밀고 당김
-        
-        // 안전한 패턴 가져오기
-        var shiftPattern: [ShiftType]
-        
-        if shiftManager.settings.shiftPatternType == .custom, let customPattern = shiftManager.settings.customPattern {
-            // 커스텀 패턴 사용
-            shiftPattern = customPattern.dayShifts
-            print("Using custom pattern in getShiftTypeForTeam: \(shiftPattern)")
-        } else {
-            // 기본 패턴 사용
-            shiftPattern = shiftManager.settings.shiftPatternType.generatePattern()
-            print("Using generated pattern in getShiftTypeForTeam: \(shiftPattern)")
+        return shiftManager.getShiftTypeForTeam(team: team, date: date, shiftOffset: shiftOffset) ?? .휴무
+    }
+}
+
+// MARK: - Team Shift Edit View
+struct TeamShiftEditView: View {
+    @EnvironmentObject var shiftManager: ShiftManager
+    @Environment(\.dismiss) var dismiss
+    
+    let date: Date
+    let team: Int
+    let currentShiftType: ShiftType
+    let onSave: (ShiftType) -> Void
+    
+    @State private var selectedShiftType: ShiftType
+    
+    init(date: Date, team: Int, currentShiftType: ShiftType, onSave: @escaping (ShiftType) -> Void) {
+        self.date = date
+        self.team = team
+        self.currentShiftType = currentShiftType
+        self.onSave = onSave
+        self._selectedShiftType = State(initialValue: currentShiftType)
+    }
+    
+    var body: some View {
+        NavigationView {
+            VStack(spacing: 25) {
+                VStack(spacing: 15) {
+                    Text(dateString)
+                        .font(.headline)
+                        .foregroundColor(.charcoalBlack.opacity(0.7))
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    
+                    Text("\(team)조 근무 수정")
+                        .font(.title2)
+                        .fontWeight(.bold)
+                        .foregroundColor(.charcoalBlack)
+                }
+                
+                VStack(spacing: 15) {
+                    Text("근무 유형 선택")
+                        .font(.headline)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .foregroundColor(.charcoalBlack)
+                    
+                    // 근무 유형 선택
+                    LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 2), spacing: 12) {
+                        ForEach(ShiftType.allCases, id: \.self) { shiftType in
+                            Button(action: {
+                                selectedShiftType = shiftType
+                            }) {
+                                HStack {
+                                    Circle()
+                                        .fill(shiftType.color)
+                                        .frame(width: 20, height: 20)
+                                    
+                                    Text(shiftType.rawValue)
+                                        .font(.subheadline)
+                                        .fontWeight(.medium)
+                                        .foregroundColor(.charcoalBlack)
+                                    
+                                    Spacer()
+                                }
+                                .padding(16)
+                                .background(Color.white)
+                                .cornerRadius(12)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .stroke(selectedShiftType == shiftType ? Color(hex: "1A1A1A") : Color.clear, lineWidth: 2)
+                                )
+                                .shadow(color: Color.black.opacity(0.05), radius: 2, x: 0, y: 1)
+                            }
+                            .buttonStyle(PlainButtonStyle())
+                        }
+                    }
+                }
+                
+                Spacer()
+                
+                // 저장 버튼
+                Button("저장") {
+                    onSave(selectedShiftType)
+                    dismiss()
+                }
+                .buttonStyle(PrimaryButtonStyle())
+                .disabled(selectedShiftType == currentShiftType)
+            }
+            .padding()
+            .background(Color.backgroundLight)
+            .navigationTitle("근무 수정")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button("취소") {
+                        dismiss()
+                    }
+                }
+            }
         }
-        
-        // 패턴이 비어있으면 기본 패턴 사용
-        if shiftPattern.isEmpty {
-            print("Warning: shiftPattern is empty in getShiftTypeForTeam, using default pattern")
-            shiftPattern = [.주간, .야간, .휴무]
-        }
-        
-        // 절대적인 안전장치: 패턴이 여전히 비어있으면 기본값 반환
-        guard !shiftPattern.isEmpty else {
-            print("Critical Error: shiftPattern is still empty, returning default shift type")
-            return .주간
-        }
-        
-        let adjustedDay = (adjustedDayOfYear + teamOffset) % shiftPattern.count
-        let positiveIndex = adjustedDay >= 0 ? adjustedDay : shiftPattern.count + adjustedDay
-        return shiftPattern[positiveIndex % shiftPattern.count]
+    }
+    
+    private var dateString: String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy년 M월 d일 (E)"
+        formatter.locale = Locale(identifier: "ko_KR")
+        return formatter.string(from: date)
     }
 }

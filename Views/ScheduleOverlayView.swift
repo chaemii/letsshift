@@ -185,20 +185,36 @@ struct ScheduleOverlayView: View {
     }
     
     private func loadCurrentSchedule() {
+        let currentTeam = shiftManager.getCurrentTeamNumber()
+        
+        // 팀 근무표에서 현재 사용자의 근무 타입 가져오기
+        let teamShiftType = shiftManager.getCurrentUserShiftType(for: selectedDate)
+        selectedShiftType = teamShiftType
+        
+        // 추가 정보 (초과근무, 휴가 등)는 기존 스케줄에서 가져오기
         if let schedule = shiftManager.schedules.first(where: { Calendar.current.isDate($0.date, inSameDayAs: selectedDate) }) {
-            selectedShiftType = schedule.shiftType
             overtimeHours = String(schedule.overtimeHours)
             isVacation = schedule.isVacation
             selectedVacationType = schedule.vacationType ?? .연차
             isVolunteerWork = schedule.isVolunteerWork
+        } else {
+            // 새 스케줄인 경우 기본값 설정
+            overtimeHours = "0"
+            isVacation = false
+            selectedVacationType = .연차
+            isVolunteerWork = false
         }
     }
     
     private func saveSchedule() {
         let overtime = Int(overtimeHours) ?? 0
+        let currentTeam = shiftManager.getCurrentTeamNumber()
         
+        // 팀 근무표와 연동: 현재 사용자의 팀 근무를 업데이트
+        shiftManager.updateShiftForTeam(date: selectedDate, team: currentTeam, shiftType: selectedShiftType)
+        
+        // 추가 정보 (초과근무, 휴가 등)는 기존 방식으로 저장
         if let index = shiftManager.schedules.firstIndex(where: { Calendar.current.isDate($0.date, inSameDayAs: selectedDate) }) {
-            shiftManager.schedules[index].shiftType = selectedShiftType
             shiftManager.schedules[index].overtimeHours = overtime
             shiftManager.schedules[index].isVacation = isVacation
             shiftManager.schedules[index].vacationType = isVacation ? selectedVacationType : nil
@@ -216,6 +232,7 @@ struct ScheduleOverlayView: View {
         }
         
         shiftManager.saveData()
+        print("Updated schedule for current user (team \(currentTeam)) on \(selectedDate): \(selectedShiftType.rawValue)")
     }
     
     private func deleteSchedule() {

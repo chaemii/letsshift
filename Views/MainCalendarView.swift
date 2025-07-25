@@ -157,7 +157,7 @@ struct MainCalendarView: View {
     }
     
     private func getShiftType(for date: Date) -> ShiftType {
-        return shiftManager.schedules.first { calendar.isDate($0.date, inSameDayAs: date) }?.shiftType ?? .휴무
+        return shiftManager.getCurrentUserShiftType(for: date, shiftOffset: shiftManager.shiftOffset)
     }
     
     private func getOvertimeHours(for date: Date) -> Int {
