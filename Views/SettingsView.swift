@@ -588,6 +588,7 @@ struct ShiftPatternSelectionSheet: View {
     
     private func getTeamCount() -> Int {
         switch selectedPattern {
+        case .none: return 0
         case .twoShift:
             return 2
         case .threeShift:
@@ -697,6 +698,7 @@ struct TeamSelectionSheet: View {
     
     private func getTeamCount() -> Int {
         switch shiftManager.settings.shiftPatternType {
+        case .none: return 0
         case .twoShift:
             return 2
         case .threeShift:
@@ -1272,6 +1274,10 @@ struct CustomPatternEditView: View {
         shiftManager.settings.team = "1조" // 커스텀 패턴은 항상 1팀
         shiftManager.regenerateSchedule()
         shiftManager.saveData()
+        
+        // 온보딩 완료 처리
+        UserDefaults.standard.set(true, forKey: "hasCompletedOnboarding")
+        print("Onboarding completed - hasCompletedOnboarding set to true")
     }
 }
 

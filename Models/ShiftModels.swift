@@ -179,6 +179,7 @@ struct CustomShiftPattern: Codable, Identifiable {
 
 // MARK: - Shift Pattern Types
 enum ShiftPatternType: String, CaseIterable, Codable {
+    case none = "none"
     case twoShift = "2교대"
     case threeShift = "3교대"
     case threeTeamTwoShift = "3조 2교대"
@@ -190,6 +191,7 @@ enum ShiftPatternType: String, CaseIterable, Codable {
     
     var displayName: String {
         switch self {
+        case .none: return "패턴을 선택해주세요"
         case .twoShift: return "2교대"
         case .threeShift: return "3교대"
         case .threeTeamTwoShift: return "3조 2교대"
@@ -203,12 +205,13 @@ enum ShiftPatternType: String, CaseIterable, Codable {
     
     var description: String {
         switch self {
-        case .twoShift: return "주간/야간 (12시간씩)"
-        case .threeShift: return "주간/오후/야간 (8시간씩)"
-        case .threeTeamTwoShift: return "당직-비번-휴무 (3조 2교대)"
-        case .fourTeamTwoShift: return "주간-야간-비번-휴무 (4조 2교대)"
-        case .fourTeamThreeShift: return "4조로 3교대 + 휴일 보장"
-        case .fiveTeamThreeShift: return "5조로 3교대 + 충분한 휴무"
+        case .none: return ""
+        case .twoShift: return "주간-야간 반복"
+        case .threeShift: return "주간-야간-비번 반복"
+        case .threeTeamTwoShift: return "주간-야간-휴무"
+        case .fourTeamTwoShift: return "주간-야간-비번-휴무"
+        case .fourTeamThreeShift: return "주간-오후-야간-휴무"
+        case .fiveTeamThreeShift: return "주간-야간-심야-비번-휴무"
         case .irregular: return "월마다 비주기적 배치"
         case .custom: return "직접 만드는 근무 패턴"
         }
@@ -216,12 +219,14 @@ enum ShiftPatternType: String, CaseIterable, Codable {
     
     func generatePattern() -> [ShiftType] {
         switch self {
+        case .none:
+            return []
         case .twoShift:
             return [.주간, .야간]
         case .threeShift:
-            return [.주간, .오후, .야간]
+            return [.주간, .야간, .비번]
         case .threeTeamTwoShift:
-            return [.당직, .비번, .휴무]
+            return [.주간, .야간, .휴무]
         case .fourTeamTwoShift:
             return [.주간, .야간, .비번, .휴무]
         case .fourTeamThreeShift:
@@ -323,58 +328,6 @@ class ShiftManager: ObservableObject {
         }
     }
     
-    private func generateDefaultSchedule() {
-        let calendar = Calendar.current
-        let today = Date()
-        let startOfMonth = calendar.startOfMonth(for: today)
-        
-        // 1. 패턴 결정 - 완전히 안전한 방식
-        let (shiftPattern, patternStartDate) = getSafeShiftPattern()
-        
-        // 2. 최종 패턴 검증 - 절대 빈 배열이 되지 않도록
-        let finalShiftPattern = validateAndGetFinalPattern(shiftPattern)
-        
-        print("=== Schedule Generation Debug ===")
-        print("Pattern Type: \(settings.shiftPatternType)")
-        print("Final Pattern Count: \(finalShiftPattern.count)")
-        print("Final Pattern: \(finalShiftPattern)")
-        
-        var currentDate = startOfMonth
-        var patternIndex = 0
-        
-        // 커스텀 패턴의 경우 시작일부터 패턴 계산
-        if settings.shiftPatternType == .custom {
-            // 시작일이 현재 월보다 나중인 경우, 시작일부터 스케줄 생성
-            if patternStartDate > startOfMonth {
-                print("Warning: patternStartDate (\(patternStartDate)) is after current month start (\(startOfMonth))")
-                print("Starting schedule from patternStartDate")
-                currentDate = patternStartDate
-                patternIndex = 0
-            } else {
-                let daysFromStart = calendar.dateComponents([.day], from: patternStartDate, to: currentDate).day ?? 0
-                patternIndex = daysFromStart % finalShiftPattern.count
-                print("Pattern calculation - daysFromStart: \(daysFromStart), patternIndex: \(patternIndex)")
-            }
-        }
-        
-        // Generate schedule for the current month
-        while calendar.isDate(currentDate, equalTo: startOfMonth, toGranularity: .month) {
-            // 절대적인 안전장치: patternIndex가 음수이거나 배열 범위를 벗어나지 않도록
-            let safeIndex = max(0, patternIndex) % finalShiftPattern.count
-            let shiftType = finalShiftPattern[safeIndex]
-            
-            print("Schedule generation - currentDate: \(currentDate), patternIndex: \(patternIndex), safeIndex: \(safeIndex), shiftType: \(shiftType)")
-            
-            let schedule = ShiftSchedule(date: currentDate, shiftType: shiftType)
-            schedules.append(schedule)
-            
-            currentDate = calendar.date(byAdding: .day, value: 1, to: currentDate) ?? currentDate
-            patternIndex += 1
-        }
-        
-        saveData()
-    }
-    
     // 안전한 패턴 가져오기
     private func getSafeShiftPattern() -> ([ShiftType], Date) {
         if settings.shiftPatternType == .custom, let customPattern = settings.customPattern {
@@ -383,8 +336,43 @@ class ShiftManager: ObservableObject {
         } else {
             let pattern = settings.shiftPatternType.generatePattern()
             print("Using generated pattern: \(pattern)")
-            return (pattern, Date())
+            // 일반 패턴의 경우 2024년 1월 1일부터 시작
+            let patternStartDate = Calendar.current.date(from: DateComponents(year: 2024, month: 1, day: 1)) ?? Date()
+            return (pattern, patternStartDate)
         }
+    }
+
+    private func generateDefaultSchedule() {
+        let calendar = Calendar.current
+        let today = Date()
+        
+        // 1. 패턴 결정
+        let (shiftPattern, patternStartDate) = getSafeShiftPattern()
+        let finalShiftPattern = validateAndGetFinalPattern(shiftPattern)
+        
+        // 2. 스케줄 생성 범위
+        let startDate = calendar.date(from: DateComponents(year: 2024, month: 1, day: 1)) ?? today
+        let endDate = calendar.date(from: DateComponents(year: 2026, month: 12, day: 31)) ?? today
+        
+        var currentDate = startDate
+        var newSchedules: [ShiftSchedule] = []
+        let patternCount = finalShiftPattern.count
+        
+        while currentDate <= endDate {
+            let daysFromStart = calendar.dateComponents([.day], from: patternStartDate, to: currentDate).day ?? 0
+            // 음수 인덱스 보정
+            let patternIndex = ((daysFromStart % patternCount) + patternCount) % patternCount
+            let shiftType = finalShiftPattern[patternIndex]
+            
+            let schedule = ShiftSchedule(date: currentDate, shiftType: shiftType)
+            newSchedules.append(schedule)
+            
+            // 다음 날짜로 이동
+            currentDate = calendar.date(byAdding: .day, value: 1, to: currentDate)!
+        }
+        
+        self.schedules = newSchedules
+        saveData()
     }
     
     // 패턴 검증 및 최종 패턴 반환
@@ -496,6 +484,7 @@ class ShiftManager: ObservableObject {
     
     func getTeamCount() -> Int {
         switch settings.shiftPatternType {
+        case .none: return 0
         case .twoShift: return 2
         case .threeShift: return 3
         case .threeTeamTwoShift: return 3
@@ -527,12 +516,14 @@ class ShiftManager: ObservableObject {
     // 현재 근무 패턴에 해당하는 근무 유형들만 반환
     func getShiftTypesForCurrentPattern() -> [ShiftType] {
         switch settings.shiftPatternType {
+        case .none:
+            return []
         case .twoShift:
             return [.주간, .야간]
         case .threeShift:
-            return [.주간, .오후, .야간]
+            return [.주간, .야간, .비번]
         case .threeTeamTwoShift:
-            return [.당직, .비번, .휴무]
+            return [.주간, .야간, .휴무]
         case .fourTeamTwoShift:
             return [.주간, .야간, .비번, .휴무]
         case .fourTeamThreeShift:
@@ -814,7 +805,15 @@ class ShiftManager: ObservableObject {
     func resetAllData() {
         schedules.removeAll()
         settings = ShiftSettings()
+        
+        // 온보딩 상태 초기화
+        UserDefaults.standard.set(false, forKey: "hasCompletedOnboarding")
+        
+        // 데이터 저장
         saveData()
+        
+        // 위젯 업데이트
+        WidgetCenter.shared.reloadAllTimelines()
     }
     
     // MARK: - Color Management

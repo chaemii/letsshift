@@ -180,6 +180,13 @@ struct CustomPatternView: View {
     }
     
     private func saveCustomPattern() {
+        print("=== CustomPatternView saveCustomPattern ===")
+        print("Pattern Name: \(patternName)")
+        print("Selected Shifts: \(selectedShifts)")
+        print("Cycle Length: \(cycleLength)")
+        print("Description: \(description)")
+        print("Is Editing: \(isEditing)")
+        
         if isEditing {
             let updatedPattern = CustomShiftPattern(
                 name: patternName,
@@ -187,8 +194,10 @@ struct CustomPatternView: View {
                 cycleLength: cycleLength,
                 description: description
             )
+            print("Updating custom pattern: \(updatedPattern)")
             shiftManager.updateCustomPattern(updatedPattern)
         } else {
+            print("Creating new custom pattern")
             shiftManager.createCustomPattern(
                 name: patternName,
                 shifts: selectedShifts,
@@ -196,6 +205,12 @@ struct CustomPatternView: View {
                 description: description
             )
         }
+        
+        // 온보딩 완료 처리
+        UserDefaults.standard.set(true, forKey: "hasCompletedOnboarding")
+        print("Onboarding completed - hasCompletedOnboarding set to true")
+        
+        print("Dismissing view")
         dismiss()
     }
 }
