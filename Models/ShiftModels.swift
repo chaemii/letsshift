@@ -10,6 +10,20 @@ struct SimpleShiftData: Codable {
     let shiftOffset: Int
 }
 
+// 일주일 스케줄 데이터 구조
+struct WeekScheduleData: Codable {
+    let weekData: [DayScheduleData]
+    let team: String
+    let patternType: String
+    let shiftOffset: Int
+}
+
+struct DayScheduleData: Codable {
+    let day: String
+    let shiftType: String
+    let date: String
+}
+
 // MARK: - Color Extensions
 extension Color {
     static let charcoalBlack = Color(hex: "1A1A1A")
@@ -724,7 +738,7 @@ class ShiftManager: ObservableObject {
 
         // 간단한 위젯 데이터 저장
         let simpleData = SimpleShiftData(
-            shiftType: "주간", // 기본값
+            shiftType: getCurrentUserShiftType(for: Date(), shiftOffset: shiftOffset).rawValue, // 실제 오늘 근무
             team: settings.team,
             patternType: getPatternDisplayName(settings.shiftPatternType),
             shiftOffset: shiftOffset
@@ -732,7 +746,24 @@ class ShiftManager: ObservableObject {
         
         if let simpleEncoded = try? JSONEncoder().encode(simpleData) {
             userDefaults.set(simpleEncoded, forKey: "simpleShiftData")
-            print("Simple shift data saved: \(simpleData.patternType), team: \(simpleData.team), offset: \(simpleData.shiftOffset)")
+            print("Simple shift data saved: \(simpleData.patternType), team: \(simpleData.team), shift: \(simpleData.shiftType), offset: \(simpleData.shiftOffset)")
+            if let jsonString = String(data: simpleEncoded, encoding: .utf8) {
+                print("📄 App Debug - Saved Simple JSON: \(jsonString)")
+            }
+        } else {
+            print("Error: Failed to encode simple shift data")
+        }
+
+        // 일주일 스케줄 데이터 저장
+        let weekData = generateWeekScheduleData()
+        if let weekEncoded = try? JSONEncoder().encode(weekData) {
+            userDefaults.set(weekEncoded, forKey: "weekScheduleData")
+            print("Week schedule data saved: team=\(weekData.team), pattern=\(weekData.patternType), offset=\(weekData.shiftOffset)")
+            if let jsonString = String(data: weekEncoded, encoding: .utf8) {
+                print("📄 App Debug - Saved Week JSON: \(jsonString)")
+            }
+        } else {
+            print("Error: Failed to encode week schedule data")
         }
         
         // 위젯 타임라인 새로고침 (즉시 + 지연)
@@ -1051,6 +1082,46 @@ class ShiftManager: ObservableObject {
         let result = getShiftTypeForTeam(team: currentTeam, date: date, shiftOffset: shiftOffset) ?? .휴무 // 근무 없을 경우 휴무 반환
         print("📱 App Debug - getCurrentUserShiftType result: \(result.rawValue)")
         return result
+    }
+    
+    // 일주일 스케줄 데이터 생성
+    func generateWeekScheduleData() -> WeekScheduleData {
+        let calendar = Calendar.current
+        let today = Date()
+        
+        // 이번 주의 시작일 (월요일) 계산
+        let weekday = calendar.component(.weekday, from: today)
+        let daysFromMonday = weekday == 1 ? 6 : weekday - 2
+        let weekStart = calendar.date(byAdding: .day, value: -daysFromMonday, to: today) ?? today
+        
+        let dayNames = ["월", "화", "수", "목", "금", "토", "일"]
+        var weekData: [DayScheduleData] = []
+        
+        for i in 0..<7 {
+            let date = calendar.date(byAdding: .day, value: i, to: weekStart) ?? today
+            let dayName = dayNames[i]
+            
+            // 날짜 포맷팅
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "M/d"
+            let dateString = dateFormatter.string(from: date)
+            
+            // 해당 날짜의 근무 타입 가져오기
+            let shiftType = getCurrentUserShiftType(for: date, shiftOffset: shiftOffset)
+            
+            weekData.append(DayScheduleData(
+                day: dayName,
+                shiftType: shiftType.rawValue,
+                date: dateString
+            ))
+        }
+        
+        return WeekScheduleData(
+            weekData: weekData,
+            team: settings.team,
+            patternType: getPatternDisplayName(settings.shiftPatternType),
+            shiftOffset: shiftOffset
+        )
     }
 }
 

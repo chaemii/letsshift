@@ -305,6 +305,10 @@ struct SettingsView: View {
                             Button(action: {
                                 print("🔄 Widget refresh button tapped")
                                 
+                                // 데이터 강제 저장
+                                shiftManager.saveData()
+                                print("✅ Data saved via widget refresh button")
+                                
                                 // App Group UserDefaults 동기화 강제
                                 let appGroupDefaults = UserDefaults(suiteName: "group.com.chaeeun.ShiftCalendarApp")!
                                 appGroupDefaults.synchronize()

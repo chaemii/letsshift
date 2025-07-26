@@ -65,6 +65,12 @@ struct MainTabView: View {
                 .padding(.bottom, -20)
             }
         }
+        .onAppear {
+            // 앱 시작 시 데이터 강제 저장
+            print("🔄 MainTabView onAppear - 강제 데이터 저장 시작")
+            shiftManager.saveData()
+            print("✅ MainTabView onAppear - 강제 데이터 저장 완료")
+        }
     }
     
     private func getIconName(for index: Int) -> String {
