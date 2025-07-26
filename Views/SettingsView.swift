@@ -22,7 +22,7 @@ struct SettingsView: View {
                         // 근무 설정 섹션
                         VStack(alignment: .leading, spacing: 8) {
                             // 섹션 헤더
-                            HStack {
+                    HStack {
                                 Image(systemName: "calendar.badge.clock")
                                     .foregroundColor(Color(hex: "1A1A1A"))
                                     .font(.title3)
@@ -41,31 +41,31 @@ struct SettingsView: View {
                                         .frame(width: 24)
                                     
                                     VStack(alignment: .leading, spacing: 2) {
-                                        Text("근무 패턴")
+                        Text("근무 패턴")
                                             .font(.subheadline)
                                             .fontWeight(.medium)
                                             .foregroundColor(.charcoalBlack)
-                                        Text(shiftManager.settings.shiftPatternType.displayName)
+                        Text(shiftManager.settings.shiftPatternType.displayName)
                                             .font(.caption)
                                             .foregroundColor(.charcoalBlack.opacity(0.7))
-                                    }
-                                    
-                                    Spacer()
-                                    
+                    }
+                    
+                        Spacer()
+                    
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
                                         .foregroundColor(.charcoalBlack.opacity(0.5))
-                                }
+                    }
                                 .padding(20)
                                 .background(Color.white)
                                 .cornerRadius(16)
                                 .shadow(color: Color.black.opacity(0.05), radius: 2, x: 0, y: 1)
-                            }
+                }
                             .buttonStyle(PlainButtonStyle())
-                            
+                
                             // 소속 팀 카드
                             Button(action: { showingTeamSelection = true }) {
-                                HStack {
+                        HStack {
                                     Image(systemName: "person.2")
                                         .foregroundColor(Color(hex: "1A1A1A"))
                                         .font(.title3)
@@ -80,9 +80,9 @@ struct SettingsView: View {
                                             .font(.caption)
                                             .foregroundColor(.charcoalBlack.opacity(0.7))
                                     }
-                                    
-                                    Spacer()
-                                    
+                            
+                            Spacer()
+                            
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
                                         .foregroundColor(.charcoalBlack.opacity(0.5))
@@ -97,7 +97,7 @@ struct SettingsView: View {
                             // 커스텀 패턴 편집 버튼 (커스텀 패턴일 때만)
                             if shiftManager.settings.shiftPatternType == .custom {
                                 Button(action: { showingCustomPatternEdit = true }) {
-                                    HStack {
+                    HStack {
                                         Image(systemName: "pencil.circle")
                                             .foregroundColor(Color(hex: "1A1A1A"))
                                             .font(.title3)
@@ -108,7 +108,7 @@ struct SettingsView: View {
                                             .fontWeight(.medium)
                                             .foregroundColor(Color(hex: "1A1A1A"))
                                         
-                                        Spacer()
+                        Spacer()
                                     }
                                     .padding(20)
                                     .background(Color(hex: "C7D6DB"))
@@ -123,7 +123,7 @@ struct SettingsView: View {
                         if shiftManager.settings.shiftPatternType != .custom {
                             VStack(alignment: .leading, spacing: 8) {
                                 // 섹션 헤더
-                                HStack {
+                    HStack {
                                     Image(systemName: "paintbrush")
                                         .foregroundColor(Color(hex: "1A1A1A"))
                                         .font(.title3)
@@ -139,7 +139,7 @@ struct SettingsView: View {
                                         selectedShiftType = shiftType
                                         showingColorPicker = true
                                     }) {
-                                        HStack {
+                    HStack {
                                             Circle()
                                                 .fill(shiftManager.getColor(for: shiftType))
                                                 .frame(width: 24, height: 24)
@@ -264,15 +264,15 @@ struct SettingsView: View {
                                     .font(.title3)
                                 Text("기타")
                                     .font(.headline)
-                                    .fontWeight(.bold)
-                                    .foregroundColor(.charcoalBlack)
+                        .fontWeight(.bold)
+                        .foregroundColor(.charcoalBlack)
                             }
                             
 
                             
                             // 근무표 공유하기 카드
                             Button(action: { shareSchedule() }) {
-                                HStack {
+                        HStack {
                                     Image(systemName: "square.and.arrow.up")
                                         .foregroundColor(Color(hex: "1A1A1A"))
                                         .font(.title3)
@@ -284,12 +284,12 @@ struct SettingsView: View {
                                             .fontWeight(.medium)
                                             .foregroundColor(.charcoalBlack)
                                         Text("근무표를 링크로 공유")
-                                            .font(.caption)
-                                            .foregroundColor(.charcoalBlack.opacity(0.7))
-                                    }
-                                    
-                                    Spacer()
-                                    
+                                    .font(.caption)
+                                    .foregroundColor(.charcoalBlack.opacity(0.7))
+                            }
+                            
+                            Spacer()
+                            
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
                                         .foregroundColor(.charcoalBlack.opacity(0.5))
@@ -298,8 +298,8 @@ struct SettingsView: View {
                                 .background(Color.white)
                                 .cornerRadius(16)
                                 .shadow(color: Color.black.opacity(0.05), radius: 2, x: 0, y: 1)
-                            }
-                            .buttonStyle(PlainButtonStyle())
+                    }
+                    .buttonStyle(PlainButtonStyle())
                             
                             // 위젯 새로고침 카드
                             Button(action: {
@@ -348,7 +348,7 @@ struct SettingsView: View {
                                         Text("위젯 새로고침")
                                             .font(.subheadline)
                                             .fontWeight(.medium)
-                                            .foregroundColor(.charcoalBlack)
+                    .foregroundColor(.charcoalBlack)
                                         Text("위젯 업데이트")
                                             .font(.caption)
                                             .foregroundColor(.charcoalBlack.opacity(0.7))
@@ -371,10 +371,10 @@ struct SettingsView: View {
                             
                             // 데이터 초기화 카드
                             Button(action: { showingDataReset = true }) {
-                                HStack {
+                HStack {
                                     Image(systemName: "trash.circle")
                                         .foregroundColor(.red)
-                                        .font(.title3)
+                            .font(.title3)
                                         .frame(width: 24)
                                     
                                     VStack(alignment: .leading, spacing: 2) {
@@ -383,14 +383,14 @@ struct SettingsView: View {
                                             .fontWeight(.medium)
                                             .foregroundColor(.charcoalBlack)
                                         Text("모든 데이터 삭제")
-                                            .font(.caption)
-                                            .foregroundColor(.charcoalBlack.opacity(0.7))
-                                    }
-                                    
-                                    Spacer()
-                                    
+                            .font(.caption)
+                            .foregroundColor(.charcoalBlack.opacity(0.7))
+                    }
+                    
+                    Spacer()
+                    
                                     Image(systemName: "chevron.right")
-                                        .font(.caption)
+                        .font(.caption)
                                         .foregroundColor(.charcoalBlack.opacity(0.5))
                                 }
                                 .padding(20)
@@ -521,7 +521,7 @@ struct SalaryInfoRow: View {
             Text(title)
                 .font(.subheadline)
                 .fontWeight(.medium)
-                .foregroundColor(.charcoalBlack)
+                    .foregroundColor(.charcoalBlack)
             
             Spacer()
             
@@ -689,7 +689,7 @@ struct ShiftPatternSelectionSheet: View {
             showingCustomPatternEdit = true
             dismiss()
         } else {
-            currentStep = .team
+        currentStep = .team
         }
     }
     

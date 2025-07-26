@@ -3,7 +3,7 @@ import SwiftUI
 struct OnboardingView: View {
     @EnvironmentObject var shiftManager: ShiftManager
     @State private var currentStep = 0
-    @State private var showingTeamSelection = false
+
     @State private var showingCustomPatternEdit = false
     
     var body: some View {
@@ -35,9 +35,7 @@ struct OnboardingView: View {
             .background(Color(hex: "EFF0F2"))
             .navigationBarHidden(true)
         }
-        .sheet(isPresented: $showingTeamSelection) {
-            teamSelectionSheet
-        }
+
         .sheet(isPresented: $showingCustomPatternEdit) {
             CustomPatternEditView()
         }
@@ -274,7 +272,7 @@ struct OnboardingView: View {
     
     // MARK: - 소속 팀 섹션
     private var teamSection: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: 16) {
             // 섹션 헤더
             HStack {
                 Image(systemName: "person.3")
@@ -286,34 +284,34 @@ struct OnboardingView: View {
                     .foregroundColor(.charcoalBlack)
             }
             
-            // 소속 팀 카드
-            Button(action: {
-                showingTeamSelection = true
-            }) {
-                HStack {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text("소속 팀")
-                            .font(.subheadline)
-                            .foregroundColor(.charcoalBlack.opacity(0.7))
-                        
-                        Text(shiftManager.settings.team.isEmpty ? "팀을 선택해주세요" : shiftManager.settings.team)
-                            .font(.body)
-                            .fontWeight(.medium)
-                            .foregroundColor(.charcoalBlack)
+            // 팀 선택 옵션들
+            VStack(spacing: 12) {
+                ForEach(["1조", "2조", "3조", "4조", "5조"], id: \.self) { team in
+                    Button(action: {
+                        shiftManager.settings.team = team
+                    }) {
+                        HStack {
+                            Text(team)
+                                .font(.body)
+                                .fontWeight(.medium)
+                                .foregroundColor(.charcoalBlack)
+                            Spacer()
+                            if shiftManager.settings.team == team {
+                                Image(systemName: "checkmark.circle.fill")
+                                    .foregroundColor(.charcoalBlack)
+                            }
+                        }
+                        .padding(16)
+                        .background(shiftManager.settings.team == team ? Color.mainColor : Color.white)
+                        .cornerRadius(12)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 12)
+                                .stroke(shiftManager.settings.team == team ? Color.charcoalBlack : Color.clear, lineWidth: 2)
+                        )
                     }
-                    
-                    Spacer()
-                    
-                    Image(systemName: "chevron.right")
-                        .foregroundColor(.charcoalBlack.opacity(0.5))
-                        .font(.system(size: 14, weight: .medium))
+                    .buttonStyle(PlainButtonStyle())
                 }
-                .padding(20)
-                .background(Color.white)
-                .cornerRadius(16)
-                .shadow(color: Color.black.opacity(0.05), radius: 2, x: 0, y: 1)
             }
-            .buttonStyle(PlainButtonStyle())
         }
     }
     
@@ -359,29 +357,7 @@ struct OnboardingView: View {
         .padding(.top, 20)
     }
     
-    // MARK: - 팀 선택 시트
-    private var teamSelectionSheet: some View {
-        VStack {
-            Text("소속 팀 선택")
-                .font(.title2)
-                .fontWeight(.bold)
-                .padding()
-            
-            VStack(spacing: 15) {
-                ForEach(["1조", "2조", "3조", "4조", "5조"], id: \.self) { team in
-                    Button(team) {
-                        shiftManager.settings.team = team
-                        showingTeamSelection = false
-                    }
-                    .buttonStyle(PrimaryButtonStyle())
-                }
-            }
-            .padding()
-            
-            Spacer()
-        }
-        .background(Color.backgroundLight)
-    }
+
 }
 
 struct PrimaryButtonStyle: ButtonStyle {
