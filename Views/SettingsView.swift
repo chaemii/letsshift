@@ -1,4 +1,5 @@
 import SwiftUI
+import WidgetKit
 
 struct SettingsView: View {
     @EnvironmentObject var shiftManager: ShiftManager
@@ -10,6 +11,8 @@ struct SettingsView: View {
     @State private var showingCustomPatternEdit = false
     @State private var showingDataExport = false
     @State private var showingDataReset = false
+    @State private var showingCustomPatternView = false
+
     
     var body: some View {
         NavigationView {
@@ -298,6 +301,70 @@ struct SettingsView: View {
                             }
                             .buttonStyle(PlainButtonStyle())
                             
+                            // 위젯 새로고침 카드
+                            Button(action: {
+                                print("🔄 Widget refresh button tapped")
+                                
+                                // App Group UserDefaults 동기화 강제
+                                let appGroupDefaults = UserDefaults(suiteName: "group.com.chaeeun.ShiftCalendarApp")!
+                                appGroupDefaults.synchronize()
+                                
+                                // 일반 UserDefaults 동기화 강제
+                                UserDefaults.standard.synchronize()
+                                
+                                // 위젯 타임라인 새로고침 (여러 번 호출)
+                                WidgetCenter.shared.reloadAllTimelines()
+                                print("✅ WidgetCenter.reloadAllTimelines() called")
+                                
+                                // 지연 후 다시 새로고침
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                    WidgetCenter.shared.reloadAllTimelines()
+                                    print("✅ Delayed widget refresh completed")
+                                }
+                                
+                                // 추가로 백그라운드에서도 새로고침
+                                DispatchQueue.global(qos: .background).async {
+                                    WidgetCenter.shared.reloadAllTimelines()
+                                    print("✅ Background widget refresh completed")
+                                    
+                                    // 백그라운드에서도 지연 후 다시 시도
+                                    DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + 1.0) {
+                                        WidgetCenter.shared.reloadAllTimelines()
+                                        print("✅ Background delayed widget refresh completed")
+                                    }
+                                }
+                            }) {
+                                HStack {
+                                    Image(systemName: "arrow.clockwise.circle")
+                                        .foregroundColor(Color(hex: "1A1A1A"))
+                                        .font(.title3)
+                                        .frame(width: 24)
+                                    
+                                    VStack(alignment: .leading, spacing: 2) {
+                                        Text("위젯 새로고침")
+                                            .font(.subheadline)
+                                            .fontWeight(.medium)
+                                            .foregroundColor(.charcoalBlack)
+                                        Text("위젯 업데이트")
+                                            .font(.caption)
+                                            .foregroundColor(.charcoalBlack.opacity(0.7))
+                                    }
+                                    
+                                    Spacer()
+                                    
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption)
+                                        .foregroundColor(.charcoalBlack.opacity(0.5))
+                                }
+                                .padding(20)
+                                .background(Color.white)
+                                .cornerRadius(16)
+                                .shadow(color: Color.black.opacity(0.05), radius: 2, x: 0, y: 1)
+                            }
+                            .buttonStyle(PlainButtonStyle())
+                            
+                            
+                            
                             // 데이터 초기화 카드
                             Button(action: { showingDataReset = true }) {
                                 HStack {
@@ -361,6 +428,10 @@ struct SettingsView: View {
         .sheet(isPresented: $showingDataReset) {
             DataResetView()
         }
+        .sheet(isPresented: $showingCustomPatternView) {
+            CustomPatternEditView()
+        }
+
 
     }
     
@@ -1433,3 +1504,4 @@ struct DataResetView: View {
         }
     }
 }
+

@@ -1,0 +1,482 @@
+//
+//  TodayShiftWidget.swift
+//  ShiftCalendarWidgetExtension
+//
+//  Created by cham on 7/24/25.
+//
+
+import WidgetKit
+import SwiftUI
+
+// MARK: - 오늘 스케줄 위젯
+struct TodayShiftProvider: TimelineProvider {
+    typealias Entry = TodayShiftEntry
+    func placeholder(in context: Context) -> TodayShiftEntry {
+        TodayShiftEntry(date: Date(), todayShift: .주간, isToday: true)
+    }
+
+    func getSnapshot(in context: Context, completion: @escaping (TodayShiftEntry) -> ()) {
+        let entry = TodayShiftEntry(date: Date(), todayShift: getTodayShift(), isToday: true)
+        completion(entry)
+    }
+
+    func getTimeline(in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
+        let currentDate = Date()
+        let calendar = Calendar.current
+        
+        // 현재 시간의 엔트리 생성
+        let currentEntry = TodayShiftEntry(date: currentDate, todayShift: getTodayShift(), isToday: true)
+        
+        // 다음 업데이트 시간들 (5초마다, 최대 30개)
+        var entries: [TodayShiftEntry] = [currentEntry]
+        
+        for i in 1..<30 {
+            let entryDate = calendar.date(byAdding: .second, value: i * 5, to: currentDate) ?? currentDate
+            let entry = TodayShiftEntry(date: entryDate, todayShift: getTodayShift(), isToday: true)
+            entries.append(entry)
+        }
+        
+        // 5초마다 업데이트 (더 빠른 반응을 위해)
+        let fiveSecondsLater = calendar.date(byAdding: .second, value: 5, to: currentDate)!
+        
+        let timeline = Timeline(entries: entries, policy: .after(fiveSecondsLater))
+        completion(timeline)
+    }
+    
+        private func getTodayShift() -> ShiftType {
+        print("🔵 === Widget getTodayShift START ===")
+        print("🔵 Current time: \(Date())")
+        
+        // 앱의 실제 데이터에서 오늘 근무 가져오기
+        let userDefaults = UserDefaults(suiteName: "group.com.chaeeun.ShiftCalendarApp")!
+        let schedulesKey = "shiftSchedules"
+        
+        // UserDefaults 동기화 강제
+        userDefaults.synchronize()
+        UserDefaults.standard.synchronize()
+        
+        // App Group UserDefaults도 강제 동기화
+        if let appGroupDefaults = UserDefaults(suiteName: "group.com.chaeeun.ShiftCalendarApp") {
+            appGroupDefaults.synchronize()
+        }
+        
+        // 스케줄 데이터 읽기
+        if let data = userDefaults.data(forKey: schedulesKey) {
+            print("📅 Widget Debug - Found schedules data: \(data.count) bytes")
+            
+            // 읽어온 JSON 데이터 확인
+            if let jsonString = String(data: data, encoding: .utf8) {
+                print("📄 Widget Debug - Read JSON: \(jsonString)")
+            }
+            
+            if let schedules = try? JSONDecoder().decode([ShiftScheduleData].self, from: data) {
+                print("✅ Widget Debug - Successfully decoded \(schedules.count) schedules")
+
+                let today = Date()
+                let calendar = Calendar.current
+
+                // 오늘 날짜의 스케줄 찾기
+                if let schedule = schedules.first(where: {
+                    calendar.isDate($0.date, inSameDayAs: today)
+                }) {
+                    print("📅 Widget Debug - Found today's schedule: \(schedule.shiftType.rawValue), isVacation: \(schedule.isVacation), isVolunteerWork: \(schedule.isVolunteerWork)")
+
+                    // 휴가인 경우
+                    if schedule.isVacation {
+                        print("📅 Widget Debug - Returning 휴무 (vacation)")
+                        print("🔵 === Widget getTodayShift END (휴무) ===")
+                        return .휴무
+                    }
+                    // 자원근무인 경우
+                    if schedule.isVolunteerWork {
+                        print("📅 Widget Debug - Returning 당직 (volunteer work)")
+                        print("🔵 === Widget getTodayShift END (당직) ===")
+                        return .당직
+                    }
+                    print("📅 Widget Debug - Returning schedule shift: \(schedule.shiftType.rawValue)")
+                    print("🔵 === Widget getTodayShift END (schedule: \(schedule.shiftType.rawValue)) ===")
+                    return schedule.shiftType
+                } else {
+                    print("📅 Widget Debug - No schedule found for today (\(today))")
+                }
+            } else {
+                print("❌ Widget Debug - Failed to decode schedules")
+            }
+        } else {
+            print("📅 Widget Debug - No schedules data found")
+        }
+
+        // 스케줄이 없는 경우, 앱의 패턴에 따라 오늘 근무 계산
+        print("📅 Widget Debug - Falling back to pattern calculation")
+        let patternResult = calculateTodayShiftFromPattern()
+        print("📅 Widget Debug - Pattern calculation result: \(patternResult.rawValue)")
+        print("🔵 === Widget getTodayShift END (pattern: \(patternResult.rawValue)) ===")
+        return patternResult
+    }
+    
+    private func calculateTodayShiftFromPattern() -> ShiftType {
+        let userDefaults = UserDefaults(suiteName: "group.com.chaeeun.ShiftCalendarApp")!
+        let settingsKey = "shiftSettings"
+        
+        print("⚙️ Widget Debug - Starting pattern calculation...")
+        
+        if let data = userDefaults.data(forKey: settingsKey) {
+            print("⚙️ Widget Debug - Found settings data: \(data.count) bytes")
+            if let settings = try? JSONDecoder().decode(ShiftSettingsData.self, from: data) {
+                print("⚙️ Widget Debug - Pattern: \(settings.shiftPatternType.rawValue), Team: \(settings.team)")
+                print("⚙️ Widget Debug - Custom pattern exists: \(settings.customPattern != nil)")
+                if let customPattern = settings.customPattern {
+                    print("⚙️ Widget Debug - Custom pattern: \(customPattern.dayShifts.map { $0.rawValue })")
+                    print("⚙️ Widget Debug - Custom pattern start date: \(customPattern.startDate)")
+                }
+                
+                // 현재 설정된 패턴에 따라 오늘 근무 계산
+                let today = Date()
+                let calendar = Calendar.current
+                
+                print("⚙️ Widget Debug - Today's date: \(today)")
+                
+                // 패턴 타입에 따른 근무 계산
+                let patternType = settings.shiftPatternType.rawValue
+                let team = settings.team
+                let calculatedShift = calculateShiftFromPattern(patternType: patternType, date: today, team: team)
+                print("⚙️ Widget Debug - Calculated shift: \(calculatedShift.rawValue)")
+                return calculatedShift
+            } else {
+                print("❌ Widget Debug - Failed to decode settings")
+            }
+        } else {
+            print("⚙️ Widget Debug - No settings data found")
+        }
+        
+        print("❌ Widget Debug - Returning default: 휴무")
+        return .휴무
+    }
+    
+    private func calculateShiftFromPattern(patternType: String, date: Date, team: String) -> ShiftType {
+        let calendar = Calendar.current
+        
+        // 팀 번호 추출 (예: "1조" -> 1)
+        let teamNumber = Int(team.replacingOccurrences(of: "조", with: "")) ?? 1
+        
+        // shiftOffset 가져오기
+        let userDefaults = UserDefaults(suiteName: "group.com.chaeeun.ShiftCalendarApp")!
+        let shiftOffset = userDefaults.integer(forKey: "shiftOffset")
+        
+        print("🔧 Widget Debug - Pattern calculation: patternType=\(patternType), team=\(team), teamNumber=\(teamNumber), shiftOffset=\(shiftOffset)")
+        
+        // 메인 앱과 동일한 로직으로 계산
+        switch patternType {
+        case "twoShift":
+            // 2교대: 주간-야간
+            let pattern = [ShiftType.주간, ShiftType.야간]
+            let dayOfYear = calendar.ordinality(of: .day, in: .year, for: date) ?? 1
+            let adjustedDayOfYear = dayOfYear + shiftOffset
+            let teamOffset = (teamNumber - 1)
+            let adjustedDay = (adjustedDayOfYear + teamOffset) % pattern.count
+            let positiveIndex = adjustedDay >= 0 ? adjustedDay : pattern.count + adjustedDay
+            let result = pattern[positiveIndex % pattern.count]
+            print("🔧 Widget Debug - TwoShift: dayOfYear=\(dayOfYear), adjustedDayOfYear=\(adjustedDayOfYear), teamOffset=\(teamOffset), adjustedDay=\(adjustedDay), positiveIndex=\(positiveIndex), result=\(result.rawValue)")
+            return result
+            
+        case "threeShift":
+            // 3교대: 주간-야간-비번
+            let pattern = [ShiftType.주간, ShiftType.야간, ShiftType.비번]
+            let dayOfYear = calendar.ordinality(of: .day, in: .year, for: date) ?? 1
+            let adjustedDayOfYear = dayOfYear + shiftOffset
+            let teamOffset = (teamNumber - 1)
+            let adjustedDay = (adjustedDayOfYear + teamOffset) % pattern.count
+            let positiveIndex = adjustedDay >= 0 ? adjustedDay : pattern.count + adjustedDay
+            let result = pattern[positiveIndex % pattern.count]
+            print("🔧 Widget Debug - ThreeShift: dayOfYear=\(dayOfYear), adjustedDayOfYear=\(adjustedDayOfYear), teamOffset=\(teamOffset), adjustedDay=\(adjustedDay), positiveIndex=\(positiveIndex), result=\(result.rawValue)")
+            return result
+            
+        case "threeTeamTwoShift":
+            // 3조 2교대: 주간-야간-휴무
+            let pattern = [ShiftType.주간, ShiftType.야간, ShiftType.휴무]
+            let dayOfYear = calendar.ordinality(of: .day, in: .year, for: date) ?? 1
+            let adjustedDayOfYear = dayOfYear + shiftOffset
+            let teamOffset = (teamNumber - 1)
+            let adjustedDay = (adjustedDayOfYear + teamOffset) % pattern.count
+            let positiveIndex = adjustedDay >= 0 ? adjustedDay : pattern.count + adjustedDay
+            let result = pattern[positiveIndex % pattern.count]
+            print("🔧 Widget Debug - ThreeTeamTwoShift: dayOfYear=\(dayOfYear), adjustedDayOfYear=\(adjustedDayOfYear), teamOffset=\(teamOffset), adjustedDay=\(adjustedDay), positiveIndex=\(positiveIndex), result=\(result.rawValue)")
+            return result
+            
+        case "fourTeamTwoShift":
+            // 4조 2교대: 주간-야간-비번-휴무
+            let pattern = [ShiftType.주간, ShiftType.야간, ShiftType.비번, ShiftType.휴무]
+            let dayOfYear = calendar.ordinality(of: .day, in: .year, for: date) ?? 1
+            let adjustedDayOfYear = dayOfYear + shiftOffset
+            let teamOffset = (teamNumber - 1)
+            let adjustedDay = (adjustedDayOfYear + teamOffset) % pattern.count
+            let positiveIndex = adjustedDay >= 0 ? adjustedDay : pattern.count + adjustedDay
+            let result = pattern[positiveIndex % pattern.count]
+            print("🔧 Widget Debug - FourTeamTwoShift: dayOfYear=\(dayOfYear), adjustedDayOfYear=\(adjustedDayOfYear), teamOffset=\(teamOffset), adjustedDay=\(adjustedDay), positiveIndex=\(positiveIndex), result=\(result.rawValue)")
+            return result
+            
+        case "fourTeamThreeShift":
+            // 4조 3교대: 주간-오후-야간-휴무
+            let pattern = [ShiftType.주간, ShiftType.오후, ShiftType.야간, ShiftType.휴무]
+            let dayOfYear = calendar.ordinality(of: .day, in: .year, for: date) ?? 1
+            let adjustedDayOfYear = dayOfYear + shiftOffset
+            let teamOffset = (teamNumber - 1)
+            let adjustedDay = (adjustedDayOfYear + teamOffset) % pattern.count
+            let positiveIndex = adjustedDay >= 0 ? adjustedDay : pattern.count + adjustedDay
+            let result = pattern[positiveIndex % pattern.count]
+            print("🔧 Widget Debug - FourTeamThreeShift: dayOfYear=\(dayOfYear), adjustedDayOfYear=\(adjustedDayOfYear), teamOffset=\(teamOffset), adjustedDay=\(adjustedDay), positiveIndex=\(positiveIndex), result=\(result.rawValue)")
+            return result
+            
+        case "fiveTeamThreeShift":
+            // 5조 3교대: 주간-야간-심야-비번-휴무
+            let pattern = [ShiftType.주간, ShiftType.야간, ShiftType.심야, ShiftType.비번, ShiftType.휴무]
+            let dayOfYear = calendar.ordinality(of: .day, in: .year, for: date) ?? 1
+            let adjustedDayOfYear = dayOfYear + shiftOffset
+            let teamOffset = (teamNumber - 1)
+            let adjustedDay = (adjustedDayOfYear + teamOffset) % pattern.count
+            let positiveIndex = adjustedDay >= 0 ? adjustedDay : pattern.count + adjustedDay
+            let result = pattern[positiveIndex % pattern.count]
+            print("🔧 Widget Debug - FiveTeamThreeShift: dayOfYear=\(dayOfYear), adjustedDayOfYear=\(adjustedDayOfYear), teamOffset=\(teamOffset), adjustedDay=\(adjustedDay), positiveIndex=\(positiveIndex), result=\(result.rawValue)")
+            return result
+            
+        case "custom":
+            // 커스텀 패턴 처리
+            return calculateCustomPatternShift(date: date, team: team)
+            
+        default:
+            return .휴무
+        }
+    }
+    
+    private func calculateCustomPatternShift(date: Date, team: String) -> ShiftType {
+        let userDefaults = UserDefaults(suiteName: "group.com.chaeeun.ShiftCalendarApp")!
+        let settingsKey = "shiftSettings"
+        
+        guard let data = userDefaults.data(forKey: settingsKey),
+              let settings = try? JSONDecoder().decode(ShiftSettingsData.self, from: data),
+              let customPattern = settings.customPattern else {
+            print("❌ Widget Debug - Custom pattern not found")
+            return .휴무
+        }
+        
+        print("🔧 Widget Debug - Custom pattern found: \(customPattern.dayShifts)")
+        
+        let calendar = Calendar.current
+        let startOfDay = calendar.startOfDay(for: customPattern.startDate)
+        let targetStartOfDay = calendar.startOfDay(for: date)
+        let daysFromStart = calendar.dateComponents([.day], from: startOfDay, to: targetStartOfDay).day ?? 0
+        
+        // 시작일 이전에는 휴무 반환
+        if daysFromStart < 0 {
+            print("🔧 Widget Debug - Before start date, returning 휴무")
+            return .휴무
+        }
+        
+        let shiftPattern = customPattern.dayShifts
+        let teamNumber = Int(team.replacingOccurrences(of: "조", with: "")) ?? 1
+        let shiftOffset = userDefaults.integer(forKey: "shiftOffset")
+        
+        // 팀별로 근무가 하나씩 밀려서 엇갈리게 구성
+        let teamOffset = (teamNumber - 1)
+        let adjustedDay = daysFromStart + teamOffset + shiftOffset
+        let patternIndex = adjustedDay % shiftPattern.count
+        let positiveIndex = patternIndex >= 0 ? patternIndex : shiftPattern.count + patternIndex
+        
+        print("🔧 Widget Debug - Custom pattern calculation: daysFromStart=\(daysFromStart), teamOffset=\(teamOffset), shiftOffset=\(shiftOffset), adjustedDay=\(adjustedDay), patternIndex=\(patternIndex), positiveIndex=\(positiveIndex)")
+        
+        return shiftPattern[positiveIndex % shiftPattern.count]
+    }
+}
+
+struct TodayShiftEntry: TimelineEntry {
+    let date: Date
+    let todayShift: ShiftType
+    let isToday: Bool
+}
+
+
+
+struct TodayShiftWidgetEntryView: View {
+    var entry: TodayShiftProvider.Entry
+    @State private var isRefreshing = false
+
+    var body: some View {
+        VStack(spacing: 6) {
+            // 상단에 작은 그레이 글씨로 '오늘의 근무' 표시와 새로고침 아이콘
+            HStack {
+                Text("오늘의 근무")
+                    .font(.caption2)
+                    .foregroundColor(.secondary)
+                
+                Spacer()
+                
+                Image(systemName: "arrow.clockwise")
+                    .font(.caption2)
+                    .foregroundColor(.secondary.opacity(0.6))
+            }
+            
+            // 날짜와 요일 표시
+            HStack {
+                Text(formatDate(entry.date))
+                    .font(.caption)
+                    .fontWeight(.medium)
+                    .foregroundColor(.primary)
+                
+                Spacer()
+                
+                Text(formatWeekday(entry.date))
+                    .font(.caption)
+                    .fontWeight(.medium)
+                    .foregroundColor(.secondary)
+            }
+            
+            Spacer()
+            
+            // 근무 요소 컴포넌트
+            Group {
+                if entry.todayShift == .휴무 && getIsVacation() {
+                    // 휴가인 경우
+                    VStack(spacing: 4) {
+                        Circle()
+                            .fill(Color.pointColor.opacity(0.2))
+                            .frame(width: 70, height: 70)
+                            .overlay(
+                                Text("휴가")
+                                    .font(.headline)
+                                    .fontWeight(.bold)
+                                    .foregroundColor(.pointColor)
+                            )
+                    }
+                } else if entry.todayShift == .당직 && getIsVolunteerWork() {
+                    // 자원근무인 경우
+                    VStack(spacing: 4) {
+                        Circle()
+                            .fill(Color.pointColor.opacity(0.2))
+                            .frame(width: 70, height: 70)
+                            .overlay(
+                                Text("자원근무")
+                                    .font(.headline)
+                                    .fontWeight(.bold)
+                                    .foregroundColor(.pointColor)
+                            )
+                    }
+                } else {
+                    // 일반 근무인 경우
+                    Circle()
+                        .fill(entry.todayShift.color)
+                        .frame(width: 70, height: 70)
+                        .overlay(
+                            Text(entry.todayShift.rawValue)
+                                .font(.headline)
+                                .fontWeight(.bold)
+                                .foregroundColor(.white)
+                        )
+                }
+            }
+            
+            Spacer()
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 8)
+        .onAppear {
+            // 디버그: 위젯이 로드될 때 콘솔에 정보 출력
+            print("Widget loaded - Today's shift: \(entry.todayShift.rawValue)")
+        }
+        .onTapGesture {
+            // 위젯 탭 시 새로고침
+            print("🔄 Widget tapped - starting refresh")
+            isRefreshing = true
+            
+            // UserDefaults 동기화
+            let userDefaults = UserDefaults(suiteName: "group.com.chaeeun.ShiftCalendarApp")!
+            userDefaults.synchronize()
+            UserDefaults.standard.synchronize()
+            
+            // 위젯 타임라인 새로고침
+            WidgetCenter.shared.reloadAllTimelines()
+            print("✅ Widget timeline reloaded from widget tap")
+            
+            // 1초 후 새로고침 상태 해제
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                isRefreshing = false
+                print("🔄 Widget refresh animation completed")
+            }
+        }
+        .scaleEffect(isRefreshing ? 0.95 : 1.0)
+        .animation(.easeInOut(duration: 0.2), value: isRefreshing)
+    }
+    
+    private func getIsVacation() -> Bool {
+        let userDefaults = UserDefaults(suiteName: "group.com.chaeeun.ShiftCalendarApp")!
+        let schedulesKey = "shiftSchedules"
+        
+        if let data = userDefaults.data(forKey: schedulesKey),
+           let schedules = try? JSONDecoder().decode([ShiftScheduleData].self, from: data) {
+            
+            let today = Date()
+            if let schedule = schedules.first(where: { 
+                Calendar.current.isDate($0.date, inSameDayAs: today) 
+            }) {
+                return schedule.isVacation
+            }
+        }
+        return false
+    }
+    
+    private func getIsVolunteerWork() -> Bool {
+        let userDefaults = UserDefaults(suiteName: "group.com.chaeeun.ShiftCalendarApp")!
+        let schedulesKey = "shiftSchedules"
+        
+        if let data = userDefaults.data(forKey: schedulesKey),
+           let schedules = try? JSONDecoder().decode([ShiftScheduleData].self, from: data) {
+            
+            let today = Date()
+            if let schedule = schedules.first(where: { 
+                Calendar.current.isDate($0.date, inSameDayAs: today) 
+            }) {
+                return schedule.isVolunteerWork
+            }
+        }
+        return false
+    }
+    
+    private func formatDate(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "M월 d일"
+        formatter.locale = Locale(identifier: "ko_KR")
+        return formatter.string(from: date)
+    }
+    
+    private func formatWeekday(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "E"
+        formatter.locale = Locale(identifier: "ko_KR")
+        return formatter.string(from: date)
+    }
+}
+
+struct TodayShiftWidget: Widget {
+    let kind: String = "TodayShiftWidget"
+
+    var body: some WidgetConfiguration {
+        StaticConfiguration(kind: kind, provider: TodayShiftProvider()) { entry in
+            if #available(iOS 17.0, *) {
+                TodayShiftWidgetEntryView(entry: entry)
+                    .containerBackground(.fill.tertiary, for: .widget)
+            } else {
+                TodayShiftWidgetEntryView(entry: entry)
+                    .padding()
+                    .background()
+            }
+        }
+        .configurationDisplayName("오늘 스케줄")
+        .description("오늘의 근무 스케줄을 확인하세요.")
+        .supportedFamilies([.systemSmall])
+    }
+}
+
+#Preview(as: .systemSmall) {
+    TodayShiftWidget()
+} timeline: {
+    TodayShiftEntry(date: .now, todayShift: .주간, isToday: true)
+} 

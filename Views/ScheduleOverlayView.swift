@@ -187,8 +187,8 @@ struct ScheduleOverlayView: View {
     private func loadCurrentSchedule() {
         let currentTeam = shiftManager.getCurrentTeamNumber()
         
-        // 팀 근무표에서 현재 사용자의 근무 타입 가져오기
-        let teamShiftType = shiftManager.getCurrentUserShiftType(for: selectedDate)
+        // 팀 근무표에서 현재 사용자의 근무 타입 가져오기 (shiftOffset 포함)
+        let teamShiftType = shiftManager.getCurrentUserShiftType(for: selectedDate, shiftOffset: shiftManager.shiftOffset)
         selectedShiftType = teamShiftType
         
         // 추가 정보 (초과근무, 휴가 등)는 기존 스케줄에서 가져오기
@@ -210,7 +210,7 @@ struct ScheduleOverlayView: View {
         let overtime = Int(overtimeHours) ?? 0
         let currentTeam = shiftManager.getCurrentTeamNumber()
         
-        // 팀 근무표와 연동: 현재 사용자의 팀 근무를 업데이트
+        // 팀 근무표와 연동: 현재 사용자의 팀 근무를 업데이트 (shiftOffset 고려)
         shiftManager.updateShiftForTeam(date: selectedDate, team: currentTeam, shiftType: selectedShiftType)
         
         // 추가 정보 (초과근무, 휴가 등)는 기존 방식으로 저장
@@ -232,7 +232,7 @@ struct ScheduleOverlayView: View {
         }
         
         shiftManager.saveData()
-        print("Updated schedule for current user (team \(currentTeam)) on \(selectedDate): \(selectedShiftType.rawValue)")
+        print("📅 ScheduleOverlayView - Updated schedule for current user (team \(currentTeam)) on \(selectedDate): \(selectedShiftType.rawValue) with shiftOffset: \(shiftManager.shiftOffset)")
     }
     
     private func deleteSchedule() {

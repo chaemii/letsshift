@@ -2,6 +2,14 @@ import Foundation
 import SwiftUI
 import WidgetKit
 
+// 간단한 위젯 데이터 구조
+struct SimpleShiftData: Codable {
+    let shiftType: String
+    let team: String
+    let patternType: String
+    let shiftOffset: Int
+}
+
 // MARK: - Color Extensions
 extension Color {
     static let charcoalBlack = Color(hex: "1A1A1A")
@@ -541,6 +549,29 @@ class ShiftManager: ObservableObject {
         }
     }
     
+    private func getPatternDisplayName(_ patternType: ShiftPatternType) -> String {
+        switch patternType {
+        case .twoShift:
+            return "2교대"
+        case .threeShift:
+            return "3교대"
+        case .threeTeamTwoShift:
+            return "3조 2교대"
+        case .fourTeamTwoShift:
+            return "4조 2교대"
+        case .fourTeamThreeShift:
+            return "4조 3교대"
+        case .fiveTeamThreeShift:
+            return "5조 3교대"
+        case .irregular:
+            return "불규칙"
+        case .custom:
+            return "커스텀"
+        case .none:
+            return "없음"
+        }
+    }
+    
     func getColor(for shiftType: ShiftType) -> Color {
         let colorKey = getColorKey(for: shiftType)
         if let hexString = settings.colors[colorKey] {
@@ -637,20 +668,30 @@ class ShiftManager: ObservableObject {
     }
     
     func saveData() {
-        print("=== ShiftManager saveData ===")
-        
+        print("🔴 === ShiftManager saveData START ===")
+        print("🔴 Current time: \(Date())")
+        print("🔴 Schedules count: \(schedules.count)")
+        print("🔴 Settings team: \(settings.team)")
+        print("🔴 Settings pattern: \(settings.shiftPatternType.rawValue)")
+
         print("Saving \(schedules.count) schedules")
         for (index, schedule) in schedules.enumerated() {
             print("Schedule \(index): date=\(schedule.date), shiftType=\(schedule.shiftType.rawValue), isVacation=\(schedule.isVacation), isVolunteerWork=\(schedule.isVolunteerWork)")
         }
-        
+
         if let encoded = try? JSONEncoder().encode(schedules) {
             userDefaults.set(encoded, forKey: schedulesKey)
             print("Schedules saved successfully - \(encoded.count) bytes")
+            print("Schedules saved with key: \(schedulesKey)")
+            
+            // 저장된 JSON 데이터 확인
+            if let jsonString = String(data: encoded, encoding: .utf8) {
+                print("📄 App Debug - Saved JSON: \(jsonString)")
+            }
         } else {
             print("Error: Failed to encode schedules")
         }
-        
+
         print("Settings: team=\(settings.team), patternType=\(settings.shiftPatternType.rawValue)")
         print("Settings custom pattern: \(settings.customPattern != nil)")
         if let customPattern = settings.customPattern {
@@ -659,24 +700,52 @@ class ShiftManager: ObservableObject {
             print("Custom pattern startDate: \(customPattern.startDate)")
             print("Custom pattern cycleLength: \(customPattern.cycleLength)")
         }
-        
+
         if let encoded = try? JSONEncoder().encode(settings) {
             userDefaults.set(encoded, forKey: settingsKey)
             print("Settings saved successfully - \(encoded.count) bytes")
+            print("Settings saved with key: \(settingsKey)")
         } else {
             print("Error: Failed to encode settings")
         }
-        
+
         // shiftOffset 저장
         userDefaults.set(shiftOffset, forKey: shiftOffsetKey)
         print("ShiftOffset saved: \(shiftOffset)")
-        
+        print("ShiftOffset saved with key: \(shiftOffsetKey)")
+
+        // 강제 동기화
         userDefaults.synchronize()
         print("UserDefaults synchronized")
+
+        // App Group UserDefaults도 동기화
+        let appGroupDefaults = UserDefaults(suiteName: "group.com.chaeeun.ShiftCalendarApp")!
+        appGroupDefaults.synchronize()
+
+        // 간단한 위젯 데이터 저장
+        let simpleData = SimpleShiftData(
+            shiftType: "주간", // 기본값
+            team: settings.team,
+            patternType: getPatternDisplayName(settings.shiftPatternType),
+            shiftOffset: shiftOffset
+        )
         
-        // 위젯 즉시 업데이트
+        if let simpleEncoded = try? JSONEncoder().encode(simpleData) {
+            userDefaults.set(simpleEncoded, forKey: "simpleShiftData")
+            print("Simple shift data saved: \(simpleData.patternType), team: \(simpleData.team), offset: \(simpleData.shiftOffset)")
+        }
+        
+        // 위젯 타임라인 새로고침 (즉시 + 지연)
         WidgetCenter.shared.reloadAllTimelines()
-        print("Widget timelines reloaded")
+        print("Widget timelines reloaded (immediate)")
+        
+        // 지연 후 다시 새로고침
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            WidgetCenter.shared.reloadAllTimelines()
+            print("Widget timelines reloaded (delayed)")
+        }
+        
+        print("🔴 === ShiftManager saveData END ===")
     }
     
     private func loadData() {
@@ -978,7 +1047,10 @@ class ShiftManager: ObservableObject {
     // 현재 사용자의 근무 타입 가져오기 (내스케줄용)
     func getCurrentUserShiftType(for date: Date, shiftOffset: Int = 0) -> ShiftType {
         let currentTeam = getCurrentTeamNumber()
-        return getShiftTypeForTeam(team: currentTeam, date: date, shiftOffset: shiftOffset) ?? .휴무 // 근무 없을 경우 휴무 반환
+        print("📱 App Debug - getCurrentUserShiftType: date=\(date), currentTeam=\(currentTeam), shiftOffset=\(shiftOffset)")
+        let result = getShiftTypeForTeam(team: currentTeam, date: date, shiftOffset: shiftOffset) ?? .휴무 // 근무 없을 경우 휴무 반환
+        print("📱 App Debug - getCurrentUserShiftType result: \(result.rawValue)")
+        return result
     }
 }
 
