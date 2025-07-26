@@ -580,7 +580,7 @@ struct ShiftPatternSelectionSheet: View {
                     // Pattern options
                     ScrollView {
                         VStack(spacing: 12) {
-                            ForEach(ShiftPatternType.allCases, id: \.self) { pattern in
+                            ForEach(ShiftPatternType.allCases.filter { $0 != .none }, id: \.self) { pattern in
                                 PatternOptionCard(
                                     pattern: pattern,
                                     isSelected: selectedPattern == pattern

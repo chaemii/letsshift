@@ -340,10 +340,16 @@ struct ExpectedSalaryCard: View {
                     .font(.title2)
                     .foregroundColor(.pointColor)
                 
-                Text("예상 급여")
-                    .font(.headline)
-                    .fontWeight(.bold)
-                    .foregroundColor(.charcoalBlack)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("예상 급여")
+                        .font(.headline)
+                        .fontWeight(.bold)
+                        .foregroundColor(.charcoalBlack)
+                    
+                    Text("여러 수당 조건으로 인해 실제 수령액과 차이가 있을 수 있습니다.")
+                        .font(.caption2)
+                        .foregroundColor(.charcoalBlack.opacity(0.5))
+                }
                 
                 Spacer()
                 
