@@ -77,7 +77,7 @@ struct WeekScheduleProvider: TimelineProvider {
     private func getWeekScheduleEntry(for date: Date = Date()) -> WeekScheduleEntry {
         print("🔵 === Week Widget getWeekScheduleEntry START ===")
         print("🔵 Current time: \(Date())")
-        let userDefaults = UserDefaults(suiteName: "group.com.chaeeun.ShiftCalendarApp")!
+        let userDefaults = UserDefaults(suiteName: "group.com.chaeeun.gyodaehaja")!
         userDefaults.synchronize()
         
         print("🔵 UserDefaults synchronized")
@@ -146,11 +146,13 @@ struct WeekScheduleWidgetEntryView: View {
             // 일주일 스케줄 그리드
             LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 2), count: 7), spacing: 4) {
                 ForEach(entry.weekData, id: \.day) { dayData in
+                    let isToday = isToday(dayData.day)
+                    
                     VStack(spacing: 3) {
                         // 요일
                         Text(dayData.day)
-                            .font(.system(size: 12, weight: .medium))
-                            .foregroundColor(.secondary)
+                            .font(.system(size: 12, weight: isToday ? .bold : .medium))
+                            .foregroundColor(isToday ? Color(hex: "000000") : .secondary)
                         
                         // 근무 타입 (작은 원)
                         ZStack {
@@ -169,6 +171,12 @@ struct WeekScheduleWidgetEntryView: View {
                             .font(.system(size: 10))
                             .foregroundColor(.gray)
                     }
+                    .padding(.vertical, 4)
+                    .padding(.horizontal, 2)
+                    .background(
+                        RoundedRectangle(cornerRadius: 6)
+                            .fill(isToday ? Color.gray.opacity(0.2) : Color.clear)
+                    )
                 }
             }
             
@@ -190,7 +198,7 @@ struct WeekScheduleWidgetEntryView: View {
             isRefreshing = true
 
             // UserDefaults 동기화
-            let userDefaults = UserDefaults(suiteName: "group.com.chaeeun.ShiftCalendarApp")!
+            let userDefaults = UserDefaults(suiteName: "group.com.chaeeun.gyodaehaja")!
             userDefaults.synchronize()
             UserDefaults.standard.synchronize()
 
@@ -217,6 +225,27 @@ struct WeekScheduleWidgetEntryView: View {
         case "당직": return .duty
         default: return .gray
         }
+    }
+    
+    private func isToday(_ dayString: String) -> Bool {
+        let today = Date()
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "ko_KR")
+        formatter.dateFormat = "E"
+        let todayDay = formatter.string(from: today)
+        
+        // 요일 매핑 (한국어 -> 한국어)
+        let dayMapping = [
+            "월": "월",
+            "화": "화", 
+            "수": "수",
+            "목": "목",
+            "금": "금",
+            "토": "토",
+            "일": "일"
+        ]
+        
+        return dayMapping[todayDay] == dayString
     }
 }
 

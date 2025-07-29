@@ -134,7 +134,7 @@ struct TodayShiftProvider: TimelineProvider {
     private func getTodayShift() -> String {
         print("🔵 Widget getTodayShift START")
         
-        let userDefaults = UserDefaults(suiteName: "group.com.chaeeun.ShiftCalendarApp")!
+        let userDefaults = UserDefaults(suiteName: "group.com.chaeeun.gyodaehaja")!
         
         // UserDefaults 동기화
         userDefaults.synchronize()
@@ -165,7 +165,7 @@ struct TodayShiftProvider: TimelineProvider {
     }
     
     private func getCurrentTeam() -> String {
-        let userDefaults = UserDefaults(suiteName: "group.com.chaeeun.ShiftCalendarApp")!
+        let userDefaults = UserDefaults(suiteName: "group.com.chaeeun.gyodaehaja")!
         
         if let data = userDefaults.data(forKey: "simpleShiftData"),
            let shiftData = try? JSONDecoder().decode(SimpleShiftData.self, from: data) {

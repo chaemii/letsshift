@@ -147,12 +147,22 @@ struct ColorPickerView: View {
     @State private var selectedColor: Color
     @State private var customName: String = ""
     @State private var showingNameEditor = false
+    @State private var startHour: Int
+    @State private var startMinute: Int
+    @State private var endHour: Int
+    @State private var endMinute: Int
     
     init(shiftType: ShiftType, shiftManager: ShiftManager) {
         self.shiftType = shiftType
         self.shiftManager = shiftManager
         self._selectedColor = State(initialValue: shiftManager.getColor(for: shiftType))
         self._customName = State(initialValue: shiftManager.getShiftName(for: shiftType))
+        
+        let currentTime = shiftManager.getShiftTime(for: shiftType)
+        self._startHour = State(initialValue: currentTime.startHour)
+        self._startMinute = State(initialValue: currentTime.startMinute)
+        self._endHour = State(initialValue: currentTime.endHour)
+        self._endMinute = State(initialValue: currentTime.endMinute)
     }
     
     private let customColors: [Color] = [
@@ -224,10 +234,147 @@ struct ColorPickerView: View {
                     }
                 }
                 
+                // 시간 수정 섹션
+                VStack(spacing: 12) {
+                    Text("근무 시간")
+                        .font(.headline)
+                        .fontWeight(.semibold)
+                        .foregroundColor(.charcoalBlack)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    
+                    // 시작-종료 시간 설정 (한 줄에 배치)
+                    HStack(spacing: 20) {
+                        // 시작 시간
+                        VStack(alignment: .leading, spacing: 8) {
+                            HStack {
+                                Image(systemName: "sunrise")
+                                    .foregroundColor(.orange)
+                                    .font(.caption)
+                                Text("시작")
+                                    .font(.caption)
+                                    .fontWeight(.medium)
+                                    .foregroundColor(.charcoalBlack)
+                            }
+                            
+                            HStack(spacing: 8) {
+                                Picker("시작 시간", selection: $startHour) {
+                                    ForEach(0..<24, id: \.self) { hour in
+                                        Text("\(hour)").tag(hour)
+                                    }
+                                }
+                                .pickerStyle(WheelPickerStyle())
+                                .frame(width: 50, height: 80)
+                                .clipped()
+                                
+                                Text(":")
+                                    .font(.title2)
+                                    .fontWeight(.bold)
+                                    .foregroundColor(.charcoalBlack)
+                                
+                                Picker("시작 분", selection: $startMinute) {
+                                    ForEach([0, 15, 30, 45], id: \.self) { minute in
+                                        Text(String(format: "%02d", minute)).tag(minute)
+                                    }
+                                }
+                                .pickerStyle(WheelPickerStyle())
+                                .frame(width: 50, height: 80)
+                                .clipped()
+                            }
+                        }
+                        
+                        // 구분선
+                        Rectangle()
+                            .fill(Color.charcoalBlack.opacity(0.2))
+                            .frame(width: 1, height: 60)
+                        
+                        // 종료 시간
+                        VStack(alignment: .leading, spacing: 8) {
+                            HStack {
+                                Image(systemName: "sunset")
+                                    .foregroundColor(.purple)
+                                    .font(.caption)
+                                Text("종료")
+                                    .font(.caption)
+                                    .fontWeight(.medium)
+                                    .foregroundColor(.charcoalBlack)
+                            }
+                            
+                            HStack(spacing: 8) {
+                                Picker("종료 시간", selection: $endHour) {
+                                    ForEach(0..<24, id: \.self) { hour in
+                                        Text("\(hour)").tag(hour)
+                                    }
+                                }
+                                .pickerStyle(WheelPickerStyle())
+                                .frame(width: 50, height: 80)
+                                .clipped()
+                                
+                                Text(":")
+                                    .font(.title2)
+                                    .fontWeight(.bold)
+                                    .foregroundColor(.charcoalBlack)
+                                
+                                Picker("종료 분", selection: $endMinute) {
+                                    ForEach([0, 15, 30, 45], id: \.self) { minute in
+                                        Text(String(format: "%02d", minute)).tag(minute)
+                                    }
+                                }
+                                .pickerStyle(WheelPickerStyle())
+                                .frame(width: 50, height: 80)
+                                .clipped()
+                            }
+                        }
+                    }
+                    .padding(16)
+                    .background(Color.white)
+                    .cornerRadius(12)
+                    .shadow(color: Color.black.opacity(0.05), radius: 2, x: 0, y: 1)
+                    
+                    // 시간 미리보기
+                    HStack {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("설정된 시간")
+                                .font(.subheadline)
+                                .foregroundColor(.charcoalBlack.opacity(0.7))
+                            
+                            Text("\(String(format: "%02d:%02d", startHour, startMinute)) ~ \(String(format: "%02d:%02d", endHour, endMinute))")
+                                .font(.subheadline)
+                                .fontWeight(.medium)
+                                .foregroundColor(.charcoalBlack)
+                        }
+                        
+                        Spacer()
+                        
+                        VStack(alignment: .trailing, spacing: 4) {
+                            Text("근무 시간")
+                                .font(.subheadline)
+                                .foregroundColor(.charcoalBlack.opacity(0.7))
+                            
+                            Text("\(String(format: "%.1f", calculateWorkingHours()))시간")
+                                .font(.subheadline)
+                                .fontWeight(.medium)
+                                .foregroundColor(.charcoalBlack)
+                        }
+                    }
+                    .padding(12)
+                    .background(Color(hex: "F8F9FA"))
+                    .cornerRadius(8)
+                }
+                
                 Spacer()
                 
                 Button("저장") {
                     shiftManager.updateColor(for: shiftType, newColor: selectedColor)
+                    
+                    // 시간 업데이트
+                    let newShiftTime = ShiftTime(
+                        startHour: startHour,
+                        startMinute: startMinute,
+                        endHour: endHour,
+                        endMinute: endMinute
+                    )
+                    shiftManager.updateShiftTime(newShiftTime, for: shiftType)
+                    
                     dismiss()
                 }
                 .buttonStyle(PrimaryButtonStyle())
@@ -252,6 +399,22 @@ struct ColorPickerView: View {
                 )
             }
         }
+    }
+    
+    // 근무 시간 계산 함수
+    private func calculateWorkingHours() -> Double {
+        let startMinutes = startHour * 60 + startMinute
+        let endMinutes = endHour * 60 + endMinute
+        
+        var totalMinutes: Int
+        if endMinutes > startMinutes {
+            totalMinutes = endMinutes - startMinutes
+        } else {
+            // 자정을 넘어가는 경우
+            totalMinutes = (24 * 60 - startMinutes) + endMinutes
+        }
+        
+        return Double(totalMinutes) / 60.0
     }
 }
 

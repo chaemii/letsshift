@@ -60,7 +60,7 @@ struct CustomPatternView: View {
                                 .font(.subheadline)
                                 .foregroundColor(.charcoalBlack)
                             Spacer()
-                            Stepper("", value: $cycleLength, in: 2...14)
+                            Stepper("", value: $cycleLength, in: 2...15)
                                 .labelsHidden()
                         }
                         .padding(.horizontal, 16)

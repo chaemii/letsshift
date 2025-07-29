@@ -186,13 +186,13 @@ struct StatisticsSummaryBox: View {
         let schedules = getSchedulesForPeriod()
         
         let totalWorkDays = schedules.filter { $0.shiftType != .휴무 && $0.shiftType != .비번 }.count
-        let totalWorkHours = schedules.reduce(0) { $0 + $1.shiftType.workingHours + $1.overtimeHours }
+        let totalWorkHours = schedules.reduce(0) { $0 + Int(shiftManager.getShiftWorkingHours(for: $1.shiftType)) + $1.overtimeHours }
         let nightShiftDays = schedules.filter { $0.shiftType == .야간 || $0.shiftType == .심야 }.count
         let overtimeHours = schedules.reduce(0) { $0 + $1.overtimeHours }
         
         // 당직 통계 추가
         let dutyDays = schedules.filter { $0.shiftType == .당직 }.count
-        let dutyHours = schedules.filter { $0.shiftType == .당직 }.reduce(0) { $0 + $1.shiftType.workingHours + $1.overtimeHours }
+        let dutyHours = schedules.filter { $0.shiftType == .당직 }.reduce(0) { $0 + Int(shiftManager.getShiftWorkingHours(for: $1.shiftType)) + $1.overtimeHours }
         
         let averageWorkHours = totalWorkDays > 0 ? totalWorkHours / totalWorkDays : 0
         
@@ -314,7 +314,7 @@ struct WeeklyWorkHoursChart: View {
         
         for schedule in monthSchedules {
             let dayOfWeek = formatter.string(from: schedule.date)
-            let totalHours = schedule.shiftType.workingHours + schedule.overtimeHours
+            let totalHours = Int(shiftManager.getShiftWorkingHours(for: schedule.shiftType)) + schedule.overtimeHours
             weeklyHours[dayOfWeek, default: 0] += totalHours
         }
         

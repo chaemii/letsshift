@@ -8,10 +8,12 @@ struct SettingsView: View {
     @State private var showingSalarySetup = false
     @State private var showingColorPicker = false
     @State private var selectedShiftType: ShiftType?
+    @State private var colorPickerItem: ShiftType?
     @State private var showingCustomPatternEdit = false
     @State private var showingDataExport = false
     @State private var showingDataReset = false
     @State private var showingCustomPatternView = false
+    @State private var isWidgetRefreshing = false
 
     
     var body: some View {
@@ -136,8 +138,9 @@ struct SettingsView: View {
                                 // 근무 유형별 카드 (현재 패턴에 해당하는 것만)
                                 ForEach(shiftManager.getShiftTypesForCurrentPattern(), id: \.self) { shiftType in
                                     Button(action: {
-                                        selectedShiftType = shiftType
-                                        showingColorPicker = true
+                                        print("🔧 SettingsView: Button tapped for shiftType: \(shiftType)")
+                                        colorPickerItem = shiftType
+                                        print("🔧 SettingsView: colorPickerItem set to: \(colorPickerItem?.rawValue ?? "nil")")
                                     }) {
                     HStack {
                                             Circle()
@@ -149,10 +152,16 @@ struct SettingsView: View {
                                                 )
                                                 .shadow(color: Color.black.opacity(0.1), radius: 1, x: 0, y: 1)
                                             
-                                            Text(shiftManager.getShiftName(for: shiftType))
-                                                .font(.subheadline)
-                                                .fontWeight(.medium)
-                                                .foregroundColor(.charcoalBlack)
+                                            VStack(alignment: .leading, spacing: 2) {
+                                                Text(shiftManager.getShiftName(for: shiftType))
+                                                    .font(.subheadline)
+                                                    .fontWeight(.medium)
+                                                    .foregroundColor(.charcoalBlack)
+                                                
+                                                Text(shiftManager.getShiftTimeRange(for: shiftType))
+                                                    .font(.caption)
+                                                    .foregroundColor(.charcoalBlack.opacity(0.7))
+                                            }
                                             
                                             Spacer()
                                             
@@ -305,12 +314,15 @@ struct SettingsView: View {
                             Button(action: {
                                 print("🔄 Widget refresh button tapped")
                                 
+                                // 새로고침 상태 시작
+                                isWidgetRefreshing = true
+                                
                                 // 데이터 강제 저장
                                 shiftManager.saveData()
                                 print("✅ Data saved via widget refresh button")
                                 
                                 // App Group UserDefaults 동기화 강제
-                                let appGroupDefaults = UserDefaults(suiteName: "group.com.chaeeun.ShiftCalendarApp")!
+                                let appGroupDefaults = UserDefaults(suiteName: "group.com.chaeeun.gyodaehaja")!
                                 appGroupDefaults.synchronize()
                                 
                                 // 일반 UserDefaults 동기화 강제
@@ -337,6 +349,11 @@ struct SettingsView: View {
                                         print("✅ Background delayed widget refresh completed")
                                     }
                                 }
+                                
+                                // 5초 후 상태 초기화
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+                                    isWidgetRefreshing = false
+                                }
                             }) {
                                 HStack {
                                     Image(systemName: "arrow.clockwise.circle")
@@ -356,9 +373,10 @@ struct SettingsView: View {
                                     
                                     Spacer()
                                     
-                                    Image(systemName: "chevron.right")
+                                    Image(systemName: isWidgetRefreshing ? "checkmark.circle.fill" : "chevron.right")
                                         .font(.caption)
-                                        .foregroundColor(.charcoalBlack.opacity(0.5))
+                                        .foregroundColor(isWidgetRefreshing ? .green : .charcoalBlack.opacity(0.5))
+                                        .animation(.easeInOut(duration: 0.3), value: isWidgetRefreshing)
                                 }
                                 .padding(20)
                                 .background(Color.white)
@@ -418,10 +436,8 @@ struct SettingsView: View {
         .sheet(isPresented: $showingSalarySetup) {
             SalarySetupView()
         }
-        .sheet(isPresented: $showingColorPicker) {
-            if let shiftType = selectedShiftType {
-                ColorPickerView(shiftType: shiftType, shiftManager: shiftManager)
-            }
+        .sheet(item: $colorPickerItem) { shiftType in
+            ColorPickerView(shiftType: shiftType, shiftManager: shiftManager)
         }
         .sheet(isPresented: $showingCustomPatternEdit) {
             CustomPatternEditView()
@@ -435,6 +451,7 @@ struct SettingsView: View {
         .sheet(isPresented: $showingCustomPatternView) {
             CustomPatternEditView()
         }
+
 
 
     }
@@ -1094,6 +1111,7 @@ struct CustomPatternEditView: View {
     @State private var cycleLength: Int = 3
     @State private var startDate = Date()
     @State private var dayShifts: [ShiftType?] = []
+    @State private var customDayShifts: [CustomShiftType?] = []
     @State private var showingShiftTypePicker = false
     @State private var selectedDayIndex: Int = 0
     
@@ -1138,16 +1156,16 @@ struct CustomPatternEditView: View {
                                     
                                     Spacer()
                                     
-                                    Button(action: { if cycleLength < 7 { cycleLength += 1 } }) {
+                                    Button(action: { if cycleLength < 15 { cycleLength += 1 } }) {
                                         Image(systemName: "plus.circle.fill")
                                             .font(.title2)
-                                            .foregroundColor(cycleLength < 7 ? Color(hex: "1A1A1A") : .gray)
+                                            .foregroundColor(cycleLength < 15 ? Color(hex: "1A1A1A") : .gray)
                                     }
-                                    .disabled(cycleLength >= 7)
+                                    .disabled(cycleLength >= 15)
                                 }
                                 .padding(.horizontal, 20)
                                 
-                                Text("2일 ~ 7일 사이에서 선택하세요")
+                                Text("2일 ~ 15일 사이에서 선택하세요")
                                     .font(.caption)
                                     .foregroundColor(.charcoalBlack.opacity(0.7))
                             }
@@ -1227,6 +1245,21 @@ struct CustomPatternEditView: View {
                                                         .font(.caption)
                                                         .foregroundColor(.charcoalBlack.opacity(0.5))
                                                 }
+                                            } else if dayIndex < customDayShifts.count, let customShiftType = customDayShifts[dayIndex] {
+                                                HStack(spacing: 8) {
+                                                    Circle()
+                                                        .fill(customShiftType.displayColor)
+                                                        .frame(width: 16, height: 16)
+                                                    
+                                                    Text(customShiftType.name)
+                                                        .font(.subheadline)
+                                                        .fontWeight(.medium)
+                                                        .foregroundColor(.charcoalBlack)
+                                                    
+                                                    Image(systemName: "chevron.right")
+                                                        .font(.caption)
+                                                        .foregroundColor(.charcoalBlack.opacity(0.5))
+                                                }
                                             } else {
                                                 HStack(spacing: 8) {
                                                     Text("근무 요소를 추가해주세요")
@@ -1283,6 +1316,24 @@ struct CustomPatternEditView: View {
                     set: { newValue in
                         guard selectedDayIndex < dayShifts.count else { return }
                         dayShifts[selectedDayIndex] = newValue
+                        // 기본 근무 요소가 선택되면 커스텀 근무 요소는 제거
+                        if newValue != nil {
+                            customDayShifts[selectedDayIndex] = nil
+                        }
+                    }
+                ),
+                selectedCustomShiftType: Binding(
+                    get: { 
+                        guard selectedDayIndex < customDayShifts.count else { return nil }
+                        return customDayShifts[selectedDayIndex] 
+                    },
+                    set: { newValue in
+                        guard selectedDayIndex < customDayShifts.count else { return }
+                        customDayShifts[selectedDayIndex] = newValue
+                        // 커스텀 근무 요소가 선택되면 기본 근무 요소는 제거
+                        if newValue != nil {
+                            dayShifts[selectedDayIndex] = nil
+                        }
                     }
                 )
             )
@@ -1296,14 +1347,18 @@ struct CustomPatternEditView: View {
     }
     
     private var isPatternValid: Bool {
-        return dayShifts.count == cycleLength && dayShifts.allSatisfy { $0 != nil }
+        return dayShifts.count == cycleLength && customDayShifts.count == cycleLength &&
+               (0..<cycleLength).allSatisfy { index in
+                   dayShifts[index] != nil || customDayShifts[index] != nil
+               }
     }
     
     private func loadCurrentPattern() {
         if let customPattern = shiftManager.settings.customPattern {
             cycleLength = customPattern.cycleLength
             startDate = customPattern.startDate
-            // 기존 dayShifts를 새로운 cycleLength에 맞게 조정
+            
+            // 기본 근무 요소 로드
             var newDayShifts: [ShiftType?] = Array(repeating: nil, count: cycleLength)
             for (index, shiftType) in customPattern.dayShifts.enumerated() {
                 if index < cycleLength {
@@ -1311,6 +1366,15 @@ struct CustomPatternEditView: View {
                 }
             }
             dayShifts = newDayShifts
+            
+            // 커스텀 근무 요소 로드
+            var newCustomDayShifts: [CustomShiftType?] = Array(repeating: nil, count: cycleLength)
+            for (index, customShiftType) in customPattern.customDayShifts.enumerated() {
+                if index < cycleLength {
+                    newCustomDayShifts[index] = customShiftType
+                }
+            }
+            customDayShifts = newCustomDayShifts
         } else {
             updateDayShiftsArray()
         }
@@ -1327,33 +1391,51 @@ struct CustomPatternEditView: View {
             }
             dayShifts = newDayShifts
         }
+        
+        if customDayShifts.count != cycleLength {
+            var newCustomDayShifts: [CustomShiftType?] = Array(repeating: nil, count: cycleLength)
+            // 기존 데이터를 보존하면서 배열 크기 조정
+            for (index, customShiftType) in customDayShifts.enumerated() {
+                if index < cycleLength {
+                    newCustomDayShifts[index] = customShiftType
+                }
+            }
+            customDayShifts = newCustomDayShifts
+        }
     }
     
     private func saveCustomPattern() {
         // 유효성 검사
-        guard cycleLength >= 2 && cycleLength <= 7 else { return }
-        guard dayShifts.count == cycleLength else { return }
+        guard cycleLength >= 2 && cycleLength <= 15 else { return }
+        guard dayShifts.count == cycleLength && customDayShifts.count == cycleLength else { return }
         
         // nil이 아닌 근무 요소들만 필터링
         let validDayShifts = dayShifts.compactMap { $0 }
-        guard validDayShifts.count == cycleLength else { return }
+        let validCustomDayShifts = customDayShifts.compactMap { $0 }
+        
+        // 각 일차에 기본 근무 요소 또는 커스텀 근무 요소가 하나씩 있어야 함
+        let totalValidShifts = validDayShifts.count + validCustomDayShifts.count
+        guard totalValidShifts == cycleLength else { return }
         
         print("=== CustomPatternEditView saveCustomPattern ===")
         print("Cycle Length: \(cycleLength)")
         print("Start Date: \(startDate)")
         print("Valid Day Shifts: \(validDayShifts)")
-        print("Day Shifts Count: \(validDayShifts.count)")
+        print("Valid Custom Day Shifts: \(validCustomDayShifts)")
+        print("Total Valid Shifts: \(totalValidShifts)")
         
         let customPattern = CustomShiftPattern(
             cycleLength: cycleLength,
             startDate: startDate,
-            dayShifts: validDayShifts
+            dayShifts: validDayShifts,
+            customDayShifts: validCustomDayShifts
         )
         
         print("Created Custom Pattern:")
         print("- Name: \(customPattern.name)")
         print("- Start Date: \(customPattern.startDate)")
         print("- Day Shifts: \(customPattern.dayShifts)")
+        print("- Custom Day Shifts: \(customPattern.customDayShifts)")
         print("- Cycle Length: \(customPattern.cycleLength)")
         
         shiftManager.settings.customPattern = customPattern
@@ -1371,40 +1453,123 @@ struct CustomPatternEditView: View {
 // MARK: - Shift Type Picker View
 struct ShiftTypePickerView: View {
     @Binding var selectedShiftType: ShiftType?
+    @Binding var selectedCustomShiftType: CustomShiftType?
+    @EnvironmentObject var shiftManager: ShiftManager
     @Environment(\.dismiss) var dismiss
+    
+    @State private var showingCustomShiftInput = false
     
     var body: some View {
         NavigationView {
             VStack(spacing: 20) {
-                LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 2), spacing: 16) {
-                    ForEach(ShiftType.allCases, id: \.self) { shiftType in
-                        Button(action: {
-                            selectedShiftType = shiftType
-                            dismiss()
-                        }) {
-                            HStack {
-                                Circle()
-                                    .fill(shiftType.color)
-                                    .frame(width: 20, height: 20)
-                                
-                                Text(shiftType.rawValue)
-                                    .font(.subheadline)
-                                    .fontWeight(.medium)
-                                    .foregroundColor(.charcoalBlack)
-                                
-                                Spacer()
+                // 기본 근무 요소들
+                VStack(alignment: .leading, spacing: 12) {
+                    Text("기본 근무 요소")
+                        .font(.headline)
+                        .fontWeight(.bold)
+                        .foregroundColor(.charcoalBlack)
+                        .padding(.horizontal, 20)
+                    
+                    LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 2), spacing: 16) {
+                        ForEach(ShiftType.allCases, id: \.self) { shiftType in
+                            Button(action: {
+                                selectedShiftType = shiftType
+                                selectedCustomShiftType = nil
+                                dismiss()
+                            }) {
+                                HStack {
+                                    Circle()
+                                        .fill(shiftType.color)
+                                        .frame(width: 20, height: 20)
+                                    
+                                    Text(shiftType.rawValue)
+                                        .font(.subheadline)
+                                        .fontWeight(.medium)
+                                        .foregroundColor(.charcoalBlack)
+                                    
+                                    Spacer()
+                                }
+                                .padding(16)
+                                .background(Color.white)
+                                .cornerRadius(12)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .stroke(selectedShiftType == shiftType ? Color(hex: "1A1A1A") : Color.clear, lineWidth: 2)
+                                )
+                                .shadow(color: Color.black.opacity(0.05), radius: 2, x: 0, y: 1)
                             }
-                            .padding(16)
-                            .background(Color.white)
-                            .cornerRadius(12)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 12)
-                                    .stroke(selectedShiftType == shiftType ? Color(hex: "1A1A1A") : Color.clear, lineWidth: 2)
-                            )
-                            .shadow(color: Color.black.opacity(0.05), radius: 2, x: 0, y: 1)
+                            .buttonStyle(PlainButtonStyle())
                         }
-                        .buttonStyle(PlainButtonStyle())
                     }
+                    .padding(.horizontal, 20)
+                }
+                
+                // 커스텀 근무 요소들
+                if !shiftManager.getAllCustomShiftTypes().isEmpty {
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("커스텀 근무 요소")
+                            .font(.headline)
+                            .fontWeight(.bold)
+                            .foregroundColor(.charcoalBlack)
+                            .padding(.horizontal, 20)
+                        
+                        LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 2), spacing: 16) {
+                            ForEach(shiftManager.getAllCustomShiftTypes(), id: \.id) { customShiftType in
+                                Button(action: {
+                                    selectedShiftType = nil
+                                    selectedCustomShiftType = customShiftType
+                                    dismiss()
+                                }) {
+                                    HStack {
+                                        Circle()
+                                            .fill(customShiftType.displayColor)
+                                            .frame(width: 20, height: 20)
+                                        
+                                        Text(customShiftType.name)
+                                            .font(.subheadline)
+                                            .fontWeight(.medium)
+                                            .foregroundColor(.charcoalBlack)
+                                        
+                                        Spacer()
+                                    }
+                                    .padding(16)
+                                    .background(Color.white)
+                                    .cornerRadius(12)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 12)
+                                            .stroke(selectedCustomShiftType?.id == customShiftType.id ? Color(hex: "1A1A1A") : Color.clear, lineWidth: 2)
+                                    )
+                                    .shadow(color: Color.black.opacity(0.05), radius: 2, x: 0, y: 1)
+                                }
+                                .buttonStyle(PlainButtonStyle())
+                            }
+                        }
+                        .padding(.horizontal, 20)
+                    }
+                }
+                
+                // 커스텀 근무 요소 추가 버튼
+                Button(action: {
+                    showingCustomShiftInput = true
+                }) {
+                    HStack {
+                        Image(systemName: "plus.circle.fill")
+                            .foregroundColor(.mainColorButton)
+                            .font(.title3)
+                        
+                        Text("커스텀 근무 요소 추가")
+                            .font(.subheadline)
+                            .fontWeight(.medium)
+                            .foregroundColor(.mainColorButton)
+                    }
+                    .padding(16)
+                    .background(Color.white)
+                    .cornerRadius(12)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 12)
+                            .stroke(Color.mainColorButton, lineWidth: 1)
+                    )
+                    .shadow(color: Color.black.opacity(0.05), radius: 2, x: 0, y: 1)
                 }
                 .padding(.horizontal, 20)
                 
@@ -1421,6 +1586,259 @@ struct ShiftTypePickerView: View {
                 }
             }
         }
+        .sheet(isPresented: $showingCustomShiftInput) {
+            CustomShiftTypeInputView()
+        }
+    }
+}
+
+// MARK: - Custom Shift Type Input View
+struct CustomShiftTypeInputView: View {
+    @EnvironmentObject var shiftManager: ShiftManager
+    @Environment(\.dismiss) var dismiss
+    
+    @State private var shiftName: String = ""
+    @State private var selectedColor: String = "77BBFB"
+    @State private var startHour: Int = 9
+    @State private var startMinute: Int = 0
+    @State private var endHour: Int = 18
+    @State private var endMinute: Int = 0
+    
+    private let availableColors = [
+        "77BBFB", "7E85F9", "92E3A9", "F47F4C", "FFA8D2", 
+        "C39DF4", "B9D831", "439897", "4B4B4B", "2C3E50",
+        "FF5D73", "CDB5EB", "C7E89C", "A0B2B6", "D5E7EB"
+    ]
+    
+    var body: some View {
+        NavigationView {
+            VStack(spacing: 20) {
+                ScrollView {
+                    VStack(spacing: 25) {
+                        // 근무 요소 이름 입력
+                        VStack(alignment: .leading, spacing: 12) {
+                            Text("근무 요소 이름")
+                                .font(.headline)
+                                .fontWeight(.bold)
+                                .foregroundColor(.charcoalBlack)
+                            
+                            TextField("근무 요소 이름을 입력하세요", text: $shiftName)
+                                .textFieldStyle(RoundedBorderTextFieldStyle())
+                                .padding(.horizontal, 16)
+                                .padding(.vertical, 12)
+                                .background(Color.white)
+                                .cornerRadius(12)
+                        }
+                        
+                        // 색상 선택
+                        VStack(alignment: .leading, spacing: 12) {
+                            Text("색상 선택")
+                                .font(.headline)
+                                .fontWeight(.bold)
+                                .foregroundColor(.charcoalBlack)
+                            
+                            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 5), spacing: 12) {
+                                ForEach(availableColors, id: \.self) { colorHex in
+                                    Button(action: {
+                                        selectedColor = colorHex
+                                    }) {
+                                        Circle()
+                                            .fill(Color(hex: colorHex))
+                                            .frame(width: 40, height: 40)
+                                            .overlay(
+                                                Circle()
+                                                    .stroke(selectedColor == colorHex ? Color.charcoalBlack : Color.clear, lineWidth: 3)
+                                            )
+                                    }
+                                }
+                            }
+                            .padding(.horizontal, 16)
+                        }
+                        
+                        // 근무 시간 설정
+                        VStack(spacing: 12) {
+                            Text("근무 시간")
+                                .font(.headline)
+                                .fontWeight(.semibold)
+                                .foregroundColor(.charcoalBlack)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                            
+                            // 시작-종료 시간 설정 (한 줄에 배치)
+                            HStack(spacing: 20) {
+                                // 시작 시간
+                                VStack(alignment: .leading, spacing: 8) {
+                                    HStack {
+                                        Image(systemName: "sunrise")
+                                            .foregroundColor(.orange)
+                                            .font(.caption)
+                                        Text("시작")
+                                            .font(.caption)
+                                            .fontWeight(.medium)
+                                            .foregroundColor(.charcoalBlack)
+                                    }
+                                    
+                                    HStack(spacing: 8) {
+                                        Picker("시작 시간", selection: $startHour) {
+                                            ForEach(0..<24, id: \.self) { hour in
+                                                Text("\(hour)").tag(hour)
+                                            }
+                                        }
+                                        .pickerStyle(WheelPickerStyle())
+                                        .frame(width: 50, height: 80)
+                                        .clipped()
+                                        
+                                        Text(":")
+                                            .font(.title2)
+                                            .fontWeight(.bold)
+                                            .foregroundColor(.charcoalBlack)
+                                        
+                                        Picker("시작 분", selection: $startMinute) {
+                                            ForEach([0, 15, 30, 45], id: \.self) { minute in
+                                                Text(String(format: "%02d", minute)).tag(minute)
+                                            }
+                                        }
+                                        .pickerStyle(WheelPickerStyle())
+                                        .frame(width: 50, height: 80)
+                                        .clipped()
+                                    }
+                                }
+                                
+                                // 구분선
+                                Rectangle()
+                                    .fill(Color.charcoalBlack.opacity(0.2))
+                                    .frame(width: 1, height: 60)
+                                
+                                // 종료 시간
+                                VStack(alignment: .leading, spacing: 8) {
+                                    HStack {
+                                        Image(systemName: "sunset")
+                                            .foregroundColor(.purple)
+                                            .font(.caption)
+                                        Text("종료")
+                                            .font(.caption)
+                                            .fontWeight(.medium)
+                                            .foregroundColor(.charcoalBlack)
+                                    }
+                                    
+                                    HStack(spacing: 8) {
+                                        Picker("종료 시간", selection: $endHour) {
+                                            ForEach(0..<24, id: \.self) { hour in
+                                                Text("\(hour)").tag(hour)
+                                            }
+                                        }
+                                        .pickerStyle(WheelPickerStyle())
+                                        .frame(width: 50, height: 80)
+                                        .clipped()
+                                        
+                                        Text(":")
+                                            .font(.title2)
+                                            .fontWeight(.bold)
+                                            .foregroundColor(.charcoalBlack)
+                                        
+                                        Picker("종료 분", selection: $endMinute) {
+                                            ForEach([0, 15, 30, 45], id: \.self) { minute in
+                                                Text(String(format: "%02d", minute)).tag(minute)
+                                            }
+                                        }
+                                        .pickerStyle(WheelPickerStyle())
+                                        .frame(width: 50, height: 80)
+                                        .clipped()
+                                    }
+                                }
+                            }
+                            .padding(16)
+                            .background(Color.white)
+                            .cornerRadius(12)
+                            .shadow(color: Color.black.opacity(0.05), radius: 2, x: 0, y: 1)
+                            
+                            // 시간 미리보기
+                            HStack {
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text("설정된 시간")
+                                        .font(.subheadline)
+                                        .foregroundColor(.charcoalBlack.opacity(0.7))
+                                    
+                                    Text("\(String(format: "%02d:%02d", startHour, startMinute)) ~ \(String(format: "%02d:%02d", endHour, endMinute))")
+                                        .font(.subheadline)
+                                        .fontWeight(.medium)
+                                        .foregroundColor(.charcoalBlack)
+                                }
+                                
+                                Spacer()
+                                
+                                VStack(alignment: .trailing, spacing: 4) {
+                                    Text("근무 시간")
+                                        .font(.subheadline)
+                                        .foregroundColor(.charcoalBlack.opacity(0.7))
+                                    
+                                    Text("\(String(format: "%.1f", calculateWorkingHours()))시간")
+                                        .font(.subheadline)
+                                        .fontWeight(.medium)
+                                        .foregroundColor(.charcoalBlack)
+                                }
+                            }
+                            .padding(12)
+                            .background(Color(hex: "F8F9FA"))
+                            .cornerRadius(8)
+                        }
+                        
+                        Spacer(minLength: 30)
+                    }
+                    .padding(.horizontal, 20)
+                    .padding(.vertical, 20)
+                }
+            }
+            .background(Color(hex: "EFF0F2"))
+            .navigationTitle("커스텀 근무 요소 추가")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button("취소") {
+                        dismiss()
+                    }
+                }
+                
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("저장") {
+                        saveCustomShiftType()
+                        dismiss()
+                    }
+                    .disabled(shiftName.isEmpty)
+                }
+            }
+        }
+    }
+    
+    private func calculateWorkingHours() -> Double {
+        let startMinutes = startHour * 60 + startMinute
+        let endMinutes = endHour * 60 + endMinute
+        
+        var totalMinutes: Int
+        if endMinutes > startMinutes {
+            totalMinutes = endMinutes - startMinutes
+        } else {
+            // 자정을 넘어가는 경우
+            totalMinutes = (24 * 60 - startMinutes) + endMinutes
+        }
+        
+        return Double(totalMinutes) / 60.0
+    }
+    
+    private func saveCustomShiftType() {
+        let workingHours = ShiftTime(
+            startHour: startHour,
+            startMinute: startMinute,
+            endHour: endHour,
+            endMinute: endMinute
+        )
+        
+        let customShiftType = CustomShiftType(
+            name: shiftName,
+            color: selectedColor,
+            workingHours: workingHours
+        )
+        
+        shiftManager.addCustomShiftType(customShiftType)
     }
 }
 

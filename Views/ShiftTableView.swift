@@ -45,43 +45,49 @@ struct ShiftTableView: View {
                 .padding(.horizontal)
                 .padding(.vertical, 24)
                 
-                // Table header
-                HStack(spacing: 0) {
-                    Text("날짜")
-                        .frame(width: 60, alignment: .leading)
-                        .font(.system(size: 16, weight: .bold))
-                        .foregroundColor(.charcoalBlack)
-                    
-                    ForEach(1...shiftManager.getTeamCount(), id: \.self) { teamNumber in
-                        Text("\(teamNumber)조")
-                            .frame(maxWidth: .infinity)
-                            .font(.system(size: 16, weight: .bold))
-                            .foregroundColor(teamNumber == getTeamNumber() ? .charcoalBlack : .charcoalBlack.opacity(0.6))
-                    }
-                }
-                .padding(.horizontal)
-                .padding(.vertical, 12)
-                .background(Color.backgroundLight)
-                
-                // Table content - 스크롤 가능하게
-                ScrollView {
-                    LazyVStack(spacing: 2) {
-                        ForEach(daysInMonth, id: \.self) { date in
-                            ShiftTableRow(
-                                date: date,
-                                currentTeam: getTeamNumber(),
-                                shiftOffset: shiftOffset,
-                                isEditMode: isEditMode,
-                                onShiftTap: { team in
-                                    selectedDate = date
-                                    selectedTeam = team
-                                    showingShiftEditSheet = true
-                                }
-                            )
+                // Table header and content - 통합 스크롤
+                ScrollView([.horizontal, .vertical], showsIndicators: false) {
+                    VStack(spacing: 0) {
+                        // Table header
+                        HStack(spacing: 0) {
+                            Text("날짜")
+                                .frame(width: 60, alignment: .leading)
+                                .font(.system(size: 16, weight: .bold))
+                                .foregroundColor(.charcoalBlack)
+                            
+                            ForEach(1...shiftManager.getTeamCount(), id: \.self) { teamNumber in
+                                Text("\(teamNumber)조")
+                                    .frame(width: getTeamColumnWidth(), alignment: .center)
+                                    .font(.system(size: 16, weight: .bold))
+                                    .foregroundColor(teamNumber == getTeamNumber() ? .charcoalBlack : .charcoalBlack.opacity(0.6))
+                            }
                         }
+                        .padding(.horizontal)
+                        .padding(.vertical, 12)
+                        .background(Color.backgroundLight)
+                        .frame(minWidth: getTableTotalWidth())
+                        
+                        // Table content
+                        LazyVStack(spacing: 2) {
+                            ForEach(daysInMonth, id: \.self) { date in
+                                ShiftTableRow(
+                                    date: date,
+                                    currentTeam: getTeamNumber(),
+                                    shiftOffset: shiftOffset,
+                                    isEditMode: isEditMode,
+                                    teamColumnWidth: getTeamColumnWidth(),
+                                    onShiftTap: { team in
+                                        selectedDate = date
+                                        selectedTeam = team
+                                        showingShiftEditSheet = true
+                                    }
+                                )
+                            }
+                        }
+                        .frame(minWidth: getTableTotalWidth())
+                        .padding(.horizontal)
+                        .padding(.bottom, 140) // 플로팅 버튼 공간 확보 (버튼 높이 + 여백)
                     }
-                    .padding(.horizontal)
-                    .padding(.bottom, 140) // 플로팅 버튼 공간 확보 (버튼 높이 + 여백)
                 }
             }
             .background(Color.white)
@@ -240,6 +246,42 @@ struct ShiftTableView: View {
     private func updateShiftForTeam(date: Date, team: Int, shiftType: ShiftType) {
         shiftManager.updateShiftForTeam(date: date, team: team, shiftType: shiftType)
     }
+    
+    // 팀 컬럼 너비 계산 (최대 5조까지 한 화면에 표시)
+    private func getTeamColumnWidth() -> CGFloat {
+        let teamCount = shiftManager.getTeamCount()
+        let screenWidth = UIScreen.main.bounds.width
+        let dateColumnWidth: CGFloat = 60
+        let horizontalPadding: CGFloat = 32 // 좌우 패딩
+        
+        if teamCount <= 5 {
+            // 5조 이하: 화면에 맞춰 균등 분할 (스크롤 없음)
+            return (screenWidth - dateColumnWidth - horizontalPadding) / CGFloat(teamCount)
+        } else {
+            // 6조 이상: 고정 너비 (스크롤 가능)
+            // 5조까지는 화면에 맞춰 표시하고, 나머지는 고정 너비
+            let availableWidth = screenWidth - dateColumnWidth - horizontalPadding
+            let widthFor5Teams = availableWidth / 5.0
+            return widthFor5Teams
+        }
+    }
+    
+    // 테이블 전체 너비 계산
+    private func getTableTotalWidth() -> CGFloat {
+        let teamCount = shiftManager.getTeamCount()
+        let screenWidth = UIScreen.main.bounds.width
+        let dateColumnWidth: CGFloat = 60
+        let horizontalPadding: CGFloat = 32
+        
+        if teamCount <= 5 {
+            // 5조 이하: 화면 너비에 맞춤 (스크롤 없음)
+            return screenWidth - horizontalPadding
+        } else {
+            // 6조 이상: 실제 테이블 너비 (스크롤 필요)
+            let teamColumnWidth = getTeamColumnWidth()
+            return dateColumnWidth + (teamColumnWidth * CGFloat(teamCount))
+        }
+    }
 }
 
 struct ShiftTableRow: View {
@@ -247,6 +289,7 @@ struct ShiftTableRow: View {
     let currentTeam: Int
     let shiftOffset: Int
     let isEditMode: Bool
+    let teamColumnWidth: CGFloat
     let onShiftTap: (Int) -> Void
     @EnvironmentObject var shiftManager: ShiftManager
     
@@ -282,7 +325,7 @@ struct ShiftTableRow: View {
                 Text(shiftType.rawValue)
                     .font(.system(size: 15, weight: isCurrentTeam ? .bold : .medium))
                     .foregroundColor(getTextColor(for: shiftType, isCurrentTeam: isCurrentTeam))
-                    .frame(maxWidth: .infinity)
+                    .frame(width: teamColumnWidth, alignment: .center)
                     .padding(.vertical, 6)
                     .background(
                         RoundedRectangle(cornerRadius: 4)

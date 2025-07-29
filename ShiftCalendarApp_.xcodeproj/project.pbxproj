@@ -258,9 +258,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		C297D7E52E2E6C63009FC80E /* ShiftCalendarApp_ */ = {
+		C297D7E52E2E6C63009FC80E /* LetsShift */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C297D80C2E2E6C65009FC80E /* Build configuration list for PBXNativeTarget "ShiftCalendarApp_" */;
+			buildConfigurationList = C297D80C2E2E6C65009FC80E /* Build configuration list for PBXNativeTarget "LetsShift" */;
 			buildPhases = (
 				C297D7E22E2E6C63009FC80E /* Sources */,
 				C297D7E32E2E6C63009FC80E /* Frameworks */,
@@ -275,16 +275,16 @@
 			fileSystemSynchronizedGroups = (
 				C297D7E82E2E6C63009FC80E /* ShiftCalendarApp_ */,
 			);
-			name = ShiftCalendarApp_;
+			name = LetsShift;
 			packageProductDependencies = (
 			);
-			productName = ShiftCalendarApp_;
+			productName = LetsShift;
 			productReference = C297D7E62E2E6C63009FC80E /* ShiftCalendarApp_.app */;
 			productType = "com.apple.product-type.application";
 		};
-		C297D7F72E2E6C65009FC80E /* ShiftCalendarApp_Tests */ = {
+		C297D7F72E2E6C65009FC80E /* LetsShiftTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C297D80F2E2E6C65009FC80E /* Build configuration list for PBXNativeTarget "ShiftCalendarApp_Tests" */;
+			buildConfigurationList = C297D80F2E2E6C65009FC80E /* Build configuration list for PBXNativeTarget "LetsShiftTests" */;
 			buildPhases = (
 				C297D7F42E2E6C65009FC80E /* Sources */,
 				C297D7F52E2E6C65009FC80E /* Frameworks */,
@@ -298,16 +298,16 @@
 			fileSystemSynchronizedGroups = (
 				C297D7FB2E2E6C65009FC80E /* ShiftCalendarApp_Tests */,
 			);
-			name = ShiftCalendarApp_Tests;
+			name = LetsShiftTests;
 			packageProductDependencies = (
 			);
-			productName = ShiftCalendarApp_Tests;
+			productName = LetsShiftTests;
 			productReference = C297D7F82E2E6C65009FC80E /* ShiftCalendarApp_Tests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		C297D8012E2E6C65009FC80E /* ShiftCalendarApp_UITests */ = {
+		C297D8012E2E6C65009FC80E /* LetsShiftUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C297D8122E2E6C65009FC80E /* Build configuration list for PBXNativeTarget "ShiftCalendarApp_UITests" */;
+			buildConfigurationList = C297D8122E2E6C65009FC80E /* Build configuration list for PBXNativeTarget "LetsShiftUITests" */;
 			buildPhases = (
 				C297D7FE2E2E6C65009FC80E /* Sources */,
 				C297D7FF2E2E6C65009FC80E /* Frameworks */,
@@ -321,16 +321,16 @@
 			fileSystemSynchronizedGroups = (
 				C297D8052E2E6C65009FC80E /* ShiftCalendarApp_UITests */,
 			);
-			name = ShiftCalendarApp_UITests;
+			name = LetsShiftUITests;
 			packageProductDependencies = (
 			);
-			productName = ShiftCalendarApp_UITests;
+			productName = LetsShiftUITests;
 			productReference = C297D8022E2E6C65009FC80E /* ShiftCalendarApp_UITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
-		C297D8F42E321657009FC80E /* ShiftCalendarWidgetExtensionExtension */ = {
+		C297D8F42E321657009FC80E /* LetsShiftWidgetExtension */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C297D90E2E321659009FC80E /* Build configuration list for PBXNativeTarget "ShiftCalendarWidgetExtensionExtension" */;
+			buildConfigurationList = C297D90E2E321659009FC80E /* Build configuration list for PBXNativeTarget "LetsShiftWidgetExtension" */;
 			buildPhases = (
 				C297D8F12E321657009FC80E /* Sources */,
 				C297D8F22E321657009FC80E /* Frameworks */,
@@ -343,10 +343,10 @@
 			fileSystemSynchronizedGroups = (
 				C297D8FB2E321657009FC80E /* ShiftCalendarWidgetExtension */,
 			);
-			name = ShiftCalendarWidgetExtensionExtension;
+			name = LetsShiftWidgetExtension;
 			packageProductDependencies = (
 			);
-			productName = ShiftCalendarWidgetExtensionExtension;
+			productName = LetsShiftWidgetExtension;
 			productReference = C297D8F52E321657009FC80E /* ShiftCalendarWidgetExtensionExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
@@ -619,13 +619,14 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = ShiftCalendarApp_/ShiftCalendarApp_.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1.0.0;
+				CURRENT_PROJECT_VERSION = 1.0.1;
 				DEVELOPMENT_TEAM = RPFY97S3D3;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UIStatusBarStyle = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -634,10 +635,14 @@
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.chaeeun.gyodaehaja;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "교대하자";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -648,13 +653,14 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = ShiftCalendarApp_/ShiftCalendarApp_.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1.0.0;
+				CURRENT_PROJECT_VERSION = 1.0.1;
 				DEVELOPMENT_TEAM = RPFY97S3D3;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UIStatusBarStyle = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -663,10 +669,14 @@
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.chaeeun.gyodaehaja;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "교대하자";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
@@ -749,11 +759,11 @@
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_ENTITLEMENTS = ShiftCalendarWidgetExtensionExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 1.0.1;
 				DEVELOPMENT_TEAM = RPFY97S3D3;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ShiftCalendarWidgetExtension/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = ShiftCalendarWidgetExtension;
+				INFOPLIST_KEY_CFBundleDisplayName = "교대하자 위젯";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -761,7 +771,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.chaeeun.gyodaehaja.widget;
+				PRODUCT_BUNDLE_IDENTIFIER = com.chaeeun.gyodaehaja.widgetextension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -777,11 +787,11 @@
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_ENTITLEMENTS = ShiftCalendarWidgetExtensionExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 1.0.1;
 				DEVELOPMENT_TEAM = RPFY97S3D3;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ShiftCalendarWidgetExtension/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = ShiftCalendarWidgetExtension;
+				INFOPLIST_KEY_CFBundleDisplayName = "교대하자 위젯";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -789,7 +799,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.chaeeun.gyodaehaja.widget;
+				PRODUCT_BUNDLE_IDENTIFIER = com.chaeeun.gyodaehaja.widgetextension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;

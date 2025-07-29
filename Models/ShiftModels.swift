@@ -82,7 +82,7 @@ extension Color {
 }
 
 // MARK: - Shift Models
-enum ShiftType: String, CaseIterable, Codable {
+enum ShiftType: String, CaseIterable, Codable, Identifiable {
     case 주간 = "주간"
     case 야간 = "야간"
     case 심야 = "심야"
@@ -90,6 +90,8 @@ enum ShiftType: String, CaseIterable, Codable {
     case 당직 = "당직"
     case 비번 = "비번"
     case 휴무 = "휴무"
+    
+    var id: String { rawValue }
     
     var color: Color {
         let defaultColor: Color
@@ -128,6 +130,78 @@ enum ShiftType: String, CaseIterable, Codable {
         case .휴무: return "휴무"
         }
     }
+    
+    var defaultShiftTime: ShiftTime {
+        switch self {
+        case .주간: return ShiftTime(startHour: 7, startMinute: 0, endHour: 15, endMinute: 0)
+        case .오후: return ShiftTime(startHour: 15, startMinute: 0, endHour: 23, endMinute: 0)
+        case .야간: return ShiftTime(startHour: 19, startMinute: 0, endHour: 7, endMinute: 0)
+        case .심야: return ShiftTime(startHour: 23, startMinute: 0, endHour: 7, endMinute: 0)
+        case .당직: return ShiftTime(startHour: 0, startMinute: 0, endHour: 24, endMinute: 0)
+        case .비번: return ShiftTime(startHour: 0, startMinute: 0, endHour: 0, endMinute: 0)
+        case .휴무: return ShiftTime(startHour: 0, startMinute: 0, endHour: 0, endMinute: 0)
+        }
+    }
+}
+
+// MARK: - Shift Time Structure
+struct ShiftTime: Codable {
+    var startHour: Int
+    var startMinute: Int
+    var endHour: Int
+    var endMinute: Int
+    
+    init(startHour: Int, startMinute: Int, endHour: Int, endMinute: Int) {
+        self.startHour = startHour
+        self.startMinute = startMinute
+        self.endHour = endHour
+        self.endMinute = endMinute
+    }
+    
+    var startTimeString: String {
+        return String(format: "%02d:%02d", startHour, startMinute)
+    }
+    
+    var endTimeString: String {
+        return String(format: "%02d:%02d", endHour, endMinute)
+    }
+    
+    var timeRangeString: String {
+        return "\(startTimeString)-\(endTimeString)"
+    }
+    
+    var workingHours: Double {
+        var hours = Double(endHour - startHour) + Double(endMinute - startMinute) / 60.0
+        
+        // 야간 근무의 경우 다음날로 넘어가는 경우 처리
+        if endHour < startHour {
+            hours += 24.0
+        }
+        
+        return max(0, hours)
+    }
+}
+
+// MARK: - Custom Shift Type
+struct CustomShiftType: Codable, Identifiable, Equatable {
+    var id = UUID()
+    var name: String
+    var color: String // hex color string
+    var workingHours: ShiftTime
+    
+    init(name: String, color: String = "77BBFB", workingHours: ShiftTime? = nil) {
+        self.name = name
+        self.color = color
+        self.workingHours = workingHours ?? ShiftTime(startHour: 9, startMinute: 0, endHour: 18, endMinute: 0)
+    }
+    
+    var displayColor: Color {
+        return Color(hex: color)
+    }
+    
+    static func == (lhs: CustomShiftType, rhs: CustomShiftType) -> Bool {
+        return lhs.id == rhs.id
+    }
 }
 
 // MARK: - Custom Shift Pattern
@@ -135,6 +209,7 @@ struct CustomShiftPattern: Codable, Identifiable {
     var id = UUID()
     var name: String
     var dayShifts: [ShiftType] // 각 일차별 근무 요소 (1일차, 2일차, 3일차...)
+    var customDayShifts: [CustomShiftType] // 커스텀 근무 요소들
     var cycleLength: Int // 패턴이 반복되는 주기 (일 단위)
     var startDate: Date // 패턴이 시작되는 날짜
     var description: String
@@ -155,6 +230,8 @@ struct CustomShiftPattern: Codable, Identifiable {
             self.dayShifts = dayShifts
         }
         
+        self.customDayShifts = []
+        
         // cycleLength 검증
         if cycleLength <= 0 {
             print("Warning: cycleLength is invalid, using dayShifts count")
@@ -173,6 +250,7 @@ struct CustomShiftPattern: Codable, Identifiable {
     init(name: String, shifts: [ShiftType], cycleLength: Int, description: String = "") {
         self.name = name
         self.dayShifts = shifts
+        self.customDayShifts = []
         self.cycleLength = cycleLength
         self.startDate = Date() // 기본값으로 오늘 날짜
         self.description = description.isEmpty ? "\(shifts.count)일 주기" : description
@@ -181,10 +259,21 @@ struct CustomShiftPattern: Codable, Identifiable {
     // 새로운 간단한 initializer
     init(cycleLength: Int, startDate: Date, dayShifts: [ShiftType]) {
         self.name = "커스텀 패턴"
-        self.cycleLength = max(2, min(7, cycleLength)) // 2-7일 제한
+        self.cycleLength = max(2, min(15, cycleLength)) // 2-15일 제한
         self.startDate = startDate
         self.dayShifts = dayShifts.isEmpty ? [.주간, .야간, .휴무] : dayShifts
+        self.customDayShifts = []
         self.description = "\(self.dayShifts.count)일 주기"
+    }
+    
+    // 커스텀 근무 요소를 지원하는 새로운 initializer
+    init(cycleLength: Int, startDate: Date, dayShifts: [ShiftType], customDayShifts: [CustomShiftType]) {
+        self.name = "커스텀 패턴"
+        self.cycleLength = max(2, min(15, cycleLength)) // 2-15일 제한
+        self.startDate = startDate
+        self.dayShifts = dayShifts
+        self.customDayShifts = customDayShifts
+        self.description = "\(dayShifts.count + customDayShifts.count)일 주기"
     }
     
     func toDictionary() -> [String: Any] {
@@ -192,6 +281,17 @@ struct CustomShiftPattern: Codable, Identifiable {
             "id": id.uuidString,
             "name": name,
             "dayShifts": dayShifts.map { $0.rawValue },
+            "customDayShifts": customDayShifts.map { [
+                "id": $0.id.uuidString,
+                "name": $0.name,
+                "color": $0.color,
+                "workingHours": [
+                    "startHour": $0.workingHours.startHour,
+                    "startMinute": $0.workingHours.startMinute,
+                    "endHour": $0.workingHours.endHour,
+                    "endMinute": $0.workingHours.endMinute
+                ]
+            ] },
             "cycleLength": cycleLength,
             "startDate": startDate.timeIntervalSince1970,
             "description": description
@@ -317,6 +417,12 @@ struct ShiftSettings: Codable {
     
     // 휴가 정보 추가
     var annualVacationDays: Int = 15  // 연간 휴가 일수
+    
+    // 근무 시간 설정 추가
+    var shiftTimes: [String: ShiftTime] = [:]
+    
+    // 커스텀 근무 요소 추가
+    var customShiftTypes: [CustomShiftType] = []
 }
 
 // MARK: - Calendar Extensions
@@ -340,7 +446,7 @@ class ShiftManager: ObservableObject {
     @Published var settings = ShiftSettings()
     @Published var shiftOffset: Int = 0 // 하루 밀기/당기기 오프셋
     
-    private let userDefaults = UserDefaults(suiteName: "group.com.chaeeun.ShiftCalendarApp")!
+    private let userDefaults = UserDefaults(suiteName: "group.com.chaeeun.gyodaehaja")!
     private let schedulesKey = "shiftSchedules"
     private let settingsKey = "shiftSettings"
     private let shiftOffsetKey = "shiftOffset"
@@ -643,6 +749,40 @@ class ShiftManager: ObservableObject {
         setColor(newColor, for: shiftType)
     }
     
+    // 근무 시간 관련 메서드들
+    func getShiftTime(for shiftType: ShiftType) -> ShiftTime {
+        let timeKey = getTimeKey(for: shiftType)
+        return settings.shiftTimes[timeKey] ?? shiftType.defaultShiftTime
+    }
+    
+    func updateShiftTime(_ newTime: ShiftTime, for shiftType: ShiftType) {
+        let timeKey = getTimeKey(for: shiftType)
+        settings.shiftTimes[timeKey] = newTime
+        saveData()
+    }
+    
+    func getShiftTimeRange(for shiftType: ShiftType) -> String {
+        let shiftTime = getShiftTime(for: shiftType)
+        return shiftTime.timeRangeString
+    }
+    
+    func getShiftWorkingHours(for shiftType: ShiftType) -> Double {
+        let shiftTime = getShiftTime(for: shiftType)
+        return shiftTime.workingHours
+    }
+    
+    private func getTimeKey(for shiftType: ShiftType) -> String {
+        switch shiftType {
+        case .야간: return "nightShift"
+        case .심야: return "deepNightShift"
+        case .주간: return "dayShift"
+        case .오후: return "afternoonShift"
+        case .당직: return "dutyShift"
+        case .휴무: return "offDuty"
+        case .비번: return "standby"
+        }
+    }
+    
     private func getNameKey(for shiftType: ShiftType) -> String {
         switch shiftType {
         case .야간: return "nightShift"
@@ -733,7 +873,7 @@ class ShiftManager: ObservableObject {
         print("UserDefaults synchronized")
 
         // App Group UserDefaults도 동기화
-        let appGroupDefaults = UserDefaults(suiteName: "group.com.chaeeun.ShiftCalendarApp")!
+        let appGroupDefaults = UserDefaults(suiteName: "group.com.chaeeun.gyodaehaja")!
         appGroupDefaults.synchronize()
 
         // 간단한 위젯 데이터 저장
@@ -854,26 +994,29 @@ class ShiftManager: ObservableObject {
         for schedule in schedules {
             var dailySalary: Double = 0.0
             
+            // 사용자 설정된 근무 시간 사용
+            let workingHours = getShiftWorkingHours(for: schedule.shiftType)
+            
             switch schedule.shiftType {
             case .주간:
-                // 주간근무: 09:00~18:00 (9시간) - 1.0배
-                dailySalary = 9.0 * hourlyWage * 1.0
+                // 주간근무: 기본 1.0배
+                dailySalary = workingHours * hourlyWage * 1.0
                 
             case .야간:
-                // 야간근무: 18:00~23:00 (5시간) - 1.5배
-                dailySalary = 5.0 * hourlyWage * settings.nightShiftRate
+                // 야간근무: 설정된 배율 적용
+                dailySalary = workingHours * hourlyWage * settings.nightShiftRate
                 
             case .심야:
-                // 심야근무: 23:00~익일 07:00 (8시간) - 2.0배
-                dailySalary = 8.0 * hourlyWage * settings.deepNightShiftRate
+                // 심야근무: 설정된 배율 적용
+                dailySalary = workingHours * hourlyWage * settings.deepNightShiftRate
                 
             case .당직:
-                // 당직근무: 24시간 대기 (4시간 실제근무 가정) - 1.0배
-                dailySalary = 4.0 * hourlyWage * 1.0
+                // 당직근무: 기본 1.0배
+                dailySalary = workingHours * hourlyWage * 1.0
                 
             case .오후:
-                // 오후근무: 주간과 동일하게 처리
-                dailySalary = 9.0 * hourlyWage * 1.0
+                // 오후근무: 기본 1.0배
+                dailySalary = workingHours * hourlyWage * 1.0
                 
             case .휴무, .비번:
                 // 휴무, 비번: 무급
@@ -1122,6 +1265,38 @@ class ShiftManager: ObservableObject {
             patternType: getPatternDisplayName(settings.shiftPatternType),
             shiftOffset: shiftOffset
         )
+    }
+    
+    // MARK: - Custom Shift Type Management
+    
+    // 커스텀 근무 요소 추가
+    func addCustomShiftType(_ customShiftType: CustomShiftType) {
+        settings.customShiftTypes.append(customShiftType)
+        saveData()
+    }
+    
+    // 커스텀 근무 요소 삭제
+    func removeCustomShiftType(_ customShiftType: CustomShiftType) {
+        settings.customShiftTypes.removeAll { $0.id == customShiftType.id }
+        saveData()
+    }
+    
+    // 커스텀 근무 요소 업데이트
+    func updateCustomShiftType(_ customShiftType: CustomShiftType) {
+        if let index = settings.customShiftTypes.firstIndex(where: { $0.id == customShiftType.id }) {
+            settings.customShiftTypes[index] = customShiftType
+            saveData()
+        }
+    }
+    
+    // 모든 커스텀 근무 요소 가져오기
+    func getAllCustomShiftTypes() -> [CustomShiftType] {
+        return settings.customShiftTypes
+    }
+    
+    // 이름으로 커스텀 근무 요소 찾기
+    func findCustomShiftType(by name: String) -> CustomShiftType? {
+        return settings.customShiftTypes.first { $0.name == name }
     }
 }
 

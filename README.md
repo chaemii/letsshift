@@ -1,4 +1,4 @@
-# 📅 Shift Calendar App
+# 📅 교대하자 (LetsShift)
 
 교대근무자를 위한 전문적인 스케줄 관리 iOS 앱입니다.
 
@@ -47,7 +47,7 @@ google.com, pub-8482538302895428, DIRECT, f08c47fec0942fa0
 ## 📁 프로젝트 구조
 
 ```
-ShiftCalendarApp_/
+LetsShift/
 ├── Views/                 # SwiftUI 뷰 파일들
 ├── Models/               # 데이터 모델
 ├── ViewModels/           # 뷰 모델

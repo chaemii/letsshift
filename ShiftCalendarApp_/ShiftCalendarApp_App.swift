@@ -8,7 +8,7 @@
 import SwiftUI
 
 @main
-struct ShiftCalendarApp_App: App {
+struct LetsShiftApp: App {
     @StateObject private var shiftManager = ShiftManager.shared
     
     var body: some Scene {

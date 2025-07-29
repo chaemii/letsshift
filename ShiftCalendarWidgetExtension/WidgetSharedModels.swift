@@ -77,7 +77,7 @@ enum ShiftType: String, CaseIterable, Codable {
     }
     
     private func getColorFromAppSettings() -> Color {
-        let userDefaults = UserDefaults(suiteName: "group.com.chaeeun.ShiftCalendarApp")!
+        let userDefaults = UserDefaults(suiteName: "group.com.chaeeun.gyodaehaja")!
         let settingsKey = "shiftSettings"
         
         if let data = userDefaults.data(forKey: settingsKey),
@@ -121,6 +121,18 @@ enum ShiftType: String, CaseIterable, Codable {
             return Color(hex: "F47F4C")
         case .비번:
             return Color(hex: "92E3A9")
+        }
+    }
+    
+    var timeRange: String {
+        switch self {
+        case .주간: return "07:00-15:00"
+        case .오후: return "15:00-23:00"
+        case .야간: return "19:00-07:00"
+        case .심야: return "23:00-07:00"
+        case .당직: return "24시간"
+        case .비번: return "대기"
+        case .휴무: return "휴무"
         }
     }
 }
