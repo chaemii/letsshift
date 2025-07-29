@@ -374,7 +374,7 @@ struct SettingsView: View {
                                     Spacer()
                                     
                                     Image(systemName: isWidgetRefreshing ? "checkmark.circle.fill" : "chevron.right")
-                                        .font(.caption)
+                                        .font(isWidgetRefreshing ? .title : .caption)
                                         .foregroundColor(isWidgetRefreshing ? .green : .charcoalBlack.opacity(0.5))
                                         .animation(.easeInOut(duration: 0.3), value: isWidgetRefreshing)
                                 }
