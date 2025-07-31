@@ -1,4 +1,4 @@
-# 📅 교대하자 (LetsShift)
+# 📅 LetsShift
 
 교대근무자를 위한 전문적인 스케줄 관리 iOS 앱입니다.
 

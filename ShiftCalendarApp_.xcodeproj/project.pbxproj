@@ -21,7 +21,7 @@
 		C297D8332E2E6D00009FC80E /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C297D8212E2E6D00009FC80E /* MainTabView.swift */; };
 		C297D8F82E321657009FC80E /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C297D8F72E321657009FC80E /* WidgetKit.framework */; };
 		C297D8FA2E321657009FC80E /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C297D8F92E321657009FC80E /* SwiftUI.framework */; };
-		C297D9092E321659009FC80E /* ShiftCalendarWidgetExtensionExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = C297D8F52E321657009FC80E /* ShiftCalendarWidgetExtensionExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		C297D9092E321659009FC80E /* LetsShiftWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = C297D8F52E321657009FC80E /* LetsShiftWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -55,7 +55,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				C297D9092E321659009FC80E /* ShiftCalendarWidgetExtensionExtension.appex in Embed Foundation Extensions */,
+				C297D9092E321659009FC80E /* LetsShiftWidgetExtension.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -63,9 +63,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		C297D7E62E2E6C63009FC80E /* ShiftCalendarApp_.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ShiftCalendarApp_.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		C297D7F82E2E6C65009FC80E /* ShiftCalendarApp_Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ShiftCalendarApp_Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		C297D8022E2E6C65009FC80E /* ShiftCalendarApp_UITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ShiftCalendarApp_UITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		C297D7E62E2E6C63009FC80E /* 교대하자.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "교대하자.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C297D7F82E2E6C65009FC80E /* LetsShiftTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LetsShiftTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		C297D8022E2E6C65009FC80E /* LetsShiftUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LetsShiftUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C297D81C2E2E6CF1009FC80E /* ShiftModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftModels.swift; sourceTree = "<group>"; };
 		C297D81E2E2E6D00009FC80E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		C297D81F2E2E6D00009FC80E /* CustomShiftInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomShiftInputView.swift; sourceTree = "<group>"; };
@@ -78,19 +78,19 @@
 		C297D8262E2E6D00009FC80E /* ShiftTypeSelectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftTypeSelectView.swift; sourceTree = "<group>"; };
 		C297D8272E2E6D00009FC80E /* StatisticsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsView.swift; sourceTree = "<group>"; };
 		C297D8282E2E6D00009FC80E /* TeamSelectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamSelectView.swift; sourceTree = "<group>"; };
-		C297D8F52E321657009FC80E /* ShiftCalendarWidgetExtensionExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ShiftCalendarWidgetExtensionExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		C297D8F52E321657009FC80E /* LetsShiftWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = LetsShiftWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		C297D8F72E321657009FC80E /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		C297D8F92E321657009FC80E /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		C297D9AE2E32F7CA009FC80E /* ShiftCalendarWidgetExtensionExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ShiftCalendarWidgetExtensionExtension.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		C297D90D2E321659009FC80E /* Exceptions for "ShiftCalendarWidgetExtension" folder in "ShiftCalendarWidgetExtensionExtension" target */ = {
+		C297D90D2E321659009FC80E /* Exceptions for "ShiftCalendarWidgetExtension" folder in "LetsShiftWidgetExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
 			);
-			target = C297D8F42E321657009FC80E /* ShiftCalendarWidgetExtensionExtension */;
+			target = C297D8F42E321657009FC80E /* LetsShiftWidgetExtension */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
@@ -113,7 +113,7 @@
 		C297D8FB2E321657009FC80E /* ShiftCalendarWidgetExtension */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				C297D90D2E321659009FC80E /* Exceptions for "ShiftCalendarWidgetExtension" folder in "ShiftCalendarWidgetExtensionExtension" target */,
+				C297D90D2E321659009FC80E /* Exceptions for "ShiftCalendarWidgetExtension" folder in "LetsShiftWidgetExtension" target */,
 			);
 			path = ShiftCalendarWidgetExtension;
 			sourceTree = "<group>";
@@ -177,10 +177,10 @@
 		C297D7E72E2E6C63009FC80E /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				C297D7E62E2E6C63009FC80E /* ShiftCalendarApp_.app */,
-				C297D7F82E2E6C65009FC80E /* ShiftCalendarApp_Tests.xctest */,
-				C297D8022E2E6C65009FC80E /* ShiftCalendarApp_UITests.xctest */,
-				C297D8F52E321657009FC80E /* ShiftCalendarWidgetExtensionExtension.appex */,
+				C297D7E62E2E6C63009FC80E /* 교대하자.app */,
+				C297D7F82E2E6C65009FC80E /* LetsShiftTests.xctest */,
+				C297D8022E2E6C65009FC80E /* LetsShiftUITests.xctest */,
+				C297D8F52E321657009FC80E /* LetsShiftWidgetExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -279,7 +279,7 @@
 			packageProductDependencies = (
 			);
 			productName = LetsShift;
-			productReference = C297D7E62E2E6C63009FC80E /* ShiftCalendarApp_.app */;
+			productReference = C297D7E62E2E6C63009FC80E /* 교대하자.app */;
 			productType = "com.apple.product-type.application";
 		};
 		C297D7F72E2E6C65009FC80E /* LetsShiftTests */ = {
@@ -302,7 +302,7 @@
 			packageProductDependencies = (
 			);
 			productName = LetsShiftTests;
-			productReference = C297D7F82E2E6C65009FC80E /* ShiftCalendarApp_Tests.xctest */;
+			productReference = C297D7F82E2E6C65009FC80E /* LetsShiftTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		C297D8012E2E6C65009FC80E /* LetsShiftUITests */ = {
@@ -325,7 +325,7 @@
 			packageProductDependencies = (
 			);
 			productName = LetsShiftUITests;
-			productReference = C297D8022E2E6C65009FC80E /* ShiftCalendarApp_UITests.xctest */;
+			productReference = C297D8022E2E6C65009FC80E /* LetsShiftUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 		C297D8F42E321657009FC80E /* LetsShiftWidgetExtension */ = {
@@ -347,7 +347,7 @@
 			packageProductDependencies = (
 			);
 			productName = LetsShiftWidgetExtension;
-			productReference = C297D8F52E321657009FC80E /* ShiftCalendarWidgetExtensionExtension.appex */;
+			productReference = C297D8F52E321657009FC80E /* LetsShiftWidgetExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
@@ -385,15 +385,17 @@
 			);
 			mainGroup = C297D7DD2E2E6C63009FC80E;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = C297D7E72E2E6C63009FC80E /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				C297D7E52E2E6C63009FC80E /* ShiftCalendarApp_ */,
-				C297D7F72E2E6C65009FC80E /* ShiftCalendarApp_Tests */,
-				C297D8012E2E6C65009FC80E /* ShiftCalendarApp_UITests */,
-				C297D8F42E321657009FC80E /* ShiftCalendarWidgetExtensionExtension */,
+				C297D7E52E2E6C63009FC80E /* LetsShift */,
+				C297D7F72E2E6C65009FC80E /* LetsShiftTests */,
+				C297D8012E2E6C65009FC80E /* LetsShiftUITests */,
+				C297D8F42E321657009FC80E /* LetsShiftWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -475,17 +477,17 @@
 /* Begin PBXTargetDependency section */
 		C297D7FA2E2E6C65009FC80E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = C297D7E52E2E6C63009FC80E /* ShiftCalendarApp_ */;
+			target = C297D7E52E2E6C63009FC80E /* LetsShift */;
 			targetProxy = C297D7F92E2E6C65009FC80E /* PBXContainerItemProxy */;
 		};
 		C297D8042E2E6C65009FC80E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = C297D7E52E2E6C63009FC80E /* ShiftCalendarApp_ */;
+			target = C297D7E52E2E6C63009FC80E /* LetsShift */;
 			targetProxy = C297D8032E2E6C65009FC80E /* PBXContainerItemProxy */;
 		};
 		C297D9082E321659009FC80E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = C297D8F42E321657009FC80E /* ShiftCalendarWidgetExtensionExtension */;
+			target = C297D8F42E321657009FC80E /* LetsShiftWidgetExtension */;
 			targetProxy = C297D9072E321659009FC80E /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -618,8 +620,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = ShiftCalendarApp_/ShiftCalendarApp_.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1.0.1;
+				CURRENT_PROJECT_VERSION = 1.1.0;
 				DEVELOPMENT_TEAM = RPFY97S3D3;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -629,13 +632,15 @@
 				INFOPLIST_KEY_UIStatusBarStyle = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.chaeeun.gyodaehaja;
-				PRODUCT_NAME = "교대하자";
+				PRODUCT_NAME = "LetsShift";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
@@ -652,8 +657,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = ShiftCalendarApp_/ShiftCalendarApp_.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1.0.1;
+				CURRENT_PROJECT_VERSION = 1.1.0;
 				DEVELOPMENT_TEAM = RPFY97S3D3;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -663,13 +669,15 @@
 				INFOPLIST_KEY_UIStatusBarStyle = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.chaeeun.gyodaehaja;
-				PRODUCT_NAME = "교대하자";
+				PRODUCT_NAME = "LetsShift";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
@@ -763,7 +771,7 @@
 				DEVELOPMENT_TEAM = RPFY97S3D3;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ShiftCalendarWidgetExtension/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "교대하자 위젯";
+				INFOPLIST_KEY_CFBundleDisplayName = "LetsShift 위젯";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -786,12 +794,13 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_ENTITLEMENTS = ShiftCalendarWidgetExtensionExtension.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1.0.1;
 				DEVELOPMENT_TEAM = RPFY97S3D3;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ShiftCalendarWidgetExtension/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "교대하자 위젯";
+				INFOPLIST_KEY_CFBundleDisplayName = "LetsShift 위젯";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -801,6 +810,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.chaeeun.gyodaehaja.widgetextension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -820,7 +830,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C297D80C2E2E6C65009FC80E /* Build configuration list for PBXNativeTarget "ShiftCalendarApp_" */ = {
+		C297D80C2E2E6C65009FC80E /* Build configuration list for PBXNativeTarget "LetsShift" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C297D80D2E2E6C65009FC80E /* Debug */,
@@ -829,7 +839,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C297D80F2E2E6C65009FC80E /* Build configuration list for PBXNativeTarget "ShiftCalendarApp_Tests" */ = {
+		C297D80F2E2E6C65009FC80E /* Build configuration list for PBXNativeTarget "LetsShiftTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C297D8102E2E6C65009FC80E /* Debug */,
@@ -838,7 +848,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C297D8122E2E6C65009FC80E /* Build configuration list for PBXNativeTarget "ShiftCalendarApp_UITests" */ = {
+		C297D8122E2E6C65009FC80E /* Build configuration list for PBXNativeTarget "LetsShiftUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C297D8132E2E6C65009FC80E /* Debug */,
@@ -847,7 +857,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C297D90E2E321659009FC80E /* Build configuration list for PBXNativeTarget "ShiftCalendarWidgetExtensionExtension" */ = {
+		C297D90E2E321659009FC80E /* Build configuration list for PBXNativeTarget "LetsShiftWidgetExtension" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C297D90B2E321659009FC80E /* Debug */,
