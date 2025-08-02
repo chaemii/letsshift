@@ -1,0 +1,48 @@
+//
+//  Localizable.strings
+//  ShiftCalendarApp_
+//
+//  Created by cham on 8/2/25.
+//
+
+/* Navigation & Tabs */
+"tab_my_schedule" = "My Schedule";
+"tab_team" = "Team";
+"tab_stats" = "Stats";
+"tab_settings" = "Settings";
+
+/* Onboarding */
+"welcome_title" = "Welcome! 👋";
+"welcome_subtitle" = "Manage your work schedule efficiently.\nFirst, please set up your work pattern.";
+"work_pattern_setup" = "Work Pattern Setup";
+"team_setup" = "Team Setup";
+
+/* Shift Patterns */
+"custom_pattern" = "Create Custom Pattern";
+"two_shift" = "2 Shift";
+"three_shift" = "3 Shift";
+"three_team_two_shift" = "3T 2S";
+"four_team_two_shift" = "4T 2S";
+"four_team_three_shift" = "4T 3S";
+"five_team_three_shift" = "5T 3S";
+
+/* Teams */
+"team_1" = "Team 1";
+"team_2" = "Team 2";
+"team_3" = "Team 3";
+"team_4" = "Team 4";
+"team_5" = "Team 5";
+
+/* Actions */
+"next" = "Next";
+"previous" = "Previous";
+"start" = "Start";
+"setup_later" = "Setup Later";
+
+/* ShiftTableView */
+"date" = "Date";
+"done" = "Done";
+"edit" = "Edit";
+"shift_up" = "Shift Up";
+"shift_down" = "Shift Down";
+"save" = "Save";

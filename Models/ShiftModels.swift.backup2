@@ -1,0 +1,178 @@
+import Foundation
+
+enum ShiftType: String, CaseIterable, Codable {
+    case 야간 = "야간"
+    case 심야 = "심야"
+    case 주간 = "주간"
+    case 휴무 = "휴무"
+    case 비번 = "비번"
+    
+    var color: Color {
+        switch self {
+        case .야간: return .nightShift
+        case .심야: return .deepNightShift
+        case .주간: return .dayShift
+        case .휴무: return .offDuty
+        case .비번: return .standby
+        }
+    }
+    
+    var workingHours: Int {
+        switch self {
+        case .야간, .심야, .주간: return 8
+        case .휴무, .비번: return 0
+        }
+    }
+    
+    var icon: String {
+        switch self {
+        case .야간: return "moon.fill"
+        case .심야: return "moon.stars.fill"
+        case .주간: return "sun.max.fill"
+        case .휴무: return "house.fill"
+        case .비번: return "phone.fill"
+        }
+    }
+}
+
+enum ShiftPattern: String, CaseIterable, Codable {
+    case fiveThree = "5조3교대"
+    case fourTwo = "4조2교대"
+    case threeShift = "3조교대"
+    case custom = "비주기적"
+    
+    var description: String {
+        return self.rawValue
+    }
+}
+
+struct ShiftSchedule: Identifiable, Codable {
+    var id = UUID()
+    var date: Date
+    var shiftType: ShiftType
+    var isOverridden: Bool = false
+    var teamNumber: Int?
+    
+    init(date: Date, shiftType: ShiftType, teamNumber: Int? = nil) {
+        self.id = UUID()
+        self.date = date
+        self.shiftType = shiftType
+        self.teamNumber = teamNumber
+    }
+    
+    enum CodingKeys: String, CodingKey {
+        case id, date, shiftType, isOverridden, teamNumber
+    }
+}
+
+struct ShiftSettings: Codable {
+    var selectedPattern: ShiftPattern = .fiveThree
+    var selectedTeam: Int = 1
+    var baseDate: Date = Date()
+    var colors: [String: String] = [
+        "nightShift": "#A2D2FF",
+        "deepNightShift": "#2C3E50",
+        "dayShift": "#FCDFA6",
+        "offDuty": "#92E3A9",
+        "standby": "#FF5D73"
+    ]
+    var notificationsEnabled: Bool = true
+    var notificationTime: Int = 30 // minutes before shift
+    var salary: Double = 30000000 // 연봉 (원)
+    var hourlyRate: Double {
+        return salary / (12 * 160) // 월 160시간 기준
+    }
+}
+
+class ShiftManager: ObservableObject {
+    @Published var settings = ShiftSettings()
+    @Published var schedules: [ShiftSchedule] = []
+    @Published var isFirstLaunch: Bool = true
+    
+    init() {
+        loadData()
+    }
+    
+    func generateSchedule() {
+        schedules.removeAll()
+        
+        let calendar = Calendar.current
+        let startDate = calendar.startOfMonth(for: Date())
+        let endDate = calendar.endOfMonth(for: Date().addingTimeInterval(365 * 24 * 60 * 60))
+        
+        var currentDate = startDate
+        
+        while currentDate <= endDate {
+            let shiftType = getShiftTypeForDate(currentDate)
+            let schedule = ShiftSchedule(date: currentDate, shiftType: shiftType, teamNumber: settings.selectedTeam)
+            schedules.append(schedule)
+            
+            currentDate = calendar.date(byAdding: .day, value: 1, to: currentDate) ?? currentDate
+        }
+    }
+    
+    private func getShiftTypeForDate(_ date: Date) -> ShiftType {
+        let calendar = Calendar.current
+        let daysSinceBase = calendar.dateComponents([.day], from: settings.baseDate, to: date).day ?? 0
+        
+        switch settings.selectedPattern {
+        case .fiveThree:
+            let pattern = [ShiftType.야간, .심야, .주간, .휴무, .비번]
+            return pattern[abs(daysSinceBase) % pattern.count]
+        case .fourTwo:
+            let pattern = [ShiftType.야간, .심야, .주간, .휴무]
+            return pattern[abs(daysSinceBase) % pattern.count]
+        case .threeShift:
+            let pattern = [ShiftType.야간, .주간, .휴무]
+            return pattern[abs(daysSinceBase) % pattern.count]
+        case .custom:
+            return .휴무
+        }
+    }
+    
+    // 통계 계산 메서드들
+    func totalWorkDays() -> Int {
+        return schedules.filter { $0.shiftType.workingHours > 0 }.count
+    }
+    
+    func totalWorkHours() -> Int {
+        return schedules.reduce(0) { $0 + $1.shiftType.workingHours }
+    }
+    
+    func shiftTypeBreakdown() -> [ShiftType: Int] {
+        var breakdown: [ShiftType: Int] = [:]
+        for shiftType in ShiftType.allCases {
+            breakdown[shiftType] = schedules.filter { $0.shiftType == shiftType }.count
+        }
+        return breakdown
+    }
+    
+    func overtimeHours() -> Int {
+        let standardHours = totalWorkDays() * 8
+        return max(0, totalWorkHours() - standardHours)
+    }
+    
+    func overtimePay() -> Double {
+        return Double(overtimeHours()) * settings.hourlyRate * 1.5
+    }
+    
+    func saveData() {
+        // Save to UserDefaults or Core Data
+    }
+    
+    func loadData() {
+        // Load from UserDefaults or Core Data
+    }
+}
+
+extension Calendar {
+    func startOfMonth(for date: Date) -> Date {
+        let components = dateComponents([.year, .month], from: date)
+        return self.date(from: components) ?? date
+    }
+    
+    func endOfMonth(for date: Date) -> Date {
+        let components = DateComponents(month: 1, day: -1)
+        return self.date(byAdding: components, to: startOfMonth(for: date)) ?? date
+    }
+}

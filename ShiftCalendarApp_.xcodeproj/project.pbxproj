@@ -1,0 +1,870 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		C23A7E9E2E3E4ED300B393F3 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = C23A7E9D2E3E4ED300B393F3 /* Localizable.strings */; };
+		C23A7E9F2E3E4F1900B393F3 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = C23A7E9D2E3E4ED300B393F3 /* Localizable.strings */; };
+		C297D81D2E2E6CF1009FC80E /* ShiftModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = C297D81C2E2E6CF1009FC80E /* ShiftModels.swift */; };
+		C297D8292E2E6D00009FC80E /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C297D8222E2E6D00009FC80E /* OnboardingView.swift */; };
+		C297D82A2E2E6D00009FC80E /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C297D8242E2E6D00009FC80E /* SettingsView.swift */; };
+		C297D82B2E2E6D00009FC80E /* CustomShiftInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C297D81F2E2E6D00009FC80E /* CustomShiftInputView.swift */; };
+		C297D82C2E2E6D00009FC80E /* MainCalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C297D8202E2E6D00009FC80E /* MainCalendarView.swift */; };
+		C297D82D2E2E6D00009FC80E /* ScheduleOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C297D8232E2E6D00009FC80E /* ScheduleOverlayView.swift */; };
+		C297D82E2E2E6D00009FC80E /* ShiftTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C297D8252E2E6D00009FC80E /* ShiftTableView.swift */; };
+		C297D82F2E2E6D00009FC80E /* ShiftTypeSelectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C297D8262E2E6D00009FC80E /* ShiftTypeSelectView.swift */; };
+		C297D8302E2E6D00009FC80E /* StatisticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C297D8272E2E6D00009FC80E /* StatisticsView.swift */; };
+		C297D8312E2E6D00009FC80E /* TeamSelectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C297D8282E2E6D00009FC80E /* TeamSelectView.swift */; };
+		C297D8322E2E6D00009FC80E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C297D81E2E2E6D00009FC80E /* ContentView.swift */; };
+		C297D8332E2E6D00009FC80E /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C297D8212E2E6D00009FC80E /* MainTabView.swift */; };
+		C297D8F82E321657009FC80E /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C297D8F72E321657009FC80E /* WidgetKit.framework */; };
+		C297D8FA2E321657009FC80E /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C297D8F92E321657009FC80E /* SwiftUI.framework */; };
+		C297D9092E321659009FC80E /* LetsShiftWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = C297D8F52E321657009FC80E /* LetsShiftWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		C297D7F92E2E6C65009FC80E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C297D7DE2E2E6C63009FC80E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C297D7E52E2E6C63009FC80E;
+			remoteInfo = ShiftCalendarApp_;
+		};
+		C297D8032E2E6C65009FC80E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C297D7DE2E2E6C63009FC80E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C297D7E52E2E6C63009FC80E;
+			remoteInfo = ShiftCalendarApp_;
+		};
+		C297D9072E321659009FC80E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C297D7DE2E2E6C63009FC80E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C297D8F42E321657009FC80E;
+			remoteInfo = ShiftCalendarWidgetExtensionExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		C297D90A2E321659009FC80E /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				C297D9092E321659009FC80E /* LetsShiftWidgetExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		C23A7E9C2E3E4ED300B393F3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		C23A7EA02E3E4F3200B393F3 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/Localizable.strings; sourceTree = "<group>"; };
+		C297D7E62E2E6C63009FC80E /* LetsShift.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LetsShift.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C297D7F82E2E6C65009FC80E /* LetsShiftTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LetsShiftTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		C297D8022E2E6C65009FC80E /* LetsShiftUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LetsShiftUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		C297D81C2E2E6CF1009FC80E /* ShiftModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftModels.swift; sourceTree = "<group>"; };
+		C297D81E2E2E6D00009FC80E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		C297D81F2E2E6D00009FC80E /* CustomShiftInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomShiftInputView.swift; sourceTree = "<group>"; };
+		C297D8202E2E6D00009FC80E /* MainCalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainCalendarView.swift; sourceTree = "<group>"; };
+		C297D8212E2E6D00009FC80E /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
+		C297D8222E2E6D00009FC80E /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
+		C297D8232E2E6D00009FC80E /* ScheduleOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleOverlayView.swift; sourceTree = "<group>"; };
+		C297D8242E2E6D00009FC80E /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		C297D8252E2E6D00009FC80E /* ShiftTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftTableView.swift; sourceTree = "<group>"; };
+		C297D8262E2E6D00009FC80E /* ShiftTypeSelectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftTypeSelectView.swift; sourceTree = "<group>"; };
+		C297D8272E2E6D00009FC80E /* StatisticsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsView.swift; sourceTree = "<group>"; };
+		C297D8282E2E6D00009FC80E /* TeamSelectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamSelectView.swift; sourceTree = "<group>"; };
+		C297D8F52E321657009FC80E /* LetsShiftWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = LetsShiftWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		C297D8F72E321657009FC80E /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		C297D8F92E321657009FC80E /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		C297D9AE2E32F7CA009FC80E /* ShiftCalendarWidgetExtensionExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ShiftCalendarWidgetExtensionExtension.entitlements; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		C297D90D2E321659009FC80E /* Exceptions for "ShiftCalendarWidgetExtension" folder in "LetsShiftWidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = C297D8F42E321657009FC80E /* LetsShiftWidgetExtension */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		C297D7E82E2E6C63009FC80E /* ShiftCalendarApp_ */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = ShiftCalendarApp_;
+			sourceTree = "<group>";
+		};
+		C297D7FB2E2E6C65009FC80E /* ShiftCalendarApp_Tests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = ShiftCalendarApp_Tests;
+			sourceTree = "<group>";
+		};
+		C297D8052E2E6C65009FC80E /* ShiftCalendarApp_UITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = ShiftCalendarApp_UITests;
+			sourceTree = "<group>";
+		};
+		C297D8FB2E321657009FC80E /* ShiftCalendarWidgetExtension */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				C297D90D2E321659009FC80E /* Exceptions for "ShiftCalendarWidgetExtension" folder in "LetsShiftWidgetExtension" target */,
+			);
+			path = ShiftCalendarWidgetExtension;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		C297D7E32E2E6C63009FC80E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C297D7F52E2E6C65009FC80E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C297D7FF2E2E6C65009FC80E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C297D8F22E321657009FC80E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C297D8FA2E321657009FC80E /* SwiftUI.framework in Frameworks */,
+				C297D8F82E321657009FC80E /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		C297D7DD2E2E6C63009FC80E = {
+			isa = PBXGroup;
+			children = (
+				C297D9AE2E32F7CA009FC80E /* ShiftCalendarWidgetExtensionExtension.entitlements */,
+				C297D81B2E2E6CD1009FC80E /* Notifications */,
+				C297D81A2E2E6CCC009FC80E /* Widget */,
+				C297D8162E2E6CBA009FC80E /* Views */,
+				C297D8152E2E6CAF009FC80E /* Models */,
+				C297D7E82E2E6C63009FC80E /* ShiftCalendarApp_ */,
+				C297D7FB2E2E6C65009FC80E /* ShiftCalendarApp_Tests */,
+				C297D8052E2E6C65009FC80E /* ShiftCalendarApp_UITests */,
+				C297D8FB2E321657009FC80E /* ShiftCalendarWidgetExtension */,
+				C297D8F62E321657009FC80E /* Frameworks */,
+				C297D7E72E2E6C63009FC80E /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		C297D7E72E2E6C63009FC80E /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				C297D7E62E2E6C63009FC80E /* LetsShift.app */,
+				C297D7F82E2E6C65009FC80E /* LetsShiftTests.xctest */,
+				C297D8022E2E6C65009FC80E /* LetsShiftUITests.xctest */,
+				C297D8F52E321657009FC80E /* LetsShiftWidgetExtension.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		C297D8152E2E6CAF009FC80E /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				C297D81C2E2E6CF1009FC80E /* ShiftModels.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		C297D8162E2E6CBA009FC80E /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				C23A7E9D2E3E4ED300B393F3 /* Localizable.strings */,
+				C297D81E2E2E6D00009FC80E /* ContentView.swift */,
+				C297D81F2E2E6D00009FC80E /* CustomShiftInputView.swift */,
+				C297D8202E2E6D00009FC80E /* MainCalendarView.swift */,
+				C297D8212E2E6D00009FC80E /* MainTabView.swift */,
+				C297D8222E2E6D00009FC80E /* OnboardingView.swift */,
+				C297D8232E2E6D00009FC80E /* ScheduleOverlayView.swift */,
+				C297D8242E2E6D00009FC80E /* SettingsView.swift */,
+				C297D8252E2E6D00009FC80E /* ShiftTableView.swift */,
+				C297D8262E2E6D00009FC80E /* ShiftTypeSelectView.swift */,
+				C297D8272E2E6D00009FC80E /* StatisticsView.swift */,
+				C297D8282E2E6D00009FC80E /* TeamSelectView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		C297D81A2E2E6CCC009FC80E /* Widget */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Widget;
+			sourceTree = "<group>";
+		};
+		C297D81B2E2E6CD1009FC80E /* Notifications */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Notifications;
+			sourceTree = "<group>";
+		};
+		C297D8F62E321657009FC80E /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				C297D8F72E321657009FC80E /* WidgetKit.framework */,
+				C297D8F92E321657009FC80E /* SwiftUI.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		C297D7E52E2E6C63009FC80E /* LetsShift */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C297D80C2E2E6C65009FC80E /* Build configuration list for PBXNativeTarget "LetsShift" */;
+			buildPhases = (
+				C297D7E22E2E6C63009FC80E /* Sources */,
+				C297D7E32E2E6C63009FC80E /* Frameworks */,
+				C297D7E42E2E6C63009FC80E /* Resources */,
+				C297D90A2E321659009FC80E /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				C297D9082E321659009FC80E /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				C297D7E82E2E6C63009FC80E /* ShiftCalendarApp_ */,
+			);
+			name = LetsShift;
+			packageProductDependencies = (
+			);
+			productName = LetsShift;
+			productReference = C297D7E62E2E6C63009FC80E /* LetsShift.app */;
+			productType = "com.apple.product-type.application";
+		};
+		C297D7F72E2E6C65009FC80E /* LetsShiftTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C297D80F2E2E6C65009FC80E /* Build configuration list for PBXNativeTarget "LetsShiftTests" */;
+			buildPhases = (
+				C297D7F42E2E6C65009FC80E /* Sources */,
+				C297D7F52E2E6C65009FC80E /* Frameworks */,
+				C297D7F62E2E6C65009FC80E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				C297D7FA2E2E6C65009FC80E /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				C297D7FB2E2E6C65009FC80E /* ShiftCalendarApp_Tests */,
+			);
+			name = LetsShiftTests;
+			packageProductDependencies = (
+			);
+			productName = LetsShiftTests;
+			productReference = C297D7F82E2E6C65009FC80E /* LetsShiftTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		C297D8012E2E6C65009FC80E /* LetsShiftUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C297D8122E2E6C65009FC80E /* Build configuration list for PBXNativeTarget "LetsShiftUITests" */;
+			buildPhases = (
+				C297D7FE2E2E6C65009FC80E /* Sources */,
+				C297D7FF2E2E6C65009FC80E /* Frameworks */,
+				C297D8002E2E6C65009FC80E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				C297D8042E2E6C65009FC80E /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				C297D8052E2E6C65009FC80E /* ShiftCalendarApp_UITests */,
+			);
+			name = LetsShiftUITests;
+			packageProductDependencies = (
+			);
+			productName = LetsShiftUITests;
+			productReference = C297D8022E2E6C65009FC80E /* LetsShiftUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+		C297D8F42E321657009FC80E /* LetsShiftWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C297D90E2E321659009FC80E /* Build configuration list for PBXNativeTarget "LetsShiftWidgetExtension" */;
+			buildPhases = (
+				C297D8F12E321657009FC80E /* Sources */,
+				C297D8F22E321657009FC80E /* Frameworks */,
+				C297D8F32E321657009FC80E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				C297D8FB2E321657009FC80E /* ShiftCalendarWidgetExtension */,
+			);
+			name = LetsShiftWidgetExtension;
+			packageProductDependencies = (
+			);
+			productName = LetsShiftWidgetExtension;
+			productReference = C297D8F52E321657009FC80E /* LetsShiftWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		C297D7DE2E2E6C63009FC80E /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1640;
+				LastUpgradeCheck = 1640;
+				TargetAttributes = {
+					C297D7E52E2E6C63009FC80E = {
+						CreatedOnToolsVersion = 16.4;
+					};
+					C297D7F72E2E6C65009FC80E = {
+						CreatedOnToolsVersion = 16.4;
+						TestTargetID = C297D7E52E2E6C63009FC80E;
+					};
+					C297D8012E2E6C65009FC80E = {
+						CreatedOnToolsVersion = 16.4;
+						TestTargetID = C297D7E52E2E6C63009FC80E;
+					};
+					C297D8F42E321657009FC80E = {
+						CreatedOnToolsVersion = 16.4;
+					};
+				};
+			};
+			buildConfigurationList = C297D7E12E2E6C63009FC80E /* Build configuration list for PBXProject "ShiftCalendarApp_" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+				ko,
+			);
+			mainGroup = C297D7DD2E2E6C63009FC80E;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = C297D7E72E2E6C63009FC80E /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				C297D7E52E2E6C63009FC80E /* LetsShift */,
+				C297D7F72E2E6C65009FC80E /* LetsShiftTests */,
+				C297D8012E2E6C65009FC80E /* LetsShiftUITests */,
+				C297D8F42E321657009FC80E /* LetsShiftWidgetExtension */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		C297D7E42E2E6C63009FC80E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C23A7E9E2E3E4ED300B393F3 /* Localizable.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C297D7F62E2E6C65009FC80E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C297D8002E2E6C65009FC80E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C297D8F32E321657009FC80E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C23A7E9F2E3E4F1900B393F3 /* Localizable.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		C297D7E22E2E6C63009FC80E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C297D81D2E2E6CF1009FC80E /* ShiftModels.swift in Sources */,
+				C297D8292E2E6D00009FC80E /* OnboardingView.swift in Sources */,
+				C297D82A2E2E6D00009FC80E /* SettingsView.swift in Sources */,
+				C297D82B2E2E6D00009FC80E /* CustomShiftInputView.swift in Sources */,
+				C297D82C2E2E6D00009FC80E /* MainCalendarView.swift in Sources */,
+				C297D82D2E2E6D00009FC80E /* ScheduleOverlayView.swift in Sources */,
+				C297D82E2E2E6D00009FC80E /* ShiftTableView.swift in Sources */,
+				C297D82F2E2E6D00009FC80E /* ShiftTypeSelectView.swift in Sources */,
+				C297D8302E2E6D00009FC80E /* StatisticsView.swift in Sources */,
+				C297D8312E2E6D00009FC80E /* TeamSelectView.swift in Sources */,
+				C297D8322E2E6D00009FC80E /* ContentView.swift in Sources */,
+				C297D8332E2E6D00009FC80E /* MainTabView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C297D7F42E2E6C65009FC80E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C297D7FE2E2E6C65009FC80E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C297D8F12E321657009FC80E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		C297D7FA2E2E6C65009FC80E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C297D7E52E2E6C63009FC80E /* LetsShift */;
+			targetProxy = C297D7F92E2E6C65009FC80E /* PBXContainerItemProxy */;
+		};
+		C297D8042E2E6C65009FC80E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C297D7E52E2E6C63009FC80E /* LetsShift */;
+			targetProxy = C297D8032E2E6C65009FC80E /* PBXContainerItemProxy */;
+		};
+		C297D9082E321659009FC80E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C297D8F42E321657009FC80E /* LetsShiftWidgetExtension */;
+			targetProxy = C297D9072E321659009FC80E /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		C23A7E9D2E3E4ED300B393F3 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				C23A7E9C2E3E4ED300B393F3 /* en */,
+				C23A7EA02E3E4F3200B393F3 /* ko */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		C297D80A2E2E6C65009FC80E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = RPFY97S3D3;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		C297D80B2E2E6C65009FC80E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = RPFY97S3D3;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		C297D80D2E2E6C65009FC80E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = ShiftCalendarApp_/ShiftCalendarApp_.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1.1.0;
+				DEVELOPMENT_TEAM = RPFY97S3D3;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UIStatusBarStyle = "";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.chaeeun.gyodaehaja;
+				PRODUCT_NAME = LetsShift;
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		C297D80E2E2E6C65009FC80E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = ShiftCalendarApp_/ShiftCalendarApp_.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1.1.0;
+				DEVELOPMENT_TEAM = RPFY97S3D3;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UIStatusBarStyle = "";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.chaeeun.gyodaehaja;
+				PRODUCT_NAME = LetsShift;
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		C297D8102E2E6C65009FC80E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = RPFY97S3D3;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.chaeeun.ShiftCalendarApp-Tests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ShiftCalendarApp_.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ShiftCalendarApp_";
+			};
+			name = Debug;
+		};
+		C297D8112E2E6C65009FC80E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = RPFY97S3D3;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.chaeeun.ShiftCalendarApp-Tests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ShiftCalendarApp_.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ShiftCalendarApp_";
+			};
+			name = Release;
+		};
+		C297D8132E2E6C65009FC80E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = RPFY97S3D3;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.chaeeun.ShiftCalendarApp-UITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = ShiftCalendarApp_;
+			};
+			name = Debug;
+		};
+		C297D8142E2E6C65009FC80E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = RPFY97S3D3;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.chaeeun.ShiftCalendarApp-UITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = ShiftCalendarApp_;
+			};
+			name = Release;
+		};
+		C297D90B2E321659009FC80E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = ShiftCalendarWidgetExtensionExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1.0.1;
+				DEVELOPMENT_TEAM = RPFY97S3D3;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ShiftCalendarWidgetExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "LetsShift 위젯";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.chaeeun.gyodaehaja.widgetextension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		C297D90C2E321659009FC80E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = ShiftCalendarWidgetExtensionExtension.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1.0.1;
+				DEVELOPMENT_TEAM = RPFY97S3D3;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ShiftCalendarWidgetExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "LetsShift 위젯";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.chaeeun.gyodaehaja.widgetextension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		C297D7E12E2E6C63009FC80E /* Build configuration list for PBXProject "ShiftCalendarApp_" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C297D80A2E2E6C65009FC80E /* Debug */,
+				C297D80B2E2E6C65009FC80E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C297D80C2E2E6C65009FC80E /* Build configuration list for PBXNativeTarget "LetsShift" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C297D80D2E2E6C65009FC80E /* Debug */,
+				C297D80E2E2E6C65009FC80E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C297D80F2E2E6C65009FC80E /* Build configuration list for PBXNativeTarget "LetsShiftTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C297D8102E2E6C65009FC80E /* Debug */,
+				C297D8112E2E6C65009FC80E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C297D8122E2E6C65009FC80E /* Build configuration list for PBXNativeTarget "LetsShiftUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C297D8132E2E6C65009FC80E /* Debug */,
+				C297D8142E2E6C65009FC80E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C297D90E2E321659009FC80E /* Build configuration list for PBXNativeTarget "LetsShiftWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C297D90B2E321659009FC80E /* Debug */,
+				C297D90C2E321659009FC80E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = C297D7DE2E2E6C63009FC80E /* Project object */;
+}

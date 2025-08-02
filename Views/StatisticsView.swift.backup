@@ -1,0 +1,231 @@
+import SwiftUI
+
+struct StatisticsView: View {
+    @EnvironmentObject var shiftManager: ShiftManager
+    @State private var selectedPeriod: StatisticsPeriod = .month
+    
+    enum StatisticsPeriod: String, CaseIterable {
+        case week = "주간"
+        case month = "월간"
+        case year = "연간"
+    }
+    
+    var body: some View {
+        NavigationView {
+            ScrollView {
+                VStack(spacing: 20) {
+                    // Period selector
+                    Picker("기간", selection: $selectedPeriod) {
+                        ForEach(StatisticsPeriod.allCases, id: \.self) { period in
+                            Text(period.rawValue).tag(period)
+                        }
+                    }
+                    .pickerStyle(SegmentedPickerStyle())
+                    .padding()
+                    
+                    // Summary cards
+                    LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 2), spacing: 15) {
+                        StatCard(
+                            title: "총 근무일",
+                            value: "\(totalWorkDays)",
+                            color: .blue
+                        )
+                        
+                        StatCard(
+                            title: "총 근무시간",
+                            value: "\(totalWorkHours)시간",
+                            color: .green
+                        )
+                        
+                        StatCard(
+                            title: "야간 근무",
+                            value: "\(nightShiftDays)일",
+                            color: .purple
+                        )
+                        
+                        StatCard(
+                            title: "휴무일",
+                            value: "\(offDays)일",
+                            color: .orange
+                        )
+                    }
+                    .padding(.horizontal)
+                    
+                    // Shift type breakdown
+                    VStack(alignment: .leading, spacing: 15) {
+                        Text("근무 유형별 통계")
+                            .font(.headline)
+                            .padding(.horizontal)
+                        
+                        VStack(spacing: 10) {
+                            ForEach(ShiftType.allCases, id: \.self) { shiftType in
+                                ShiftTypeStatRow(
+                                    shiftType: shiftType,
+                                    count: shiftTypeCount(for: shiftType),
+                                    totalHours: shiftTypeHours(for: shiftType)
+                                )
+                            }
+                        }
+                        .padding(.horizontal)
+                    }
+                    
+                    // Weekly breakdown
+                    VStack(alignment: .leading, spacing: 15) {
+                        Text("주별 근무 현황")
+                            .font(.headline)
+                            .padding(.horizontal)
+                        
+                        VStack(spacing: 8) {
+                            ForEach(weeklyStats, id: \.week) { stat in
+                                WeeklyStatRow(stat: stat)
+                            }
+                        }
+                        .padding(.horizontal)
+                    }
+                }
+            }
+            .navigationTitle("근무 통계")
+            .navigationBarTitleDisplayMode(.inline)
+        }
+    }
+    
+    private var totalWorkDays: Int {
+        return shiftManager.schedules.filter { $0.shiftType != .휴무 && $0.shiftType != .비번 }.count
+    }
+    
+    private var totalWorkHours: Int {
+        return shiftManager.schedules.reduce(0) { $0 + $1.shiftType.workingHours }
+    }
+    
+    private var nightShiftDays: Int {
+        return shiftManager.schedules.filter { $0.shiftType == .야간 || $0.shiftType == .심야 }.count
+    }
+    
+    private var offDays: Int {
+        return shiftManager.schedules.filter { $0.shiftType == .휴무 }.count
+    }
+    
+    private func shiftTypeCount(for shiftType: ShiftType) -> Int {
+        return shiftManager.schedules.filter { $0.shiftType == shiftType }.count
+    }
+    
+    private func shiftTypeHours(for shiftType: ShiftType) -> Int {
+        return shiftTypeCount(for: shiftType) * shiftType.workingHours
+    }
+    
+    private var weeklyStats: [WeeklyStat] {
+        let calendar = Calendar.current
+        let groupedSchedules = Dictionary(grouping: shiftManager.schedules) { schedule in
+            calendar.startOfWeek(for: schedule.date)
+        }
+        
+        return groupedSchedules.map { weekStart, schedules in
+            let workDays = schedules.filter { $0.shiftType != .휴무 && $0.shiftType != .비번 }.count
+            let totalHours = schedules.reduce(0) { $0 + $1.shiftType.workingHours }
+            
+            return WeeklyStat(
+                week: weekStart,
+                workDays: workDays,
+                totalHours: totalHours
+            )
+        }.sorted { $0.week < $1.week }
+    }
+}
+
+struct StatCard: View {
+    let title: String
+    let value: String
+    let color: Color
+    
+    var body: some View {
+        VStack(spacing: 8) {
+            Text(title)
+                .font(.caption)
+                .foregroundColor(.secondary)
+            
+            Text(value)
+                .font(.title2)
+                .fontWeight(.bold)
+                .foregroundColor(color)
+        }
+        .frame(maxWidth: .infinity)
+        .padding()
+        .background(Color.gray.opacity(0.1))
+        .cornerRadius(12)
+    }
+}
+
+struct ShiftTypeStatRow: View {
+    let shiftType: ShiftType
+    let count: Int
+    let totalHours: Int
+    
+    var body: some View {
+        HStack {
+            Circle()
+                .fill(Color(shiftType.color))
+                .frame(width: 12, height: 12)
+            
+            Text(shiftType.rawValue)
+                .font(.body)
+            
+            Spacer()
+            
+            VStack(alignment: .trailing, spacing: 2) {
+                Text("\(count)일")
+                    .font(.body)
+                    .fontWeight(.medium)
+                
+                Text("\(totalHours)시간")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+        }
+        .padding(.vertical, 4)
+    }
+}
+
+struct WeeklyStat: Identifiable {
+    let id = UUID()
+    let week: Date
+    let workDays: Int
+    let totalHours: Int
+}
+
+struct WeeklyStatRow: View {
+    let stat: WeeklyStat
+    
+    private let calendar = Calendar.current
+    
+    var body: some View {
+        HStack {
+            Text(weekString)
+                .font(.body)
+                .frame(width: 80, alignment: .leading)
+            
+            Spacer()
+            
+            Text("\(stat.workDays)일")
+                .font(.body)
+                .frame(width: 40, alignment: .trailing)
+            
+            Text("\(stat.totalHours)시간")
+                .font(.body)
+                .frame(width: 60, alignment: .trailing)
+        }
+        .padding(.vertical, 4)
+    }
+    
+    private var weekString: String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "M/d"
+        return formatter.string(from: stat.week)
+    }
+}
+
+extension Calendar {
+    func startOfWeek(for date: Date) -> Date {
+        let components = dateComponents([.yearForWeekOfYear, .weekOfYear], from: date)
+        return self.date(from: components) ?? date
+    }
+}

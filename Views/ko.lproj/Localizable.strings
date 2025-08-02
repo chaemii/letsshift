@@ -1,0 +1,48 @@
+//
+//  Localizable.strings
+//  ShiftCalendarApp_
+//
+//  Created by cham on 8/2/25.
+//
+
+/* Navigation & Tabs */
+"tab_my_schedule" = "내스케줄";
+"tab_team" = "팀근무표";
+"tab_stats" = "통계";
+"tab_settings" = "근무설정";
+
+/* Onboarding */
+"welcome_title" = "환영합니다! 👋";
+"welcome_subtitle" = "근무 일정을 효율적으로 관리해보세요.\n먼저 근무 패턴을 설정해주세요.";
+"work_pattern_setup" = "근무 패턴 설정";
+"team_setup" = "소속 팀 설정";
+
+/* Shift Patterns */
+"custom_pattern" = "나만의 패턴 만들기";
+"two_shift" = "2교대";
+"three_shift" = "3교대";
+"three_team_two_shift" = "3조 2교대";
+"four_team_two_shift" = "4조 2교대";
+"four_team_three_shift" = "4조 3교대";
+"five_team_three_shift" = "5조 3교대";
+
+/* Teams */
+"team_1" = "1조";
+"team_2" = "2조";
+"team_3" = "3조";
+"team_4" = "4조";
+"team_5" = "5조";
+
+/* Actions */
+"next" = "다음";
+"previous" = "이전";
+"start" = "시작하기";
+"setup_later" = "나중에 설정하기";
+
+/* ShiftTableView */
+"date" = "날짜";
+"done" = "완료";
+"edit" = "편집";
+"shift_up" = "하루 당기기";
+"shift_down" = "하루 밀기";
+"save" = "저장";
