@@ -87,6 +87,47 @@ struct WidgetLocalizer {
             }
         }
     }
+    
+    // Helper functions for converting Korean text to English
+    static func convertTeamName(_ koreanName: String) -> String {
+        if isEnglish {
+            // Convert Korean team names to English
+            if koreanName.contains("조") {
+                let teamNumber = koreanName.replacingOccurrences(of: "조", with: "")
+                return "Team \(teamNumber)"
+            }
+            return koreanName
+        }
+        return koreanName
+    }
+    
+    static func convertPatternName(_ koreanName: String) -> String {
+        if isEnglish {
+            // Convert Korean pattern names to English
+            switch koreanName {
+            case "2교대": return "2 Shift"
+            case "3교대": return "3 Shift"
+            case "3조 2교대": return "3T 2S"
+            case "4교대": return "4 Shift"
+            case "나만의 패턴": return "Custom Pattern"
+            default: return koreanName
+            }
+        }
+        return koreanName
+    }
+    
+    static func convertWeekday(_ day: String) -> String {
+        if isEnglish {
+            // Convert Korean/English weekday names to two-letter English abbreviations
+            let map: [String: String] = [
+                "월": "MO", "화": "TU", "수": "WE", "목": "TH", "금": "FR", "토": "SA", "일": "SU",
+                "Mon": "MO", "Tue": "TU", "Wed": "WE", "Thu": "TH", "Fri": "FR", "Sat": "SA", "Sun": "SU"
+            ]
+            if let result = map[day] { return result }
+            return day
+        }
+        return day
+    }
 }
 
 // String extension for localized shift names
