@@ -28,7 +28,7 @@ struct SettingsView: View {
                                 Image(systemName: "calendar.badge.clock")
                                     .foregroundColor(Color(hex: "1A1A1A"))
                                     .font(.title3)
-                                Text("근무 설정")
+                                Text(NSLocalizedString("work_settings", comment: "Work settings"))
                                     .font(.headline)
                                     .fontWeight(.bold)
                                     .foregroundColor(.charcoalBlack)
@@ -43,7 +43,7 @@ struct SettingsView: View {
                                         .frame(width: 24)
                                     
                                     VStack(alignment: .leading, spacing: 2) {
-                        Text("근무 패턴")
+                        Text(NSLocalizedString("work_pattern", comment: "Work pattern"))
                                             .font(.subheadline)
                                             .fontWeight(.medium)
                                             .foregroundColor(.charcoalBlack)
@@ -74,7 +74,7 @@ struct SettingsView: View {
                                         .frame(width: 20)
                                     
                                     VStack(alignment: .leading, spacing: 2) {
-                                        Text("소속 팀")
+                                        Text(NSLocalizedString("team", comment: "Team"))
                                             .font(.subheadline)
                                             .fontWeight(.medium)
                                             .foregroundColor(.charcoalBlack)
@@ -105,7 +105,7 @@ struct SettingsView: View {
                                             .font(.title3)
                                             .frame(width: 24)
                                         
-                                        Text("커스텀 패턴 편집")
+                                        Text(NSLocalizedString("custom_pattern_edit", comment: "Edit custom pattern"))
                                             .font(.subheadline)
                                             .fontWeight(.medium)
                                             .foregroundColor(Color(hex: "1A1A1A"))
@@ -129,7 +129,7 @@ struct SettingsView: View {
                                     Image(systemName: "paintbrush")
                                         .foregroundColor(Color(hex: "1A1A1A"))
                                         .font(.title3)
-                                    Text("근무요소 수정")
+                                    Text(NSLocalizedString("edit_shifts", comment: "Edit shifts"))
                                         .font(.headline)
                                         .fontWeight(.bold)
                                         .foregroundColor(.charcoalBlack)
@@ -186,7 +186,7 @@ struct SettingsView: View {
                                 Image(systemName: "dollarsign.circle")
                                     .foregroundColor(Color(hex: "1A1A1A"))
                                     .font(.title3)
-                                Text("급여 정보")
+                                Text(NSLocalizedString("salary_info", comment: "Salary info"))
                                     .font(.headline)
                                     .fontWeight(.bold)
                                     .foregroundColor(.charcoalBlack)
@@ -196,43 +196,43 @@ struct SettingsView: View {
                             VStack(spacing: 8) {
                                 SalaryInfoRow(
                                     icon: "creditcard",
-                                    title: "기본급",
-                                    value: shiftManager.settings.baseSalary > 0 ? "\(Int(shiftManager.settings.baseSalary))원" : "설정 안됨",
+                                    title: NSLocalizedString("base_salary", comment: "Base salary"),
+                                    value: shiftManager.settings.baseSalary > 0 ? "\(Int(shiftManager.settings.baseSalary))\(NSLocalizedString("won_currency", comment: "Won currency"))" : NSLocalizedString("not_set", comment: "Not set"),
                                     isHighlighted: false
                                 )
                                 
                                 SalaryInfoRow(
                                     icon: "moon",
-                                    title: "야간 근무 수당",
-                                    value: "\(String(format: "%.1f", shiftManager.settings.nightShiftRate))배",
+                                    title: NSLocalizedString("night_allowance", comment: "Night allowance"),
+                                    value: "\(String(format: "%.1f", shiftManager.settings.nightShiftRate))x",
                                     isHighlighted: true
                                 )
                                 
                                 SalaryInfoRow(
                                     icon: "moon.stars",
-                                    title: "심야 근무 수당",
-                                    value: "\(String(format: "%.1f", shiftManager.settings.deepNightShiftRate))배",
+                                    title: NSLocalizedString("deep_night_allowance", comment: "Deep night allowance"),
+                                    value: "\(String(format: "%.1f", shiftManager.settings.deepNightShiftRate))x",
                                     isHighlighted: true
                                 )
                                 
                                 SalaryInfoRow(
                                     icon: "clock.arrow.circlepath",
-                                    title: "초과근무 배율",
-                                    value: "\(String(format: "%.1f", shiftManager.settings.overtimeRate))배",
+                                    title: NSLocalizedString("overtime_rate", comment: "Overtime rate"),
+                                    value: "\(String(format: "%.1f", shiftManager.settings.overtimeRate))x",
                                     isHighlighted: false
                                 )
                                 
                                 SalaryInfoRow(
                                     icon: "calendar.badge.plus",
-                                    title: "휴일 근무 수당",
-                                    value: "\(String(format: "%.1f", shiftManager.settings.holidayWorkRate))배",
+                                    title: NSLocalizedString("holiday_allowance", comment: "Holiday allowance"),
+                                    value: "\(String(format: "%.1f", shiftManager.settings.holidayWorkRate))x",
                                     isHighlighted: false
                                 )
                                 
                                 SalaryInfoRow(
                                     icon: "airplane",
-                                    title: "연간 휴가 일수",
-                                    value: "\(shiftManager.settings.annualVacationDays)일",
+                                    title: NSLocalizedString("annual_leave_days", comment: "Annual leave days"),
+                                    value: "\(shiftManager.settings.annualVacationDays)D",
                                     isHighlighted: false
                                 )
                             }
@@ -249,7 +249,7 @@ struct SettingsView: View {
                                         .font(.title3)
                                         .frame(width: 24)
                                     
-                                    Text("급여 정보 수정")
+                                    Text(NSLocalizedString("edit_salary_info", comment: "Edit salary info"))
                                         .font(.subheadline)
                                         .fontWeight(.medium)
                                         .foregroundColor(Color(hex: "1A1A1A"))
@@ -271,7 +271,7 @@ struct SettingsView: View {
                                 Image(systemName: "ellipsis.circle")
                                     .foregroundColor(Color(hex: "1A1A1A"))
                                     .font(.title3)
-                                Text("기타")
+                                Text(NSLocalizedString("other", comment: "Other"))
                                     .font(.headline)
                         .fontWeight(.bold)
                         .foregroundColor(.charcoalBlack)
@@ -288,11 +288,11 @@ struct SettingsView: View {
                                         .frame(width: 24)
                                     
                                     VStack(alignment: .leading, spacing: 2) {
-                                        Text("근무표 공유하기")
+                                        Text(NSLocalizedString("share_schedule", comment: "Share schedule"))
                                             .font(.subheadline)
                                             .fontWeight(.medium)
                                             .foregroundColor(.charcoalBlack)
-                                        Text("근무표를 링크로 공유")
+                                        Text(NSLocalizedString("share_schedule_description", comment: "Share schedule description"))
                                     .font(.caption)
                                     .foregroundColor(.charcoalBlack.opacity(0.7))
                             }
@@ -362,11 +362,11 @@ struct SettingsView: View {
                                         .frame(width: 24)
                                     
                                     VStack(alignment: .leading, spacing: 2) {
-                                        Text("위젯 새로고침")
+                                        Text(NSLocalizedString("widget_refresh", comment: "Widget refresh"))
                                             .font(.subheadline)
                                             .fontWeight(.medium)
                     .foregroundColor(.charcoalBlack)
-                                        Text("위젯 업데이트")
+                                        Text(NSLocalizedString("widget_refresh_description", comment: "Widget refresh description"))
                                             .font(.caption)
                                             .foregroundColor(.charcoalBlack.opacity(0.7))
                                     }
@@ -396,11 +396,11 @@ struct SettingsView: View {
                                         .frame(width: 24)
                                     
                                     VStack(alignment: .leading, spacing: 2) {
-                                        Text("데이터 초기화")
+                                        Text(NSLocalizedString("data_reset", comment: "Data reset"))
                                             .font(.subheadline)
                                             .fontWeight(.medium)
                                             .foregroundColor(.charcoalBlack)
-                                        Text("모든 데이터 삭제")
+                                        Text(NSLocalizedString("data_reset_description", comment: "Data reset description"))
                             .font(.caption)
                             .foregroundColor(.charcoalBlack.opacity(0.7))
                     }
@@ -613,7 +613,7 @@ struct ShiftPatternSelectionSheet: View {
                     
                     // Next button
                     Button(action: nextToTeamSelection) {
-                        Text("다음")
+                        Text(NSLocalizedString("next", comment: "Next"))
                             .font(.headline)
                             .fontWeight(.semibold)
                             .foregroundColor(.white)
@@ -645,7 +645,7 @@ struct ShiftPatternSelectionSheet: View {
                     // Action buttons
                     VStack(spacing: 12) {
                         Button(action: applySettings) {
-                            Text("적용")
+                            Text(NSLocalizedString("apply", comment: "Apply"))
                                 .font(.headline)
                                 .fontWeight(.semibold)
                                 .foregroundColor(.white)
@@ -656,7 +656,7 @@ struct ShiftPatternSelectionSheet: View {
                         }
                         
                         Button(action: backToPatternSelection) {
-                            Text("이전")
+                            Text(NSLocalizedString("previous", comment: "Previous"))
                                 .font(.headline)
                                 .fontWeight(.semibold)
                                 .foregroundColor(.charcoalBlack)
@@ -740,12 +740,12 @@ struct TeamSelectionSheet: View {
             VStack(spacing: 0) {
                 // Header
                 VStack(spacing: 15) {
-                    Text("소속 팀 선택")
+                    Text(NSLocalizedString("team_selection", comment: "Team selection"))
                         .font(.title2)
                         .fontWeight(.bold)
                         .foregroundColor(.charcoalBlack)
                     
-                    Text("소속 팀을 선택하세요")
+                    Text(NSLocalizedString("team_selection_description", comment: "Team selection description"))
                         .font(.subheadline)
                         .foregroundColor(.charcoalBlack.opacity(0.7))
                 }
@@ -771,7 +771,7 @@ struct TeamSelectionSheet: View {
                 
                 // Apply button
                 Button(action: applyTeam) {
-                    Text("적용")
+                    Text(NSLocalizedString("apply", comment: "Apply"))
                         .font(.headline)
                         .fontWeight(.semibold)
                         .foregroundColor(.white)
@@ -851,7 +851,7 @@ struct PatternOptionCard: View {
                 // Pattern preview
                 HStack(spacing: 8) {
                     ForEach(pattern.generatePattern(), id: \.self) { shiftType in
-                        Text(shiftType.rawValue)
+                        Text(shiftType.displayName)
                             .font(.caption)
                             .fontWeight(.medium)
                             .foregroundColor(.white)
@@ -884,12 +884,12 @@ struct TeamOptionCard: View {
         Button(action: action) {
             HStack {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("\(teamNumber)조")
+                    Text(NSLocalizedString("team_\(teamNumber)", comment: "Team name"))
                         .font(.headline)
                         .fontWeight(.semibold)
                         .foregroundColor(.charcoalBlack)
                     
-                    Text("소속 팀")
+                    Text(NSLocalizedString("team", comment: "Team"))
                         .font(.subheadline)
                         .foregroundColor(.charcoalBlack.opacity(0.7))
                 }
@@ -937,7 +937,7 @@ struct SalarySetupView: View {
                                 Image(systemName: "dollarsign.circle")
                                     .foregroundColor(Color(hex: "1A1A1A"))
                                     .font(.title3)
-                                Text("기본 급여")
+                                Text(NSLocalizedString("basic_salary", comment: "Basic salary"))
                                     .font(.headline)
                                     .fontWeight(.bold)
                                     .foregroundColor(.charcoalBlack)
@@ -945,7 +945,7 @@ struct SalarySetupView: View {
                             
                             VStack(spacing: 12) {
                                 SalaryInputField(
-                                    title: "기본급 (원)",
+                                    title: NSLocalizedString("base_salary_input", comment: "Base salary input"),
                                     value: $baseSalary,
                                     placeholder: "예: 3000000"
                                 )
@@ -962,7 +962,7 @@ struct SalarySetupView: View {
                                 Image(systemName: "clock.arrow.circlepath")
                                     .foregroundColor(Color(hex: "1A1A1A"))
                                     .font(.title3)
-                                Text("근무 수당")
+                                Text(NSLocalizedString("work_allowances", comment: "Work allowances"))
                                     .font(.headline)
                                     .fontWeight(.bold)
                                     .foregroundColor(.charcoalBlack)
@@ -970,25 +970,25 @@ struct SalarySetupView: View {
                             
                             VStack(spacing: 12) {
                                 SalaryInputField(
-                                    title: "야간 근무 수당 (배율)",
+                                    title: NSLocalizedString("night_allowance_input", comment: "Night allowance input"),
                                     value: $nightShiftRate,
                                     placeholder: "예: 1.5"
                                 )
                                 
                                 SalaryInputField(
-                                    title: "심야 근무 수당 (배율)",
+                                    title: NSLocalizedString("deep_night_allowance_input", comment: "Deep night allowance input"),
                                     value: $deepNightShiftRate,
                                     placeholder: "예: 2.0"
                                 )
                                 
                                 SalaryInputField(
-                                    title: "초과근무 배율",
+                                    title: NSLocalizedString("overtime_rate_input", comment: "Overtime rate input"),
                                     value: $overtimeRate,
                                     placeholder: "예: 1.5"
                                 )
                                 
                                 SalaryInputField(
-                                    title: "휴일 근무 수당 (배율)",
+                                    title: NSLocalizedString("holiday_allowance_input", comment: "Holiday allowance input"),
                                     value: $holidayWorkRate,
                                     placeholder: "예: 1.5"
                                 )
@@ -1005,7 +1005,7 @@ struct SalarySetupView: View {
                                 Image(systemName: "calendar.badge.plus")
                                     .foregroundColor(Color(hex: "1A1A1A"))
                                     .font(.title3)
-                                Text("휴가 정보")
+                                Text(NSLocalizedString("vacation_info", comment: "Vacation info"))
                                     .font(.headline)
                                     .fontWeight(.bold)
                                     .foregroundColor(.charcoalBlack)
@@ -1013,7 +1013,7 @@ struct SalarySetupView: View {
                             
                             VStack(spacing: 12) {
                                 SalaryInputField(
-                                    title: "연간 휴가 일수",
+                                    title: NSLocalizedString("annual_leave_days_input", comment: "Annual leave days input"),
                                     value: $annualVacationDays,
                                     placeholder: "예: 15"
                                 )
@@ -1236,7 +1236,7 @@ struct CustomPatternEditView: View {
                                                         .fill(shiftType.color)
                                                         .frame(width: 16, height: 16)
                                                     
-                                                    Text(shiftType.rawValue)
+                                                    Text(shiftType.displayName)
                                                         .font(.subheadline)
                                                         .fontWeight(.medium)
                                                         .foregroundColor(.charcoalBlack)
@@ -1482,7 +1482,7 @@ struct ShiftTypePickerView: View {
                                         .fill(shiftType.color)
                                         .frame(width: 20, height: 20)
                                     
-                                    Text(shiftType.rawValue)
+                                    Text(shiftType.displayName)
                                         .font(.subheadline)
                                         .fontWeight(.medium)
                                         .foregroundColor(.charcoalBlack)

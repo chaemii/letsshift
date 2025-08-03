@@ -12,14 +12,14 @@ struct StatisticsView: View {
                 // Tab selector - 로컬라이제이션 적용
                 HStack(spacing: 0) {
                     TabButton(
-                        title: getLocalizedText("월간", englishText: "Monthly"),
+                        title: NSLocalizedString("monthly", comment: "Monthly"),
                         isSelected: selectedTab == .monthly
                     ) {
                         selectedTab = .monthly
                     }
                     
                     TabButton(
-                        title: getLocalizedText("연간", englishText: "Yearly"),
+                        title: NSLocalizedString("yearly", comment: "Yearly"),
                         isSelected: selectedTab == .yearly
                     ) {
                         selectedTab = .yearly
@@ -84,11 +84,6 @@ struct StatisticsView: View {
         }
     }
     
-    // 간단한 로컬라이제이션 헬퍼 함수
-    private func getLocalizedText(_ korean: String, englishText: String) -> String {
-        let language = Locale.current.language.languageCode?.identifier ?? "ko"
-        return language == "en" ? englishText : korean
-    }
     
     // 기간 표시를 로컬라이제이션 대응
     private var periodString: String {
@@ -266,7 +261,7 @@ struct WeeklyWorkHoursChart: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 15) {
-            Text("요일별 근무 시간")
+            Text(NSLocalizedString("daily_work_hours", comment: "Daily work hours"))
                 .font(.headline)
                 .fontWeight(.bold)
                 .foregroundColor(.charcoalBlack)
@@ -300,7 +295,7 @@ struct WeeklyWorkHoursChart: View {
                         }
                         .frame(height: 20)
                         
-                        Text("\(hours)시간")
+                        Text("\(hours)\(NSLocalizedString("hours_suffix", comment: "Hours suffix"))")
                             .font(.system(size: 14, weight: .medium))
                             .foregroundColor(.charcoalBlack)
                             .frame(width: 50, alignment: .trailing)
@@ -358,12 +353,12 @@ struct ExpectedSalaryCard: View {
                     .foregroundColor(.pointColor)
                 
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("예상 급여")
+                    Text(NSLocalizedString("estimated_salary", comment: "Estimated salary"))
                         .font(.headline)
                         .fontWeight(.bold)
                         .foregroundColor(.charcoalBlack)
                     
-                    Text("여러 수당 조건으로 인해 실제 수령액과 차이가 있을 수 있습니다.")
+                    Text(NSLocalizedString("salary_disclaimer", comment: "Salary disclaimer"))
                         .font(.caption2)
                         .foregroundColor(.charcoalBlack.opacity(0.5))
                 }
@@ -523,7 +518,7 @@ struct VacationStatisticsCard: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
-            Text("연간 휴가 현황")
+            Text(NSLocalizedString("annual_vacation_status", comment: "Annual vacation status"))
                 .font(.system(size: 20, weight: .semibold))
                 .foregroundColor(.charcoalBlack)
             
@@ -533,14 +528,14 @@ struct VacationStatisticsCard: View {
             let remainingVacationDays = shiftManager.getRemainingVacationDays(for: year)
             
             VStack(spacing: 15) {
-                VacationStatRow(title: "총 연차", value: "\(totalVacationDays)일", icon: "calendar.badge.plus")
-                VacationStatRow(title: "사용한 연차", value: "\(usedVacationDays)일", icon: "calendar.badge.checkmark")
-                VacationStatRow(title: "남은 연차", value: "\(remainingVacationDays)일", icon: "calendar.badge.clock")
+                VacationStatRow(title: NSLocalizedString("total_annual_leave", comment: "Total annual leave"), value: "\(totalVacationDays)\(NSLocalizedString("days_suffix", comment: "Days suffix"))", icon: "calendar.badge.plus")
+                VacationStatRow(title: NSLocalizedString("used_annual_leave", comment: "Used annual leave"), value: "\(usedVacationDays)\(NSLocalizedString("days_suffix", comment: "Days suffix"))", icon: "calendar.badge.checkmark")
+                VacationStatRow(title: NSLocalizedString("remaining_annual_leave", comment: "Remaining annual leave"), value: "\(remainingVacationDays)\(NSLocalizedString("days_suffix", comment: "Days suffix"))", icon: "calendar.badge.clock")
             }
             
             // 월별 휴가 사용 현황
             VStack(alignment: .leading, spacing: 15) {
-                Text("월별 휴가 사용 현황")
+                Text(NSLocalizedString("monthly_vacation_usage", comment: "Monthly vacation usage"))
                     .font(.system(size: 16, weight: .semibold))
                     .foregroundColor(.charcoalBlack)
                 
@@ -549,11 +544,11 @@ struct VacationStatisticsCard: View {
                         let monthlyVacations = shiftManager.getVacationDaysByMonth(for: year)[month] ?? 0
                         if monthlyVacations > 0 {
                             VStack(spacing: 5) {
-                                Text("\(month)월")
+                                Text("\(month)\(NSLocalizedString("month_suffix", comment: "Month suffix"))")
                                     .font(.system(size: 12, weight: .medium))
                                     .foregroundColor(.charcoalBlack.opacity(0.7))
                                 
-                                Text("\(monthlyVacations)일")
+                                Text("\(monthlyVacations)\(NSLocalizedString("days_suffix", comment: "Days suffix"))")
                                     .font(.system(size: 14, weight: .bold))
                                     .foregroundColor(.pointColor)
                             }
@@ -604,12 +599,12 @@ struct SalarySetupPrompt: View {
                 .font(.system(size: 40))
                 .foregroundColor(.charcoalBlack.opacity(0.5))
             
-            Text("급여 정보를 설정해주세요")
+            Text(NSLocalizedString("setup_salary_info", comment: "Setup salary info"))
                 .font(.headline)
                 .fontWeight(.medium)
                 .foregroundColor(.charcoalBlack)
             
-            Text("설정에서 급여 정보를 입력하면\n예상 급여를 확인할 수 있습니다")
+            Text(NSLocalizedString("setup_salary_description", comment: "Setup salary description"))
                 .font(.caption)
                 .foregroundColor(.charcoalBlack.opacity(0.7))
                 .multilineTextAlignment(.center)

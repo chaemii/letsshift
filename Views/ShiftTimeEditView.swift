@@ -37,7 +37,7 @@ struct ShiftTimeEditView: View {
                                         .fontWeight(.bold)
                                         .foregroundColor(.charcoalBlack)
                                     
-                                    Text("근무 시간 설정")
+                                    Text(NSLocalizedString("work_time_setting", comment: "Work time setting"))
                                         .font(.subheadline)
                                         .foregroundColor(.charcoalBlack.opacity(0.7))
                                 }
@@ -56,7 +56,7 @@ struct ShiftTimeEditView: View {
                                 Image(systemName: "sunrise")
                                     .foregroundColor(Color(hex: "1A1A1A"))
                                     .font(.title3)
-                                Text("시작 시간")
+                                Text(NSLocalizedString("start_time", comment: "Start time"))
                                     .font(.headline)
                                     .fontWeight(.bold)
                                     .foregroundColor(.charcoalBlack)
@@ -65,14 +65,14 @@ struct ShiftTimeEditView: View {
                             HStack(spacing: 20) {
                                 // 시작 시간
                                 VStack(alignment: .leading, spacing: 8) {
-                                    Text("시")
+                                    Text(NSLocalizedString("hour_unit", comment: "Hour unit"))
                                         .font(.subheadline)
                                         .fontWeight(.medium)
                                         .foregroundColor(.charcoalBlack)
                                     
-                                    Picker("시작 시간", selection: $startHour) {
+                                    Picker(NSLocalizedString("start_hour", comment: "Start hour"), selection: $startHour) {
                                         ForEach(0..<24, id: \.self) { hour in
-                                            Text("\(hour)시").tag(hour)
+                                            Text("\(hour)\(NSLocalizedString("hour_suffix", comment: "Hour suffix"))").tag(hour)
                                         }
                                     }
                                     .pickerStyle(WheelPickerStyle())
@@ -81,14 +81,14 @@ struct ShiftTimeEditView: View {
                                 }
                                 
                                 VStack(alignment: .leading, spacing: 8) {
-                                    Text("분")
+                                    Text(NSLocalizedString("minute_unit", comment: "Minute unit"))
                                         .font(.subheadline)
                                         .fontWeight(.medium)
                                         .foregroundColor(.charcoalBlack)
                                     
-                                    Picker("시작 분", selection: $startMinute) {
+                                    Picker(NSLocalizedString("start_minute", comment: "Start minute"), selection: $startMinute) {
                                         ForEach([0, 15, 30, 45], id: \.self) { minute in
-                                            Text("\(minute)분").tag(minute)
+                                            Text("\(minute)\(NSLocalizedString("minute_suffix", comment: "Minute suffix"))").tag(minute)
                                         }
                                     }
                                     .pickerStyle(WheelPickerStyle())
@@ -108,7 +108,7 @@ struct ShiftTimeEditView: View {
                                 Image(systemName: "sunset")
                                     .foregroundColor(Color(hex: "1A1A1A"))
                                     .font(.title3)
-                                Text("종료 시간")
+                                Text(NSLocalizedString("end_time", comment: "End time"))
                                     .font(.headline)
                                     .fontWeight(.bold)
                                     .foregroundColor(.charcoalBlack)
@@ -117,14 +117,14 @@ struct ShiftTimeEditView: View {
                             HStack(spacing: 20) {
                                 // 종료 시간
                                 VStack(alignment: .leading, spacing: 8) {
-                                    Text("시")
+                                    Text(NSLocalizedString("hour_unit", comment: "Hour unit"))
                                         .font(.subheadline)
                                         .fontWeight(.medium)
                                         .foregroundColor(.charcoalBlack)
                                     
-                                    Picker("종료 시간", selection: $endHour) {
+                                    Picker(NSLocalizedString("end_hour", comment: "End hour"), selection: $endHour) {
                                         ForEach(0..<25, id: \.self) { hour in
-                                            Text("\(hour)시").tag(hour)
+                                            Text("\(hour)\(NSLocalizedString("hour_suffix", comment: "Hour suffix"))").tag(hour)
                                         }
                                     }
                                     .pickerStyle(WheelPickerStyle())
@@ -133,14 +133,14 @@ struct ShiftTimeEditView: View {
                                 }
                                 
                                 VStack(alignment: .leading, spacing: 8) {
-                                    Text("분")
+                                    Text(NSLocalizedString("minute_unit", comment: "Minute unit"))
                                         .font(.subheadline)
                                         .fontWeight(.medium)
                                         .foregroundColor(.charcoalBlack)
                                     
-                                    Picker("종료 분", selection: $endMinute) {
+                                    Picker(NSLocalizedString("end_minute", comment: "End minute"), selection: $endMinute) {
                                         ForEach([0, 15, 30, 45], id: \.self) { minute in
-                                            Text("\(minute)분").tag(minute)
+                                            Text("\(minute)\(NSLocalizedString("minute_suffix", comment: "Minute suffix"))").tag(minute)
                                         }
                                     }
                                     .pickerStyle(WheelPickerStyle())
@@ -160,7 +160,7 @@ struct ShiftTimeEditView: View {
                                 Image(systemName: "clock")
                                     .foregroundColor(Color(hex: "1A1A1A"))
                                     .font(.title3)
-                                Text("설정 미리보기")
+                                Text(NSLocalizedString("settings_preview", comment: "Settings preview"))
                                     .font(.headline)
                                     .fontWeight(.bold)
                                     .foregroundColor(.charcoalBlack)
@@ -168,7 +168,7 @@ struct ShiftTimeEditView: View {
                             
                             VStack(spacing: 12) {
                                 HStack {
-                                    Text("근무 시간")
+                                    Text(NSLocalizedString("work_hours", comment: "Work hours"))
                                         .font(.subheadline)
                                         .foregroundColor(.charcoalBlack.opacity(0.7))
                                     
@@ -181,13 +181,13 @@ struct ShiftTimeEditView: View {
                                 }
                                 
                                 HStack {
-                                    Text("근무 시간")
+                                    Text(NSLocalizedString("work_hours", comment: "Work hours"))
                                         .font(.subheadline)
                                         .foregroundColor(.charcoalBlack.opacity(0.7))
                                     
                                     Spacer()
                                     
-                                    Text("\(String(format: "%.1f", calculateWorkingHours()))시간")
+                                    Text("\(String(format: "%.1f", calculateWorkingHours()))\(NSLocalizedString("hours_suffix", comment: "Hours suffix"))")
                                         .font(.subheadline)
                                         .fontWeight(.medium)
                                         .foregroundColor(.charcoalBlack)
@@ -209,7 +209,7 @@ struct ShiftTimeEditView: View {
                                     .foregroundColor(.blue)
                                     .font(.subheadline)
                                 
-                                Text("기본값으로 되돌리기")
+                                Text(NSLocalizedString("reset_to_default", comment: "Reset to default"))
                                     .font(.subheadline)
                                     .fontWeight(.medium)
                                     .foregroundColor(.blue)
@@ -227,18 +227,18 @@ struct ShiftTimeEditView: View {
                 }
             }
             .background(Color(hex: "EFF0F2"))
-            .navigationTitle("근무 시간 설정")
+            .navigationTitle(NSLocalizedString("work_time_setting", comment: "Work time setting"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button("취소") {
+                    Button(NSLocalizedString("cancel", comment: "Cancel")) {
                         dismiss()
                     }
                     .foregroundColor(.charcoalBlack)
                 }
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("저장") {
+                    Button(NSLocalizedString("save", comment: "Save")) {
                         saveShiftTime()
                         dismiss()
                     }

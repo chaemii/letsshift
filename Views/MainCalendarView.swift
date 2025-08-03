@@ -42,7 +42,7 @@ struct MainCalendarView: View {
                     // Day headers - 영어 대응
                     HStack(spacing: 0) {
                         ForEach(Array(daysInWeek.enumerated()), id: \.offset) { index, day in
-                            Text(getLocalizedDayName(day))
+                            Text(NSLocalizedString("day_\(getDayKey(day))", comment: "Day of week"))
                                 .frame(maxWidth: .infinity)
                                 .font(.system(size: 14, weight: .medium))
                                 .foregroundColor(index == 0 ? .pointColor : index == 6 ? .mainColorDark : .charcoalBlack.opacity(0.6))
@@ -83,7 +83,7 @@ struct MainCalendarView: View {
                 
                 // Monthly Statistics - 영어 대응
                 VStack(spacing: 20) {
-                    Text(getLocalizedText("이번 달 통계", englishText: "This Month Stats"))
+                    Text(NSLocalizedString("this_month_stats", comment: "This month stats"))
                         .font(.headline)
                         .fontWeight(.bold)
                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -91,13 +91,13 @@ struct MainCalendarView: View {
                     
                     HStack(spacing: 25) {
                         StatItem(
-                            title: getLocalizedText("총 근무일", englishText: "Total Work D"), 
-                            value: "\(monthlyWorkDays)\(getLocalizedText("일", englishText: "D"))", 
+                            title: NSLocalizedString("total_work_days", comment: "Total work days"), 
+                            value: "\(monthlyWorkDays)\(NSLocalizedString("days_suffix", comment: "Days suffix"))", 
                             icon: "calendar"
                         )
                         StatItem(
-                            title: getLocalizedText("총 근무시간", englishText: "Total Work h"), 
-                            value: "\(monthlyWorkHours)\(getLocalizedText("시간", englishText: "h"))", 
+                            title: NSLocalizedString("total_work_hours", comment: "Total work hours"), 
+                            value: "\(monthlyWorkHours)\(NSLocalizedString("hours_suffix", comment: "Hours suffix"))", 
                             icon: "clock"
                         )
                         StatItem(
@@ -121,7 +121,7 @@ struct MainCalendarView: View {
             .background(Color(hex: "EFF0F2"))
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(getLocalizedText("일정 추가", englishText: "Add Schedule")) {
+                    Button(NSLocalizedString("add_schedule", comment: "Add schedule")) {
                         showingOverlay = true
                     }
                     .foregroundColor(.charcoalBlack)
@@ -138,28 +138,18 @@ struct MainCalendarView: View {
         }
     }
     
-    // 간단한 로컬라이제이션 헬퍼 함수
-    private func getLocalizedText(_ korean: String, englishText: String) -> String {
-        let language = Locale.current.language.languageCode?.identifier ?? "ko"
-        return language == "en" ? englishText : korean
-    }
-    
-    // 요일 이름 로컬라이제이션
-    private func getLocalizedDayName(_ koreanDay: String) -> String {
-        let language = Locale.current.language.languageCode?.identifier ?? "ko"
-        if language == "en" {
-            switch koreanDay {
-            case "일": return "S"
-            case "월": return "M"
-            case "화": return "T"
-            case "수": return "W"
-            case "목": return "T"
-            case "금": return "F"
-            case "토": return "S"
-            default: return koreanDay
-            }
+    // 요일 키 변환 함수
+    private func getDayKey(_ koreanDay: String) -> String {
+        switch koreanDay {
+        case "일": return "sun"
+        case "월": return "mon"
+        case "화": return "tue"
+        case "수": return "wed"
+        case "목": return "thu"
+        case "금": return "fri"
+        case "토": return "sat"
+        default: return "sun"
         }
-        return koreanDay
     }
     
     // 월/년 표시를 로컬라이제이션 대응
@@ -282,7 +272,7 @@ struct CalendarDayView: View {
                     .frame(maxWidth: .infinity, alignment: .center)
                 
                 // Shift type label - 고정 높이 설정
-                Text(shiftType.rawValue)
+                Text(shiftType.displayName)
                     .font(.system(size: 11, weight: .medium))
                     .foregroundColor(getShiftTypeTextColor())
                     .padding(.horizontal, 4)
@@ -307,13 +297,13 @@ struct CalendarDayView: View {
                 
                 // Vacation indicator - 고정 높이 설정
                 if isVacation {
-                    Text("휴가")
+                    Text(NSLocalizedString("vacation", comment: "Vacation"))
                         .font(.system(size: 9, weight: .bold))
                         .foregroundColor(.pointColor)
                         .frame(height: 14)
                         .frame(maxWidth: .infinity, alignment: .center)
                 } else if isVolunteerWork {
-                    Text("자원 근무")
+                    Text(NSLocalizedString("volunteer_work", comment: "Volunteer work"))
                         .font(.system(size: 9, weight: .bold))
                         .foregroundColor(.pointColor)
                         .frame(height: 14)

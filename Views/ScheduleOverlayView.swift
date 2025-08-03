@@ -22,7 +22,7 @@ struct ScheduleOverlayView: View {
                 }
                 
                 VStack(spacing: 15) {
-                    Text("근무 유형 선택")
+                    Text(NSLocalizedString("select_work_type", comment: "Select work type"))
                         .font(.headline)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .foregroundColor(.charcoalBlack)
@@ -45,13 +45,13 @@ struct ScheduleOverlayView: View {
                 
                 // 초과근무시간 섹션 - 절대 고정 위치
                 VStack(spacing: 15) {
-                    Text("초과근무시간")
+                    Text(NSLocalizedString("overtime_hours", comment: "Overtime hours"))
                         .font(.headline)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .foregroundColor(.charcoalBlack)
                     
                     HStack {
-                        TextField("시간", text: $overtimeHours)
+                        TextField(NSLocalizedString("hours_suffix", comment: "Hours"), text: $overtimeHours)
                             .keyboardType(.numberPad)
                             .padding(.horizontal, 16)
                             .padding(.vertical, 12)
@@ -61,7 +61,7 @@ struct ScheduleOverlayView: View {
                             .frame(maxWidth: .infinity, maxHeight: .infinity)
                             .frame(width: UIScreen.main.bounds.width * 0.7)
                         
-                        Text("시간")
+                        Text(NSLocalizedString("hours_suffix", comment: "Hours"))
                             .foregroundColor(.charcoalBlack.opacity(0.7))
                         
                         Spacer()
@@ -71,13 +71,13 @@ struct ScheduleOverlayView: View {
                 
                 // 고정된 공간 - 휴가 설정 섹션의 최대 높이만큼 항상 확보
                 VStack(spacing: 15) {
-                    Text("휴가 설정")
+                    Text(NSLocalizedString("vacation_settings", comment: "Vacation settings"))
                         .font(.headline)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .foregroundColor(.charcoalBlack)
                     
                     HStack {
-                        Toggle("휴가로 설정", isOn: $isVacation)
+                        Toggle(NSLocalizedString("set_as_vacation", comment: "Set as vacation"), isOn: $isVacation)
                             .toggleStyle(SwitchToggleStyle(tint: .mainColor))
                         
                         Spacer()
@@ -121,13 +121,13 @@ struct ScheduleOverlayView: View {
                 }
                 
                 VStack(spacing: 15) {
-                    Text("자원 근무 설정")
+                    Text(NSLocalizedString("volunteer_work_settings", comment: "Volunteer work settings"))
                         .font(.headline)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .foregroundColor(.charcoalBlack)
                     
                     HStack {
-                        Toggle("자원 근무로 설정", isOn: $isVolunteerWork)
+                        Toggle(NSLocalizedString("set_as_volunteer", comment: "Set as volunteer"), isOn: $isVolunteerWork)
                             .toggleStyle(SwitchToggleStyle(tint: .mainColor))
                         
                         Spacer()
@@ -140,14 +140,14 @@ struct ScheduleOverlayView: View {
                 Spacer()
                 
                 VStack(spacing: 15) {
-                    Button("저장") {
+                    Button(NSLocalizedString("save", comment: "Save")) {
                         saveSchedule()
                         dismiss()
                     }
                     .buttonStyle(PrimaryButtonStyle())
                     .frame(maxWidth: .infinity, alignment: .leading)
                     
-                    Button("삭제") {
+                    Button(NSLocalizedString("delete", comment: "Delete")) {
                         deleteSchedule()
                         dismiss()
                     }
@@ -157,11 +157,11 @@ struct ScheduleOverlayView: View {
             }
             .padding()
             .background(Color.backgroundLight)
-            .navigationTitle("일정 수정")
+            .navigationTitle(NSLocalizedString("schedule_edit", comment: "Schedule edit"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("취소") {
+                    Button(NSLocalizedString("cancel", comment: "Cancel")) {
                         dismiss()
                     }
                     .foregroundColor(.charcoalBlack)
@@ -175,8 +175,15 @@ struct ScheduleOverlayView: View {
     
     private var dateString: String {
         let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy년 M월 d일 (E)"
-        formatter.locale = Locale(identifier: "ko_KR")
+        let language = Locale.current.language.languageCode?.identifier ?? "ko"
+        
+        if language == "en" {
+            formatter.dateFormat = "MMM d, yyyy (E)"
+            formatter.locale = Locale(identifier: "en_US")
+        } else {
+            formatter.dateFormat = "yyyy년 M월 d일 (E)"
+            formatter.locale = Locale(identifier: "ko_KR")
+        }
         return formatter.string(from: selectedDate)
     }
     
@@ -253,7 +260,7 @@ struct CompactShiftTypeButton: View {
                     .fill(shiftManager.getColor(for: shiftType))
                     .frame(width: 24, height: 24)
                 
-                Text(shiftType.rawValue)
+                Text(shiftType.displayName)
                     .font(.caption)
                     .fontWeight(.medium)
                     .foregroundColor(isSelected ? .white : .charcoalBlack)
@@ -280,11 +287,11 @@ struct ShiftTypeSelectionCard: View {
                     .fill(Color(shiftType.color))
                     .frame(width: 40, height: 40)
                 
-                Text(shiftType.rawValue)
+                Text(shiftType.displayName)
                     .font(.headline)
                     .foregroundColor(isSelected ? .white : .charcoalBlack)
                 
-                Text("\(shiftType.workingHours)시간")
+                Text("\(shiftType.workingHours)\(NSLocalizedString("hours_suffix", comment: "Hours suffix"))")
                     .font(.caption)
                     .foregroundColor(isSelected ? .white.opacity(0.8) : .charcoalBlack.opacity(0.7))
             }

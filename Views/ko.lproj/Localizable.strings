@@ -46,3 +46,161 @@
 "shift_up" = "하루 당기기";
 "shift_down" = "하루 밀기";
 "save" = "저장";
+
+/* SettingsView - Main Sections */
+"work_settings" = "근무 설정";
+"work_pattern" = "근무 패턴";
+"team" = "소속 팀";
+"custom_pattern_edit" = "커스텀 패턴 편집";
+"edit_shifts" = "근무요소 수정";
+"salary_info" = "급여 정보";
+"edit_salary_info" = "급여 정보 수정";
+"other" = "기타";
+
+/* SettingsView - Salary */
+"base_salary" = "기본급";
+"night_allowance" = "야간 근무 수당";
+"deep_night_allowance" = "심야 근무 수당";
+"overtime_rate" = "초과근무 배율";
+"holiday_allowance" = "휴일 근무 수당";
+"annual_leave_days" = "연간 휴가 일수";
+"not_set" = "설정 안됨";
+"won_currency" = "원";
+
+/* SettingsView - Other Functions */
+"share_schedule" = "근무표 공유하기";
+"share_schedule_description" = "근무표를 링크로 공유";
+"widget_refresh" = "위젯 새로고침";
+"widget_refresh_description" = "위젯 업데이트";
+"data_reset" = "데이터 초기화";
+"data_reset_description" = "모든 데이터 삭제";
+
+/* SettingsView - Team Selection */
+"team_selection" = "소속 팀 선택";
+"team_selection_description" = "소속 팀을 선택하세요";
+
+/* SettingsView - Salary Setup */
+"basic_salary" = "기본 급여";
+"work_allowances" = "근무 수당";
+"vacation_info" = "휴가 정보";
+
+/* SettingsView - Custom Pattern */
+"cycle_length_setting" = "반복주기 설정";
+"cycle_length_days" = "반복주기 (일)";
+"cycle_length_range" = "2일 ~ 15일 사이에서 선택하세요";
+"start_date_setting" = "시작일 설정";
+"pattern_start_date" = "패턴 시작일";
+"daily_shift_elements" = "일차별 근무 요소";
+"day_number" = "일차";
+"add_shift_elements" = "근무 요소를 추가해주세요";
+"basic_shift_elements" = "기본 근무 요소";
+"custom_shift_elements" = "커스텀 근무 요소";
+"add_custom_shift_element" = "커스텀 근무 요소 추가";
+"shift_element_name" = "근무 요소 이름";
+"color_selection" = "색상 선택";
+"work_time" = "근무 시간";
+"start_time" = "시작";
+"end_time" = "종료";
+"set_time" = "설정된 시간";
+"work_hours" = "근무 시간";
+
+/* SettingsView - Data Export/Reset */
+"data_export" = "데이터 내보내기";
+"data_export_description" = "데이터 내보내기 기능이 여기에 구현됩니다.";
+"data_reset_warning" = "모든 데이터가 삭제됩니다.\n이 작업은 되돌릴 수 없습니다.";
+"reset" = "초기화";
+"cancel" = "취소";
+
+/* Common Actions */
+"apply" = "적용";
+
+/* SalaryInputField Titles */
+"base_salary_input" = "기본급 (원)";
+"night_allowance_input" = "야간 근무 수당 (배율)";
+"deep_night_allowance_input" = "심야 근무 수당 (배율)";
+"overtime_rate_input" = "초과근무 배율";
+"holiday_allowance_input" = "휴일 근무 수당 (배율)";
+"annual_leave_days_input" = "연간 휴가 일수";
+
+/* StatisticsView */
+"monthly" = "월간";
+"yearly" = "연간";
+"daily_work_hours" = "요일별 근무 시간";
+"hours_suffix" = "시간";
+"estimated_salary" = "예상 급여";
+"salary_disclaimer" = "여러 수당 조건으로 인해 실제 수령액과 차이가 있을 수 있습니다.";
+"annual_vacation_status" = "연간 휴가 현황";
+"monthly_vacation_usage" = "월별 휴가 사용 현황";
+"month_suffix" = "월";
+"days_suffix" = "일";
+"setup_salary_info" = "급여 정보를 설정해주세요";
+"setup_salary_description" = "설정에서 급여 정보를 입력하면\n예상 급여를 확인할 수 있습니다";
+"total_annual_leave" = "총 연차";
+"used_annual_leave" = "사용한 연차";
+"remaining_annual_leave" = "남은 연차";
+
+/* MainCalendarView */
+"this_month_stats" = "이번 달 통계";
+"total_work_days" = "총 근무일";
+"total_work_hours" = "총 근무시간";
+"vacation" = "휴가";
+"volunteer_work" = "자원 근무";
+"add_schedule" = "일정 추가";
+
+/* CustomShiftInputView */
+"custom_shift_input" = "비주기적 근무 입력";
+"custom_shift_input_description" = "원하는 날짜에 근무 일정을 직접 입력하세요";
+"select_date" = "날짜 선택";
+"work_type" = "근무 유형";
+"added_schedules" = "추가된 일정";
+"no_schedules_added" = "아직 추가된 일정이 없습니다";
+"custom_shift_work" = "비주기적 근무";
+
+/* ScheduleOverlayView */
+"select_work_type" = "근무 유형 선택";
+"overtime_hours" = "초과근무시간";
+"vacation_settings" = "휴가 설정";
+"set_as_vacation" = "휴가로 설정";
+"volunteer_work_settings" = "자원 근무 설정";
+"set_as_volunteer" = "자원 근무로 설정";
+"schedule_edit" = "일정 수정";
+"delete" = "삭제";
+
+/* ShiftTimeEditView */
+"work_time_setting" = "근무 시간 설정";
+"start_time" = "시작 시간";
+"end_time" = "종료 시간";
+"hour_unit" = "시";
+"minute_unit" = "분";
+"hour_suffix" = "시";
+"minute_suffix" = "분";
+"settings_preview" = "설정 미리보기";
+"work_hours" = "근무 시간";
+"reset_to_default" = "기본값으로 되돌리기";
+"start_hour" = "시작 시간";
+"start_minute" = "시작 분";
+"end_hour" = "종료 시간";
+"end_minute" = "종료 분";
+
+/* Days of Week */
+"day_sun" = "일";
+"day_mon" = "월";
+"day_tue" = "화";
+"day_wed" = "수";
+"day_thu" = "목";
+"day_fri" = "금";
+"day_sat" = "토";
+
+/* Shift Types - Names */
+"shift_day" = "주간";
+"shift_afternoon" = "오후";
+"shift_evening" = "야간";
+"shift_night" = "심야";
+"shift_duty" = "당직";
+"shift_off" = "비번";
+"shift_rest" = "휴무";
+
+/* Shift Types - Time Ranges */
+"time_24_hours" = "24시간";
+"time_standby" = "대기";
+"time_off" = "휴무";

@@ -93,6 +93,18 @@ enum ShiftType: String, CaseIterable, Codable, Identifiable {
     
     var id: String { rawValue }
     
+    var displayName: String {
+        switch self {
+        case .주간: return NSLocalizedString("shift_day", comment: "Day shift")
+        case .오후: return NSLocalizedString("shift_afternoon", comment: "Afternoon shift")
+        case .야간: return NSLocalizedString("shift_evening", comment: "Evening shift")
+        case .심야: return NSLocalizedString("shift_night", comment: "Night shift")
+        case .당직: return NSLocalizedString("shift_duty", comment: "Duty shift")
+        case .비번: return NSLocalizedString("shift_off", comment: "Off shift")
+        case .휴무: return NSLocalizedString("shift_rest", comment: "Rest shift")
+        }
+    }
+    
     var color: Color {
         let defaultColor: Color
         switch self {
@@ -125,9 +137,9 @@ enum ShiftType: String, CaseIterable, Codable, Identifiable {
         case .오후: return "15:00-23:00"
         case .야간: return "19:00-07:00"
         case .심야: return "23:00-07:00"
-        case .당직: return "24시간"
-        case .비번: return "대기"
-        case .휴무: return "휴무"
+        case .당직: return NSLocalizedString("time_24_hours", comment: "24 hours")
+        case .비번: return NSLocalizedString("time_standby", comment: "Standby")
+        case .휴무: return NSLocalizedString("time_off", comment: "Off")
         }
     }
     

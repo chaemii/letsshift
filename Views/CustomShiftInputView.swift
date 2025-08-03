@@ -11,34 +11,34 @@ struct CustomShiftInputView: View {
         NavigationView {
             VStack(spacing: 20) {
                 VStack(spacing: 15) {
-                    Text("비주기적 근무 입력")
+                    Text(NSLocalizedString("custom_shift_input", comment: "Custom shift input"))
                         .font(.title2)
                         .fontWeight(.bold)
                     
-                    Text("원하는 날짜에 근무 일정을 직접 입력하세요")
+                    Text(NSLocalizedString("custom_shift_input_description", comment: "Custom shift input description"))
                         .font(.body)
                         .foregroundColor(.secondary)
                         .multilineTextAlignment(.center)
                 }
                 
                 VStack(spacing: 15) {
-                    DatePicker("날짜 선택", selection: $selectedDate, displayedComponents: .date)
+                    DatePicker(NSLocalizedString("select_date", comment: "Select date"), selection: $selectedDate, displayedComponents: .date)
                         .datePickerStyle(CompactDatePickerStyle())
                     
-                    Picker("근무 유형", selection: $selectedShiftType) {
+                    Picker(NSLocalizedString("work_type", comment: "Work type"), selection: $selectedShiftType) {
                         ForEach(ShiftType.allCases, id: \.self) { shiftType in
                             HStack {
                                 Circle()
                                     .fill(Color(shiftType.color))
                                     .frame(width: 12, height: 12)
-                                Text(shiftType.rawValue)
+                                Text(shiftType.displayName)
                             }
                             .tag(shiftType)
                         }
                     }
                     .pickerStyle(MenuPickerStyle())
                     
-                    Button("일정 추가") {
+                    Button(NSLocalizedString("add_schedule", comment: "Add schedule")) {
                         addSchedule()
                     }
                     .buttonStyle(PrimaryButtonStyle())
@@ -48,11 +48,11 @@ struct CustomShiftInputView: View {
                 .cornerRadius(12)
                 
                 VStack(alignment: .leading, spacing: 10) {
-                    Text("추가된 일정")
+                    Text(NSLocalizedString("added_schedules", comment: "Added schedules"))
                         .font(.headline)
                     
                     if customSchedules.isEmpty {
-                        Text("아직 추가된 일정이 없습니다")
+                        Text(NSLocalizedString("no_schedules_added", comment: "No schedules added"))
                             .font(.body)
                             .foregroundColor(.secondary)
                             .frame(maxWidth: .infinity, alignment: .center)
@@ -73,7 +73,7 @@ struct CustomShiftInputView: View {
                 
                 Spacer()
                 
-                Button("저장") {
+                Button(NSLocalizedString("save", comment: "Save")) {
                     saveCustomSchedules()
                     dismiss()
                 }
@@ -81,11 +81,11 @@ struct CustomShiftInputView: View {
                 .disabled(customSchedules.isEmpty)
             }
             .padding()
-            .navigationTitle("비주기적 근무")
+            .navigationTitle(NSLocalizedString("custom_shift_work", comment: "Custom shift work"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("취소") {
+                    Button(NSLocalizedString("cancel", comment: "Cancel")) {
                         dismiss()
                     }
                 }
@@ -130,7 +130,7 @@ struct CustomScheduleRow: View {
                     .font(.body)
                     .fontWeight(.medium)
                 
-                Text(schedule.shiftType.rawValue)
+                Text(schedule.shiftType.displayName)
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
@@ -153,8 +153,15 @@ struct CustomScheduleRow: View {
     
     private var dateString: String {
         let formatter = DateFormatter()
-        formatter.dateFormat = "M월 d일 (E)"
-        formatter.locale = Locale(identifier: "ko_KR")
+        let language = Locale.current.language.languageCode?.identifier ?? "ko"
+        
+        if language == "en" {
+            formatter.dateFormat = "MMM d (E)"
+            formatter.locale = Locale(identifier: "en_US")
+        } else {
+            formatter.dateFormat = "M월 d일 (E)"
+            formatter.locale = Locale(identifier: "ko_KR")
+        }
         return formatter.string(from: schedule.date)
     }
 }

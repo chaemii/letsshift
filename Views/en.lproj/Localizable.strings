@@ -46,3 +46,161 @@
 "shift_up" = "Shift Up";
 "shift_down" = "Shift Down";
 "save" = "Save";
+
+/* SettingsView - Main Sections */
+"work_settings" = "Work Settings";
+"work_pattern" = "Work Pattern";
+"team" = "Team";
+"custom_pattern_edit" = "Edit Custom Pattern";
+"edit_shifts" = "Edit Shifts";
+"salary_info" = "Salary Info";
+"edit_salary_info" = "Edit Salary Info";
+"other" = "Other";
+
+/* SettingsView - Salary */
+"base_salary" = "Base Salary";
+"night_allowance" = "Night Allowance";
+"deep_night_allowance" = "Deep Night Allowance";
+"overtime_rate" = "Overtime Rate";
+"holiday_allowance" = "Holiday Allowance";
+"annual_leave_days" = "Annual Leave Days";
+"not_set" = "Not Set";
+"won_currency" = "KRW";
+
+/* SettingsView - Other Functions */
+"share_schedule" = "Share Schedule";
+"share_schedule_description" = "Share schedule via link";
+"widget_refresh" = "Widget Refresh";
+"widget_refresh_description" = "Update widget";
+"data_reset" = "Data Reset";
+"data_reset_description" = "Delete all data";
+
+/* SettingsView - Team Selection */
+"team_selection" = "Team Selection";
+"team_selection_description" = "Select your team";
+
+/* SettingsView - Salary Setup */
+"basic_salary" = "Basic Salary";
+"work_allowances" = "Work Allowances";
+"vacation_info" = "Vacation Info";
+
+/* SettingsView - Custom Pattern */
+"cycle_length_setting" = "Cycle Length Setting";
+"cycle_length_days" = "Cycle Length (Days)";
+"cycle_length_range" = "Select between 2-15 days";
+"start_date_setting" = "Start Date Setting";
+"pattern_start_date" = "Pattern Start Date";
+"daily_shift_elements" = "Daily Shift Elements";
+"day_number" = "Day";
+"add_shift_elements" = "Please add shift elements";
+"basic_shift_elements" = "Basic Shift Elements";
+"custom_shift_elements" = "Custom Shift Elements";
+"add_custom_shift_element" = "Add Custom Shift Element";
+"shift_element_name" = "Shift Element Name";
+"color_selection" = "Color Selection";
+"work_time" = "Work Time";
+"start_time" = "Start";
+"end_time" = "End";
+"set_time" = "Set Time";
+"work_hours" = "Work Hours";
+
+/* SettingsView - Data Export/Reset */
+"data_export" = "Data Export";
+"data_export_description" = "Data export functionality will be implemented here.";
+"data_reset_warning" = "All data will be deleted.\nThis action cannot be undone.";
+"reset" = "Reset";
+"cancel" = "Cancel";
+
+/* Common Actions */
+"apply" = "Apply";
+
+/* SalaryInputField Titles */
+"base_salary_input" = "Base Salary (KRW)";
+"night_allowance_input" = "Night Allowance (Rate)";
+"deep_night_allowance_input" = "Deep Night Allowance (Rate)";
+"overtime_rate_input" = "Overtime Rate";
+"holiday_allowance_input" = "Holiday Allowance (Rate)";
+"annual_leave_days_input" = "Annual Leave Days";
+
+/* StatisticsView */
+"monthly" = "Monthly";
+"yearly" = "Yearly";
+"daily_work_hours" = "Daily Work Hours";
+"hours_suffix" = "h";
+"estimated_salary" = "Estimated Salary";
+"salary_disclaimer" = "Actual amount may differ due to various allowance conditions.";
+"annual_vacation_status" = "Annual Vacation Status";
+"monthly_vacation_usage" = "Monthly Vacation Usage";
+"month_suffix" = "";
+"days_suffix" = "D";
+"setup_salary_info" = "Please set up salary info";
+"setup_salary_description" = "Enter salary information in settings\nto view estimated salary";
+"total_annual_leave" = "Total Annual Leave";
+"used_annual_leave" = "Used Annual Leave";
+"remaining_annual_leave" = "Remaining Annual Leave";
+
+/* MainCalendarView */
+"this_month_stats" = "This Month Stats";
+"total_work_days" = "Total Work D";
+"total_work_hours" = "Total Work h";
+"vacation" = "Vacation";
+"volunteer_work" = "Volunteer Work";
+"add_schedule" = "Add Schedule";
+
+/* CustomShiftInputView */
+"custom_shift_input" = "Custom Shift Input";
+"custom_shift_input_description" = "Enter work schedule directly on desired dates";
+"select_date" = "Select Date";
+"work_type" = "Work Type";
+"added_schedules" = "Added Schedules";
+"no_schedules_added" = "No schedules added yet";
+"custom_shift_work" = "Custom Shift Work";
+
+/* ScheduleOverlayView */
+"select_work_type" = "Select Work Type";
+"overtime_hours" = "Overtime Hours";
+"vacation_settings" = "Vacation Settings";
+"set_as_vacation" = "Set as Vacation";
+"volunteer_work_settings" = "Volunteer Work Settings";
+"set_as_volunteer" = "Set as Volunteer Work";
+"schedule_edit" = "Edit Schedule";
+"delete" = "Delete";
+
+/* ShiftTimeEditView */
+"work_time_setting" = "Work Time Setting";
+"start_time" = "Start Time";
+"end_time" = "End Time";
+"hour_unit" = "Hour";
+"minute_unit" = "Min";
+"hour_suffix" = "";
+"minute_suffix" = "";
+"settings_preview" = "Settings Preview";
+"work_hours" = "Work Hours";
+"reset_to_default" = "Reset to Default";
+"start_hour" = "Start Hour";
+"start_minute" = "Start Minute";
+"end_hour" = "End Hour";
+"end_minute" = "End Minute";
+
+/* Days of Week */
+"day_sun" = "S";
+"day_mon" = "M";
+"day_tue" = "T";
+"day_wed" = "W";
+"day_thu" = "T";
+"day_fri" = "F";
+"day_sat" = "S";
+
+/* Shift Types - Names */
+"shift_day" = "DAY";
+"shift_afternoon" = "AFT";
+"shift_evening" = "EVE";
+"shift_night" = "NGT";
+"shift_duty" = "ONC";
+"shift_off" = "OFF";
+"shift_rest" = "RST";
+
+/* Shift Types - Time Ranges */
+"time_24_hours" = "24h";
+"time_standby" = "Standby";
+"time_off" = "Off";

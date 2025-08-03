@@ -328,7 +328,7 @@ struct ShiftTableRow: View {
                 let isTodayColumn = isToday
                 let isHighlighted = isCurrentTeam && isTodayColumn
                 
-                Text(shiftType.rawValue)
+                Text(shiftType.displayName)
                     .font(.system(size: 15, weight: isCurrentTeam ? .bold : .medium))
                     .foregroundColor(getTextColor(for: shiftType, isCurrentTeam: isCurrentTeam))
                     .frame(width: teamColumnWidth, alignment: .center)
@@ -442,7 +442,7 @@ struct TeamShiftEditView: View {
                                         .fill(shiftType.color)
                                         .frame(width: 20, height: 20)
                                     
-                                    Text(shiftType.rawValue)
+                                    Text(shiftType.displayName)
                                         .font(.subheadline)
                                         .fontWeight(.medium)
                                         .foregroundColor(.charcoalBlack)
