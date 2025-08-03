@@ -305,3 +305,14 @@
 "name" = "Name";
 "name_input_placeholder" = "Enter shift element name";
 "save" = "Save";
+
+/* Shift Pattern Descriptions */
+"pattern_none_desc" = "Please select a pattern";
+"pattern_two_shift_desc" = "DAY-EVE repeat";
+"pattern_three_shift_desc" = "DAY-EVE-OFF repeat";
+"pattern_three_team_two_shift_desc" = "DAY-EVE-RST";
+"pattern_four_team_two_shift_desc" = "DAY-EVE-OFF-RST";
+"pattern_four_team_three_shift_desc" = "DAY-AFT-EVE-RST";
+"pattern_five_team_three_shift_desc" = "DAY-EVE-NGT-OFF-RST";
+"pattern_irregular_desc" = "Irregular monthly arrangement";
+"pattern_custom_desc" = "Create your own shift pattern";

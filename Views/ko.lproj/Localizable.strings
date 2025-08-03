@@ -305,3 +305,14 @@
 "name" = "이름";
 "name_input_placeholder" = "근무 요소 이름을 입력하세요";
 "save" = "저장";
+
+/* Shift Pattern Descriptions */
+"pattern_none_desc" = "패턴을 선택해주세요";
+"pattern_two_shift_desc" = "주간-야간 반복";
+"pattern_three_shift_desc" = "주간-야간-비번 반복";
+"pattern_three_team_two_shift_desc" = "주간-야간-휴무";
+"pattern_four_team_two_shift_desc" = "주간-야간-비번-휴무";
+"pattern_four_team_three_shift_desc" = "주간-오후-야간-휴무";
+"pattern_five_team_three_shift_desc" = "주간-야간-심야-비번-휴무";
+"pattern_irregular_desc" = "월마다 비주기적 배치";
+"pattern_custom_desc" = "직접 만드는 근무 패턴";

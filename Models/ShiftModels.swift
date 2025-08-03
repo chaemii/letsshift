@@ -339,15 +339,15 @@ enum ShiftPatternType: String, CaseIterable, Codable {
     
     var description: String {
         switch self {
-        case .none: return ""
-        case .twoShift: return "주간-야간 반복"
-        case .threeShift: return "주간-야간-비번 반복"
-        case .threeTeamTwoShift: return "주간-야간-휴무"
-        case .fourTeamTwoShift: return "주간-야간-비번-휴무"
-        case .fourTeamThreeShift: return "주간-오후-야간-휴무"
-        case .fiveTeamThreeShift: return "주간-야간-심야-비번-휴무"
-        case .irregular: return "월마다 비주기적 배치"
-        case .custom: return "직접 만드는 근무 패턴"
+        case .none: return NSLocalizedString("pattern_none_desc", comment: "Please select a pattern")
+        case .twoShift: return NSLocalizedString("pattern_two_shift_desc", comment: "DAY-EVE repeat")
+        case .threeShift: return NSLocalizedString("pattern_three_shift_desc", comment: "DAY-EVE-OFF repeat")
+        case .threeTeamTwoShift: return NSLocalizedString("pattern_three_team_two_shift_desc", comment: "DAY-EVE-RST")
+        case .fourTeamTwoShift: return NSLocalizedString("pattern_four_team_two_shift_desc", comment: "DAY-EVE-OFF-RST")
+        case .fourTeamThreeShift: return NSLocalizedString("pattern_four_team_three_shift_desc", comment: "DAY-AFT-EVE-RST")
+        case .fiveTeamThreeShift: return NSLocalizedString("pattern_five_team_three_shift_desc", comment: "DAY-EVE-NGT-OFF-RST")
+        case .irregular: return NSLocalizedString("pattern_irregular_desc", comment: "Irregular monthly arrangement")
+        case .custom: return NSLocalizedString("pattern_custom_desc", comment: "Create your own shift pattern")
         }
     }
     
