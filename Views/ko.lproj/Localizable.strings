@@ -236,3 +236,9 @@
 "welcome_description" = "근무 일정을 효율적으로 관리해보세요.\n먼저 근무 패턴을 설정해주세요.";
 "work_pattern_setup" = "근무 패턴 설정";
 "team_setup" = "소속 팀 설정";
+
+/* Data Reset View */
+"data_reset_title" = "데이터 초기화";
+"data_reset_warning" = "모든 데이터가 삭제됩니다.\n이 작업은 되돌릴 수 없습니다.";
+"reset" = "초기화";
+"cancel" = "취소";

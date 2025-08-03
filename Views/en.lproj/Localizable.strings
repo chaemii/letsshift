@@ -236,3 +236,9 @@
 "welcome_description" = "Manage your work schedule efficiently.\nFirst, please set up your work pattern.";
 "work_pattern_setup" = "Work Pattern Setup";
 "team_setup" = "Team Setup";
+
+/* Data Reset View */
+"data_reset_title" = "Data Reset";
+"data_reset_warning" = "All data will be deleted.\nThis action cannot be undone.";
+"reset" = "Reset";
+"cancel" = "Cancel";

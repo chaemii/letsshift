@@ -1882,7 +1882,7 @@ struct DataResetView: View {
     var body: some View {
         NavigationView {
             VStack(spacing: 20) {
-                Text("모든 데이터가 삭제됩니다.\n이 작업은 되돌릴 수 없습니다.")
+                Text(NSLocalizedString("data_reset_warning", comment: "Data reset warning"))
                     .font(.subheadline)
                     .foregroundColor(.charcoalBlack.opacity(0.7))
                     .multilineTextAlignment(.center)
@@ -1892,7 +1892,7 @@ struct DataResetView: View {
                         shiftManager.resetAllData()
                         dismiss()
                     }) {
-                        Text("초기화")
+                        Text(NSLocalizedString("reset", comment: "Reset button"))
                             .font(.headline)
                             .fontWeight(.semibold)
                             .foregroundColor(.white)
@@ -1903,7 +1903,7 @@ struct DataResetView: View {
                     }
                     
                     Button(action: { dismiss() }) {
-                        Text("취소")
+                        Text(NSLocalizedString("cancel", comment: "Cancel button"))
                             .font(.headline)
                             .fontWeight(.semibold)
                             .foregroundColor(.charcoalBlack)
@@ -1921,7 +1921,7 @@ struct DataResetView: View {
                 Spacer()
             }
             .background(Color(hex: "EFF0F2"))
-            .navigationTitle("데이터 초기화")
+            .navigationTitle(NSLocalizedString("data_reset_title", comment: "Data reset title"))
             .navigationBarTitleDisplayMode(.inline)
         }
     }
