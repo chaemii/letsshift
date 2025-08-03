@@ -252,3 +252,15 @@
 "daily_shift_elements" = "Daily Shift Elements";
 "day_format" = "Day %d";
 "days_suffix" = "D";
+
+/* Shift Type Edit View */
+"work_time" = "Work Time";
+"start_label" = "Start";
+"end_label" = "End";
+"start_time_picker" = "Start Time";
+"start_minute_picker" = "Start Minute";
+"end_time_picker" = "End Time";
+"end_minute_picker" = "End Minute";
+"set_time" = "Set Time";
+"work_duration" = "Work Duration";
+"hours_unit" = "h";

@@ -252,3 +252,15 @@
 "daily_shift_elements" = "일차별 근무 요소";
 "day_format" = "%d일차";
 "days_suffix" = "일";
+
+/* Shift Type Edit View */
+"work_time" = "근무 시간";
+"start_label" = "시작";
+"end_label" = "종료";
+"start_time_picker" = "시작 시간";
+"start_minute_picker" = "시작 분";
+"end_time_picker" = "종료 시간";
+"end_minute_picker" = "종료 분";
+"set_time" = "설정된 시간";
+"work_duration" = "근무 시간";
+"hours_unit" = "시간";

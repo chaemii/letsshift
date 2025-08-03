@@ -1657,7 +1657,7 @@ struct CustomShiftTypeInputView: View {
                         
                         // 근무 시간 설정
                         VStack(spacing: 12) {
-                            Text("근무 시간")
+                            Text(NSLocalizedString("work_time", comment: "Work time"))
                                 .font(.headline)
                                 .fontWeight(.semibold)
                                 .foregroundColor(.charcoalBlack)
@@ -1671,14 +1671,14 @@ struct CustomShiftTypeInputView: View {
                                         Image(systemName: "sunrise")
                                             .foregroundColor(.orange)
                                             .font(.caption)
-                                        Text("시작")
+                                        Text(NSLocalizedString("start_label", comment: "Start label"))
                                             .font(.caption)
                                             .fontWeight(.medium)
                                             .foregroundColor(.charcoalBlack)
                                     }
                                     
                                     HStack(spacing: 8) {
-                                        Picker("시작 시간", selection: $startHour) {
+                                        Picker(NSLocalizedString("start_time_picker", comment: "Start time picker"), selection: $startHour) {
                                             ForEach(0..<24, id: \.self) { hour in
                                                 Text("\(hour)").tag(hour)
                                             }
@@ -1692,7 +1692,7 @@ struct CustomShiftTypeInputView: View {
                                             .fontWeight(.bold)
                                             .foregroundColor(.charcoalBlack)
                                         
-                                        Picker("시작 분", selection: $startMinute) {
+                                        Picker(NSLocalizedString("start_minute_picker", comment: "Start minute picker"), selection: $startMinute) {
                                             ForEach([0, 15, 30, 45], id: \.self) { minute in
                                                 Text(String(format: "%02d", minute)).tag(minute)
                                             }
@@ -1714,14 +1714,14 @@ struct CustomShiftTypeInputView: View {
                                         Image(systemName: "sunset")
                                             .foregroundColor(.purple)
                                             .font(.caption)
-                                        Text("종료")
+                                        Text(NSLocalizedString("end_label", comment: "End label"))
                                             .font(.caption)
                                             .fontWeight(.medium)
                                             .foregroundColor(.charcoalBlack)
                                     }
                                     
                                     HStack(spacing: 8) {
-                                        Picker("종료 시간", selection: $endHour) {
+                                        Picker(NSLocalizedString("end_time_picker", comment: "End time picker"), selection: $endHour) {
                                             ForEach(0..<24, id: \.self) { hour in
                                                 Text("\(hour)").tag(hour)
                                             }
@@ -1735,7 +1735,7 @@ struct CustomShiftTypeInputView: View {
                                             .fontWeight(.bold)
                                             .foregroundColor(.charcoalBlack)
                                         
-                                        Picker("종료 분", selection: $endMinute) {
+                                        Picker(NSLocalizedString("end_minute_picker", comment: "End minute picker"), selection: $endMinute) {
                                             ForEach([0, 15, 30, 45], id: \.self) { minute in
                                                 Text(String(format: "%02d", minute)).tag(minute)
                                             }
@@ -1754,7 +1754,7 @@ struct CustomShiftTypeInputView: View {
                             // 시간 미리보기
                             HStack {
                                 VStack(alignment: .leading, spacing: 4) {
-                                    Text("설정된 시간")
+                                    Text(NSLocalizedString("set_time", comment: "Set time"))
                                         .font(.subheadline)
                                         .foregroundColor(.charcoalBlack.opacity(0.7))
                                     
@@ -1767,11 +1767,11 @@ struct CustomShiftTypeInputView: View {
                                 Spacer()
                                 
                                 VStack(alignment: .trailing, spacing: 4) {
-                                    Text("근무 시간")
+                                    Text(NSLocalizedString("work_duration", comment: "Work duration"))
                                         .font(.subheadline)
                                         .foregroundColor(.charcoalBlack.opacity(0.7))
                                     
-                                    Text("\(String(format: "%.1f", calculateWorkingHours()))시간")
+                                    Text("\(String(format: "%.1f", calculateWorkingHours()))\(NSLocalizedString("hours_unit", comment: "Hours unit"))")
                                         .font(.subheadline)
                                         .fontWeight(.medium)
                                         .foregroundColor(.charcoalBlack)
