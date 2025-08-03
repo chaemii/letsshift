@@ -264,3 +264,14 @@
 "set_time" = "Set Time";
 "work_duration" = "Work Duration";
 "hours_unit" = "h";
+
+/* Shift Pattern Types */
+"pattern_none" = "Please select a pattern";
+"pattern_two_shift" = "2 Shift";
+"pattern_three_shift" = "3 Shift";
+"pattern_three_team_two_shift" = "3T 2S";
+"pattern_four_team_two_shift" = "4T 2S";
+"pattern_four_team_three_shift" = "4T 3S";
+"pattern_five_team_three_shift" = "5T 3S";
+"pattern_irregular" = "Irregular";
+"pattern_custom" = "Custom Pattern";

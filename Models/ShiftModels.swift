@@ -325,15 +325,15 @@ enum ShiftPatternType: String, CaseIterable, Codable {
     
     var displayName: String {
         switch self {
-        case .none: return "패턴을 선택해주세요"
-        case .twoShift: return "2교대"
-        case .threeShift: return "3교대"
-        case .threeTeamTwoShift: return "3조 2교대"
-        case .fourTeamTwoShift: return "4조 2교대"
-        case .fourTeamThreeShift: return "4조 3교대"
-        case .fiveTeamThreeShift: return "5조 3교대"
-        case .irregular: return "비주기적"
-        case .custom: return "나만의 패턴"
+        case .none: return NSLocalizedString("pattern_none", comment: "Please select pattern")
+        case .twoShift: return NSLocalizedString("pattern_two_shift", comment: "2 shift")
+        case .threeShift: return NSLocalizedString("pattern_three_shift", comment: "3 shift")
+        case .threeTeamTwoShift: return NSLocalizedString("pattern_three_team_two_shift", comment: "3 team 2 shift")
+        case .fourTeamTwoShift: return NSLocalizedString("pattern_four_team_two_shift", comment: "4 team 2 shift")
+        case .fourTeamThreeShift: return NSLocalizedString("pattern_four_team_three_shift", comment: "4 team 3 shift")
+        case .fiveTeamThreeShift: return NSLocalizedString("pattern_five_team_three_shift", comment: "5 team 3 shift")
+        case .irregular: return NSLocalizedString("pattern_irregular", comment: "Irregular")
+        case .custom: return NSLocalizedString("pattern_custom", comment: "Custom pattern")
         }
     }
     
@@ -747,7 +747,7 @@ class ShiftManager: ObservableObject {
     // 근무요소 이름 가져오기
     func getShiftName(for shiftType: ShiftType) -> String {
         let nameKey = getNameKey(for: shiftType)
-        return settings.shiftNames[nameKey] ?? shiftType.rawValue
+        return settings.shiftNames[nameKey] ?? shiftType.displayName
     }
     
     // 근무요소 이름 업데이트
@@ -775,7 +775,14 @@ class ShiftManager: ObservableObject {
     
     func getShiftTimeRange(for shiftType: ShiftType) -> String {
         let shiftTime = getShiftTime(for: shiftType)
-        return shiftTime.timeRangeString
+        
+        // 특별한 케이스들은 로컬라이제이션된 timeRange 사용
+        switch shiftType {
+        case .당직, .비번, .휴무:
+            return shiftType.timeRange
+        default:
+            return shiftTime.timeRangeString
+        }
     }
     
     func getShiftWorkingHours(for shiftType: ShiftType) -> Double {

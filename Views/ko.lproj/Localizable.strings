@@ -264,3 +264,14 @@
 "set_time" = "설정된 시간";
 "work_duration" = "근무 시간";
 "hours_unit" = "시간";
+
+/* Shift Pattern Types */
+"pattern_none" = "패턴을 선택해주세요";
+"pattern_two_shift" = "2교대";
+"pattern_three_shift" = "3교대";
+"pattern_three_team_two_shift" = "3조 2교대";
+"pattern_four_team_two_shift" = "4조 2교대";
+"pattern_four_team_three_shift" = "4조 3교대";
+"pattern_five_team_three_shift" = "5조 3교대";
+"pattern_irregular" = "비주기적";
+"pattern_custom" = "나만의 패턴";
