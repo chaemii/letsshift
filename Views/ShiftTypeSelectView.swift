@@ -56,7 +56,7 @@ struct ShiftTypeSelectView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button("취소") {
+                    Button(NSLocalizedString("cancel", comment: "Cancel")) {
                         dismiss()
                     }
                     .foregroundColor(.charcoalBlack)
@@ -74,16 +74,16 @@ struct ShiftTypeSelectView: View {
                     )
                 }
             }
-            .alert("근무 요소 이름 수정", isPresented: $showingNameEdit) {
-                TextField("근무 요소 이름", text: $editingShiftName)
-                Button("취소", role: .cancel) { }
-                Button("저장") {
+            .alert(NSLocalizedString("shift_element_name_edit", comment: "Edit shift element name"), isPresented: $showingNameEdit) {
+                TextField(NSLocalizedString("shift_element_name", comment: "Shift element name"), text: $editingShiftName)
+                Button(NSLocalizedString("cancel", comment: "Cancel"), role: .cancel) { }
+                Button(NSLocalizedString("save", comment: "Save")) {
                     if let selectedType = selectedShiftType {
                         shiftManager.updateShiftName(editingShiftName, for: selectedType)
                     }
                 }
             } message: {
-                Text("근무 요소의 이름을 입력해주세요")
+                Text(NSLocalizedString("shift_element_name_input", comment: "Please enter shift element name"))
             }
         }
     }
@@ -187,7 +187,7 @@ struct ColorPickerView: View {
                             .fontWeight(.bold)
                             .foregroundColor(.charcoalBlack)
                         
-                        Text("근무 요소 이름 및 색상 수정")
+                        Text(NSLocalizedString("shift_element_name_and_color", comment: "Shift element name and color"))
                             .font(.caption)
                             .foregroundColor(.charcoalBlack.opacity(0.7))
                     }
@@ -200,7 +200,7 @@ struct ColorPickerView: View {
                     }) {
                         HStack(spacing: 4) {
                             Image(systemName: "pencil")
-                            Text("이름 수정")
+                            Text(NSLocalizedString("name_edit", comment: "Edit name"))
                         }
                         .font(.caption)
                         .foregroundColor(.blue)
@@ -212,7 +212,7 @@ struct ColorPickerView: View {
                 }
                 
                 VStack(spacing: 12) {
-                    Text("색상 선택")
+                    Text(NSLocalizedString("color_selection", comment: "Color selection"))
                         .font(.headline)
                         .fontWeight(.semibold)
                         .foregroundColor(.charcoalBlack)
@@ -250,7 +250,7 @@ struct ColorPickerView: View {
                                 Image(systemName: "sunrise")
                                     .foregroundColor(.orange)
                                     .font(.caption)
-                                Text("시작")
+                                Text(NSLocalizedString("start", comment: "Start"))
                                     .font(.caption)
                                     .fontWeight(.medium)
                                     .foregroundColor(.charcoalBlack)
@@ -293,7 +293,7 @@ struct ColorPickerView: View {
                                 Image(systemName: "sunset")
                                     .foregroundColor(.purple)
                                     .font(.caption)
-                                Text("종료")
+                                Text(NSLocalizedString("end", comment: "End"))
                                     .font(.caption)
                                     .fontWeight(.medium)
                                     .foregroundColor(.charcoalBlack)
@@ -333,7 +333,7 @@ struct ColorPickerView: View {
                     // 시간 미리보기
                     HStack {
                         VStack(alignment: .leading, spacing: 4) {
-                            Text("설정된 시간")
+                            Text(NSLocalizedString("set_time", comment: "Set time"))
                                 .font(.subheadline)
                                 .foregroundColor(.charcoalBlack.opacity(0.7))
                             
@@ -363,7 +363,7 @@ struct ColorPickerView: View {
                 
                 Spacer()
                 
-                Button("저장") {
+                Button(NSLocalizedString("save", comment: "Save")) {
                     shiftManager.updateColor(for: shiftType, newColor: selectedColor)
                     
                     // 시간 업데이트
@@ -427,23 +427,23 @@ struct NameEditSheet: View {
     var body: some View {
         NavigationView {
             VStack(spacing: 25) {
-                Text("근무 요소 이름 수정")
+                Text(NSLocalizedString("shift_element_name_edit", comment: "Edit shift element name"))
                     .font(.title2)
                     .fontWeight(.bold)
                     .foregroundColor(.charcoalBlack)
                 
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("이름")
+                    Text(NSLocalizedString("name", comment: "Name"))
                         .font(.headline)
                         .foregroundColor(.charcoalBlack)
-                    TextField("근무 요소 이름을 입력하세요", text: $customName)
+                    TextField(NSLocalizedString("name_input_placeholder", comment: "Enter shift element name"), text: $customName)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                 }
                 .padding(.horizontal, 20)
                 
                 Spacer()
                 
-                Button("저장") {
+                Button(NSLocalizedString("save", comment: "Save")) {
                     saveCustomName()
                     dismiss()
                 }
@@ -452,11 +452,11 @@ struct NameEditSheet: View {
             }
             .padding(.vertical, 20)
             .background(Color.backgroundLight)
-            .navigationTitle("이름 수정")
+            .navigationTitle(NSLocalizedString("name_edit", comment: "Edit name"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button("취소") {
+                    Button(NSLocalizedString("cancel", comment: "Cancel")) {
                         dismiss()
                     }
                     .foregroundColor(.charcoalBlack)

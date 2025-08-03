@@ -316,3 +316,7 @@
 "pattern_five_team_three_shift_desc" = "주간-야간-심야-비번-휴무";
 "pattern_irregular_desc" = "월마다 비주기적 배치";
 "pattern_custom_desc" = "직접 만드는 근무 패턴";
+
+/* Additional Time Labels */
+"start" = "시작";
+"end" = "종료";

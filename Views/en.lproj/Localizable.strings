@@ -316,3 +316,7 @@
 "pattern_five_team_three_shift_desc" = "DAY-EVE-NGT-OFF-RST";
 "pattern_irregular_desc" = "Irregular monthly arrangement";
 "pattern_custom_desc" = "Create your own shift pattern";
+
+/* Additional Time Labels */
+"start" = "Start";
+"end" = "End";

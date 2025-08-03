@@ -581,12 +581,12 @@ struct ShiftPatternSelectionSheet: View {
             VStack(spacing: 0) {
                 // Header
                 VStack(spacing: 15) {
-                    Text(currentStep == .pattern ? "근무 패턴 선택" : "소속 팀 선택")
+                    Text(currentStep == .pattern ? NSLocalizedString("select_work_pattern", comment: "Select work pattern") : NSLocalizedString("select_team_title", comment: "Select team title"))
                         .font(.title2)
                         .fontWeight(.bold)
                         .foregroundColor(.charcoalBlack)
                     
-                    Text(currentStep == .pattern ? "적용할 근무 패턴을 선택하세요" : "소속 팀을 선택하세요")
+                    Text(currentStep == .pattern ? NSLocalizedString("select_pattern_description", comment: "Select pattern description") : NSLocalizedString("team_schedule_description", comment: "Team schedule description"))
                         .font(.subheadline)
                         .foregroundColor(.charcoalBlack.opacity(0.7))
                 }
