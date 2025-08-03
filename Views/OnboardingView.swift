@@ -41,11 +41,7 @@ struct OnboardingView: View {
         }
     }
     
-    // 간단한 로컬라이제이션 헬퍼 함수
-    private func getLocalizedText(_ korean: String, englishText: String) -> String {
-        let language = Locale.current.language.languageCode?.identifier ?? "ko"
-        return language == "en" ? englishText : korean
-    }
+
     
     // 근무 패턴 이름 로컬라이제이션
     private func getLocalizedPatternName(_ korean: String) -> String {
@@ -97,12 +93,12 @@ struct OnboardingView: View {
     // MARK: - 환영 섹션
     private var welcomeSection: some View {
         VStack(spacing: 12) {
-            Text(getLocalizedText("환영합니다! 👋", englishText: "Welcome! 👋"))
+                            Text(NSLocalizedString("welcome", comment: "Welcome message"))
                 .font(.title)
                 .fontWeight(.bold)
                 .foregroundColor(.charcoalBlack)
             
-            Text(getLocalizedText("근무 일정을 효율적으로 관리해보세요.\n먼저 근무 패턴을 설정해주세요.", englishText: "Manage your work schedule efficiently.\nFirst, please set up your work pattern."))
+            Text(NSLocalizedString("welcome_description", comment: "Welcome description"))
                 .font(.subheadline)
                 .foregroundColor(.charcoalBlack.opacity(0.7))
                 .multilineTextAlignment(.center)
@@ -117,7 +113,7 @@ struct OnboardingView: View {
                 Image(systemName: "calendar.badge.clock")
                     .foregroundColor(Color(hex: "1A1A1A"))
                     .font(.title3)
-                Text(getLocalizedText("근무 패턴 설정", englishText: "Work Pattern Setup"))
+                Text(NSLocalizedString("work_pattern_setup", comment: "Work pattern setup"))
                     .font(.headline)
                     .fontWeight(.bold)
                     .foregroundColor(.charcoalBlack)
@@ -318,7 +314,7 @@ struct OnboardingView: View {
                 Image(systemName: "person.3")
                     .foregroundColor(Color(hex: "1A1A1A"))
                     .font(.title3)
-                Text(getLocalizedText("소속 팀 설정", englishText: "Team Setup"))
+                Text(NSLocalizedString("team_setup", comment: "Team setup"))
                     .font(.headline)
                     .fontWeight(.bold)
                     .foregroundColor(.charcoalBlack)
@@ -360,7 +356,7 @@ struct OnboardingView: View {
         VStack(spacing: 15) {
             if currentStep == 0 {
                 // 첫 번째 단계: 다음 버튼
-                Button(getLocalizedText("다음", englishText: "Next")) {
+                Button(NSLocalizedString("next", comment: "Next button")) {
                     if shiftManager.settings.shiftPatternType == .custom {
                         // 커스텀 패턴인 경우 커스텀 패턴 설정 화면으로 이동
                         showingCustomPatternEdit = true
@@ -374,19 +370,19 @@ struct OnboardingView: View {
                 .buttonStyle(PrimaryButtonStyle())
                 .disabled(shiftManager.settings.shiftPatternType == .none)
                 
-                Button(getLocalizedText("나중에 설정하기", englishText: "Setup Later")) {
+                Button(NSLocalizedString("setup_later", comment: "Setup later button")) {
                     UserDefaults.standard.set(true, forKey: "hasCompletedOnboarding")
                 }
                 .buttonStyle(SecondaryButtonStyle())
             } else {
                 // 두 번째 단계: 시작하기 버튼
-                Button(getLocalizedText("시작하기", englishText: "Start")) {
+                Button(NSLocalizedString("start", comment: "Start button")) {
                     UserDefaults.standard.set(true, forKey: "hasCompletedOnboarding")
                 }
                 .buttonStyle(PrimaryButtonStyle())
                 .disabled(shiftManager.settings.team.isEmpty)
                 
-                Button(getLocalizedText("이전", englishText: "Previous")) {
+                Button(NSLocalizedString("previous", comment: "Previous button")) {
                     withAnimation {
                         currentStep = 0
                     }

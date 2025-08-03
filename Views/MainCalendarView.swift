@@ -101,8 +101,8 @@ struct MainCalendarView: View {
                             icon: "clock"
                         )
                         StatItem(
-                            title: getLocalizedText("야간 근무", englishText: "Night Shifts"), 
-                            value: "\(monthlyNightShifts)\(getLocalizedText("일", englishText: "D"))", 
+                            title: NSLocalizedString("night_shifts", comment: "Night shifts"), 
+                            value: "\(monthlyNightShifts)\(NSLocalizedString("day_suffix", comment: "Day suffix"))", 
                             icon: "moon"
                         )
                     }

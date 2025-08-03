@@ -146,6 +146,8 @@
 "vacation" = "Vacation";
 "volunteer_work" = "Volunteer Work";
 "add_schedule" = "Add Schedule";
+"night_shifts" = "Night Shifts";
+"day_suffix" = "D";
 
 /* CustomShiftInputView */
 "custom_shift_input" = "Custom Shift Input";
@@ -204,3 +206,9 @@
 "time_24_hours" = "24h";
 "time_standby" = "Standby";
 "time_off" = "Off";
+
+/* OnboardingView */
+"welcome" = "Welcome! 👋";
+"welcome_description" = "Manage your work schedule efficiently.\nFirst, please set up your work pattern.";
+"work_pattern_setup" = "Work Pattern Setup";
+"team_setup" = "Team Setup";

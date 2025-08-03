@@ -146,6 +146,8 @@
 "vacation" = "휴가";
 "volunteer_work" = "자원 근무";
 "add_schedule" = "일정 추가";
+"night_shifts" = "야간 근무";
+"day_suffix" = "일";
 
 /* CustomShiftInputView */
 "custom_shift_input" = "비주기적 근무 입력";
@@ -204,3 +206,9 @@
 "time_24_hours" = "24시간";
 "time_standby" = "대기";
 "time_off" = "휴무";
+
+/* OnboardingView */
+"welcome" = "환영합니다! 👋";
+"welcome_description" = "근무 일정을 효율적으로 관리해보세요.\n먼저 근무 패턴을 설정해주세요.";
+"work_pattern_setup" = "근무 패턴 설정";
+"team_setup" = "소속 팀 설정";
