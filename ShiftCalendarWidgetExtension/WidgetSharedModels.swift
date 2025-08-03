@@ -71,6 +71,18 @@ enum ShiftType: String, CaseIterable, Codable {
     case 비번 = "비번"
     case 휴무 = "휴무"
     
+    var displayName: String {
+        switch self {
+        case .주간: return NSLocalizedString("DAY", comment: "Day shift")
+        case .야간: return NSLocalizedString("EVE", comment: "Evening shift")
+        case .심야: return NSLocalizedString("NGT", comment: "Night shift")
+        case .오후: return NSLocalizedString("AFT", comment: "Afternoon shift")
+        case .당직: return NSLocalizedString("ONC", comment: "On-call duty")
+        case .비번: return NSLocalizedString("OFF", comment: "Off duty")
+        case .휴무: return NSLocalizedString("RST", comment: "Rest")
+        }
+    }
+    
     var color: Color {
         // 앱의 색상 설정에서 가져오기
         return getColorFromAppSettings()

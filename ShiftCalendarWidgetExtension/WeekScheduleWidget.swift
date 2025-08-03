@@ -1,6 +1,16 @@
 import WidgetKit
 import SwiftUI
 
+// String extension for localized shift names
+extension String {
+    var localizedShiftName: String {
+        if let shiftType = ShiftType(rawValue: self) {
+            return shiftType.displayName
+        }
+        return self // 변환 실패시 원래 문자열 반환
+    }
+}
+
 // 위젯에서 사용할 커스텀 컬러 확장
 extension Color {
     static let dayShift = Color(red: 0.47, green: 0.73, blue: 0.98)
@@ -160,7 +170,7 @@ struct WeekScheduleWidgetEntryView: View {
                                 .fill(getShiftColor(dayData.shiftType))
                                 .frame(width: 29, height: 29)
                             
-                            Text(dayData.shiftType)
+                            Text(dayData.shiftType.localizedShiftName)
                                 .font(.system(size: 10, weight: .bold))
                                 .foregroundColor(.white)
                                 .lineLimit(1)

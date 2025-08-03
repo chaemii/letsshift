@@ -16,13 +16,20 @@ struct SimpleShiftData: Codable {
     let shiftOffset: Int
 }
 
-// 근무 타입별 색상 매핑 (WidgetSharedModels의 ShiftType 사용)
+// 근무 타입별 색상 매핑 및 표시명 (WidgetSharedModels의 ShiftType 사용)
 extension String {
     var shiftColor: Color {
         if let shiftType = ShiftType(rawValue: self) {
             return shiftType.color
         }
         return .gray
+    }
+    
+    var localizedShiftName: String {
+        if let shiftType = ShiftType(rawValue: self) {
+            return shiftType.displayName
+        }
+        return self // 변환 실패시 원래 문자열 반환
     }
 }
 
@@ -64,7 +71,7 @@ struct TodayShiftWidgetEntryView: View {
                         .frame(width: 85, height: 85)
                     
                     // 근무 타입 텍스트 (크기 조정)
-                    Text(entry.shiftType)
+                    Text(entry.shiftType.localizedShiftName)
                         .font(.system(size: 18, weight: .bold))
                         .foregroundColor(.white)
                         .multilineTextAlignment(.center)
