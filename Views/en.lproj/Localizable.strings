@@ -280,3 +280,12 @@
 "select_work_pattern" = "Select Work Pattern";
 "select_pattern_description" = "Choose the work pattern to apply";
 "apply_pattern" = "Apply Pattern";
+
+/* Team Select View */
+"select_team_title" = "Select Your Team";
+"team_schedule_description" = "Work schedules will be adjusted according to team number";
+"team_selection" = "Team Selection";
+"back" = "Back";
+"complete" = "Complete";
+"team_format" = "Team %d";
+"team_group_format" = "Team %d";

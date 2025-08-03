@@ -3,18 +3,18 @@ import SwiftUI
 struct TeamSelectView: View {
     @EnvironmentObject var shiftManager: ShiftManager
     @Environment(\.dismiss) var dismiss
-    @State private var selectedTeam: String = "1조"
+    @State private var selectedTeam: String = String(format: NSLocalizedString("team_group_format", comment: "Team group format"), 1)
     
     var body: some View {
         NavigationView {
             VStack(spacing: 30) {
                 VStack(spacing: 20) {
-                    Text("소속 팀을 선택하세요")
+                    Text(NSLocalizedString("select_team_title", comment: "Select team title"))
                         .font(.title2)
                         .fontWeight(.bold)
                         .foregroundColor(.charcoalBlack)
                     
-                    Text("팀 번호에 따라 근무 일정이 조정됩니다")
+                    Text(NSLocalizedString("team_schedule_description", comment: "Team schedule description"))
                         .font(.body)
                         .foregroundColor(.charcoalBlack.opacity(0.7))
                         .multilineTextAlignment(.center)
@@ -24,16 +24,16 @@ struct TeamSelectView: View {
                     ForEach(1...5, id: \.self) { teamNumber in
                         TeamCard(
                             teamNumber: teamNumber,
-                            isSelected: selectedTeam == "\(teamNumber)조"
+                            isSelected: selectedTeam == String(format: NSLocalizedString("team_group_format", comment: "Team group format"), teamNumber)
                         ) {
-                            selectedTeam = "\(teamNumber)조"
+                            selectedTeam = String(format: NSLocalizedString("team_group_format", comment: "Team group format"), teamNumber)
                         }
                     }
                 }
                 
                 Spacer()
                 
-                Button("완료") {
+                Button(NSLocalizedString("complete", comment: "Complete button")) {
                     shiftManager.settings.team = selectedTeam
                     dismiss()
                 }
@@ -41,11 +41,11 @@ struct TeamSelectView: View {
             }
             .padding()
             .background(Color.backgroundLight)
-            .navigationTitle("팀 선택")
+            .navigationTitle(NSLocalizedString("team_selection", comment: "Team selection"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button("뒤로") {
+                    Button(NSLocalizedString("back", comment: "Back button")) {
                         dismiss()
                     }
                     .foregroundColor(.charcoalBlack)
@@ -67,7 +67,7 @@ struct TeamCard: View {
                     .font(.system(size: 30))
                     .foregroundColor(isSelected ? .white : .mainColorButton)
                 
-                Text("\(teamNumber)팀")
+                Text(String(format: NSLocalizedString("team_format", comment: "Team format"), teamNumber))
                     .font(.headline)
                     .foregroundColor(isSelected ? .white : .charcoalBlack)
                 

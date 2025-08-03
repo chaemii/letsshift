@@ -280,3 +280,12 @@
 "select_work_pattern" = "근무 패턴 선택";
 "select_pattern_description" = "적용할 근무 패턴을 선택하세요";
 "apply_pattern" = "패턴 적용";
+
+/* Team Select View */
+"select_team_title" = "소속 팀을 선택하세요";
+"team_schedule_description" = "팀 번호에 따라 근무 일정이 조정됩니다";
+"team_selection" = "팀 선택";
+"back" = "뒤로";
+"complete" = "완료";
+"team_format" = "%d팀";
+"team_group_format" = "%d조";
