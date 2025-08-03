@@ -165,27 +165,27 @@ struct StatisticsSummaryBox: View {
             
             VStack(spacing: 15) {
                 HStack {
-                    StatItem(title: "총 근무일", value: "\(stats.totalWorkDays)일", icon: "calendar")
+                    StatItem(title: NSLocalizedString("total_work_days", comment: "Total work days"), value: "\(stats.totalWorkDays)\(NSLocalizedString("days_suffix", comment: "Days suffix"))", icon: "calendar")
                     Divider()
-                    StatItem(title: "총 근무시간", value: "\(stats.totalWorkHours)시간", icon: "clock")
+                    StatItem(title: NSLocalizedString("total_work_hours", comment: "Total work hours"), value: "\(stats.totalWorkHours)\(NSLocalizedString("hours_suffix", comment: "Hours suffix"))", icon: "clock")
                 }
                 
                 HStack {
-                    StatItem(title: "야간 근무", value: "\(stats.nightShiftDays)일", icon: "moon")
+                    StatItem(title: NSLocalizedString("night_shifts", comment: "Night shifts"), value: "\(stats.nightShiftDays)\(NSLocalizedString("days_suffix", comment: "Days suffix"))", icon: "moon")
                     Divider()
-                    StatItem(title: "당직", value: "\(stats.dutyDays)일", icon: "house")
+                    StatItem(title: NSLocalizedString("duty_shifts", comment: "Duty shifts"), value: "\(stats.dutyDays)\(NSLocalizedString("days_suffix", comment: "Days suffix"))", icon: "house")
                 }
                 
                 HStack {
-                    StatItem(title: "평균 근무시간", value: "\(stats.averageWorkHours)시간", icon: "chart.bar")
+                    StatItem(title: NSLocalizedString("average_work_hours", comment: "Average work hours"), value: "\(stats.averageWorkHours)\(NSLocalizedString("hours_suffix", comment: "Hours suffix"))", icon: "chart.bar")
                     Divider()
-                    StatItem(title: "초과근무 시간", value: "\(stats.overtimeHours)시간", icon: "timer")
+                    StatItem(title: NSLocalizedString("overtime_hours", comment: "Overtime hours"), value: "\(stats.overtimeHours)\(NSLocalizedString("hours_suffix", comment: "Hours suffix"))", icon: "timer")
                 }
                 
                 HStack {
-                    StatItem(title: "근무율", value: "\(stats.workRate)%", icon: "percent")
+                    StatItem(title: NSLocalizedString("work_rate", comment: "Work rate"), value: "\(stats.workRate)%", icon: "percent")
                     Divider()
-                    StatItem(title: "당직 시간", value: "\(stats.dutyHours)시간", icon: "clock.badge")
+                    StatItem(title: NSLocalizedString("duty_hours", comment: "Duty hours"), value: "\(stats.dutyHours)\(NSLocalizedString("hours_suffix", comment: "Hours suffix"))", icon: "clock.badge")
                 }
             }
         }
@@ -320,14 +320,11 @@ struct WeeklyWorkHoursChart: View {
             $0.date >= startOfMonth && $0.date <= endOfMonth 
         }
         
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "ko_KR")
-        formatter.dateFormat = "EEEE"
-        
         for schedule in monthSchedules {
-            let dayOfWeek = formatter.string(from: schedule.date)
+            let weekday = calendar.component(.weekday, from: schedule.date)
+            let dayKey = getLocalizedWeekday(weekday: weekday)
             let totalHours = Int(shiftManager.getShiftWorkingHours(for: schedule.shiftType)) + schedule.overtimeHours
-            weeklyHours[dayOfWeek, default: 0] += totalHours
+            weeklyHours[dayKey, default: 0] += totalHours
         }
         
         // 주 수로 나누어 평균 계산
@@ -337,6 +334,19 @@ struct WeeklyWorkHoursChart: View {
         }
         
         return weeklyHours
+    }
+    
+    private func getLocalizedWeekday(weekday: Int) -> String {
+        switch weekday {
+        case 1: return NSLocalizedString("weekday_sun", comment: "Sunday")
+        case 2: return NSLocalizedString("weekday_mon", comment: "Monday")
+        case 3: return NSLocalizedString("weekday_tue", comment: "Tuesday")
+        case 4: return NSLocalizedString("weekday_wed", comment: "Wednesday")
+        case 5: return NSLocalizedString("weekday_thu", comment: "Thursday")
+        case 6: return NSLocalizedString("weekday_fri", comment: "Friday")
+        case 7: return NSLocalizedString("weekday_sat", comment: "Saturday")
+        default: return ""
+        }
     }
 }
 
@@ -380,21 +390,21 @@ struct ExpectedSalaryCard: View {
                 
                 Spacer()
                 
-                Text(selectedTab == .monthly ? "월 급여" : "연 급여")
+                Text(selectedTab == .monthly ? NSLocalizedString("monthly_salary", comment: "Monthly salary") : NSLocalizedString("yearly_salary", comment: "Yearly salary"))
                     .font(.caption)
                     .foregroundColor(.charcoalBlack.opacity(0.7))
             }
             
             // 상세 계산 항목
             VStack(spacing: 8) {
-                SalaryDetailRow(title: "기본 급여", amount: salaryDetails.baseSalary)
-                SalaryDetailRow(title: "야간 근무 수당", amount: salaryDetails.nightShiftBonus)
-                SalaryDetailRow(title: "심야 근무 수당", amount: salaryDetails.deepNightShiftBonus)
-                SalaryDetailRow(title: "초과근무 수당", amount: salaryDetails.overtimeBonus)
+                SalaryDetailRow(title: NSLocalizedString("base_salary", comment: "Base salary"), amount: salaryDetails.baseSalary)
+                SalaryDetailRow(title: NSLocalizedString("night_shift_bonus", comment: "Night shift bonus"), amount: salaryDetails.nightShiftBonus)
+                SalaryDetailRow(title: NSLocalizedString("deep_night_shift_bonus", comment: "Deep night shift bonus"), amount: salaryDetails.deepNightShiftBonus)
+                SalaryDetailRow(title: NSLocalizedString("overtime_bonus", comment: "Overtime bonus"), amount: salaryDetails.overtimeBonus)
                 
                 Divider()
                 
-                SalaryDetailRow(title: "총 급여", amount: salaryDetails.totalSalary, isTotal: true)
+                SalaryDetailRow(title: NSLocalizedString("total_salary", comment: "Total salary"), amount: salaryDetails.totalSalary, isTotal: true)
             }
         }
         .padding(20)

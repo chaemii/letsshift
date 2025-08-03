@@ -138,6 +138,30 @@
 "total_annual_leave" = "Total Annual Leave";
 "used_annual_leave" = "Used Annual Leave";
 "remaining_annual_leave" = "Remaining Annual Leave";
+"total_work_days" = "Total Work D";
+"total_work_hours" = "Total Work h";
+"night_shifts" = "Night Shifts";
+"duty_shifts" = "Duty";
+"average_work_hours" = "Average Work h";
+"overtime_hours" = "Overtime h";
+"work_rate" = "Work Rate";
+"duty_hours" = "Duty h";
+"monthly_salary" = "Monthly Salary";
+"yearly_salary" = "Annual Salary";
+"base_salary" = "Base Salary";
+"night_shift_bonus" = "Night Shift Allowance";
+"deep_night_shift_bonus" = "Deep Night Allowance";
+"overtime_bonus" = "Overtime Allowance";
+"total_salary" = "Total Salary";
+
+/* Days of Week (3-letter format for Statistics) */
+"weekday_sun" = "Sun";
+"weekday_mon" = "Mon";
+"weekday_tue" = "Tue";
+"weekday_wed" = "Wed";
+"weekday_thu" = "Thu";
+"weekday_fri" = "Fri";
+"weekday_sat" = "Sat";
 
 /* MainCalendarView */
 "this_month_stats" = "This Month Stats";

@@ -138,6 +138,30 @@
 "total_annual_leave" = "총 연차";
 "used_annual_leave" = "사용한 연차";
 "remaining_annual_leave" = "남은 연차";
+"total_work_days" = "총 근무일";
+"total_work_hours" = "총 근무시간";
+"night_shifts" = "야간 근무";
+"duty_shifts" = "당직";
+"average_work_hours" = "평균 근무시간";
+"overtime_hours" = "초과근무 시간";
+"work_rate" = "근무율";
+"duty_hours" = "당직 시간";
+"monthly_salary" = "월 급여";
+"yearly_salary" = "연 급여";
+"base_salary" = "기본 급여";
+"night_shift_bonus" = "야간 근무 수당";
+"deep_night_shift_bonus" = "심야 근무 수당";
+"overtime_bonus" = "초과근무 수당";
+"total_salary" = "총 급여";
+
+/* Days of Week (3-letter format for Statistics) */
+"weekday_sun" = "일요일";
+"weekday_mon" = "월요일";
+"weekday_tue" = "화요일";
+"weekday_wed" = "수요일";
+"weekday_thu" = "목요일";
+"weekday_fri" = "금요일";
+"weekday_sat" = "토요일";
 
 /* MainCalendarView */
 "this_month_stats" = "이번 달 통계";
