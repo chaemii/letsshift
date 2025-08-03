@@ -7,6 +7,16 @@
 
 import SwiftUI
 
+// String extension for localized shift names
+extension String {
+    var localizedShiftName: String {
+        if let shiftType = ShiftType(rawValue: self) {
+            return shiftType.displayName
+        }
+        return self // 변환 실패시 원래 문자열 반환
+    }
+}
+
 // 앱의 VacationType enum (위젯에서 사용)
 enum VacationType: String, CaseIterable, Codable {
     case 연차 = "연차"
