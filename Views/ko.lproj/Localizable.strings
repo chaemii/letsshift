@@ -289,3 +289,19 @@
 "complete" = "완료";
 "team_format" = "%d팀";
 "team_group_format" = "%d조";
+
+/* Shift Type Select View */
+"shift_type_setting" = "근무 유형 설정";
+"shift_element_edit_description" = "근무 요소의 이름과 색상을 수정할 수 있습니다";
+"shift_type" = "근무 유형";
+"next" = "다음";
+"shift_element_name_edit" = "근무 요소 이름 수정";
+"shift_element_name" = "근무 요소 이름";
+"shift_element_name_input" = "근무 요소의 이름을 입력해주세요";
+"shift_element_name_and_color" = "근무 요소 이름 및 색상 수정";
+"name_edit" = "이름 수정";
+"color_selection" = "색상 선택";
+"shift_element_edit" = "근무요소 수정";
+"name" = "이름";
+"name_input_placeholder" = "근무 요소 이름을 입력하세요";
+"save" = "저장";

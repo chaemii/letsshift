@@ -13,12 +13,12 @@ struct ShiftTypeSelectView: View {
         NavigationView {
             VStack(spacing: 30) {
                 VStack(spacing: 20) {
-                    Text("근무 유형 설정")
+                    Text(NSLocalizedString("shift_type_setting", comment: "Shift type setting"))
                         .font(.title2)
                         .fontWeight(.bold)
                         .foregroundColor(.charcoalBlack)
                     
-                    Text("근무 요소의 이름과 색상을 수정할 수 있습니다")
+                    Text(NSLocalizedString("shift_element_edit_description", comment: "Shift element edit description"))
                         .font(.body)
                         .foregroundColor(.charcoalBlack.opacity(0.7))
                         .multilineTextAlignment(.center)
@@ -45,14 +45,14 @@ struct ShiftTypeSelectView: View {
                 
                 Spacer()
                 
-                Button("다음") {
+                Button(NSLocalizedString("next", comment: "Next button")) {
                     showingTeamSelection = true
                 }
                 .buttonStyle(PrimaryButtonStyle())
             }
             .padding()
             .background(Color.backgroundLight)
-            .navigationTitle("근무 유형")
+            .navigationTitle(NSLocalizedString("shift_type", comment: "Shift type"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -118,7 +118,7 @@ struct ShiftTypeEditCard: View {
                         .fontWeight(.medium)
                         .foregroundColor(.charcoalBlack)
                     
-                    Text("\(shiftType.workingHours)시간")
+                    Text("\(shiftType.workingHours)\(NSLocalizedString("hours_unit", comment: "Hours unit"))")
                         .font(.caption)
                         .foregroundColor(.charcoalBlack.opacity(0.7))
                 }

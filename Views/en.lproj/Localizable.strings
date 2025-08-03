@@ -289,3 +289,19 @@
 "complete" = "Complete";
 "team_format" = "Team %d";
 "team_group_format" = "Team %d";
+
+/* Shift Type Select View */
+"shift_type_setting" = "Shift Type Setting";
+"shift_element_edit_description" = "You can modify the name and color of shift elements";
+"shift_type" = "Shift Type";
+"next" = "Next";
+"shift_element_name_edit" = "Edit Shift Element Name";
+"shift_element_name" = "Shift Element Name";
+"shift_element_name_input" = "Please enter the name of the shift element";
+"shift_element_name_and_color" = "Edit Shift Element Name & Color";
+"name_edit" = "Edit Name";
+"color_selection" = "Color Selection";
+"shift_element_edit" = "Edit Shift Element";
+"name" = "Name";
+"name_input_placeholder" = "Enter shift element name";
+"save" = "Save";
