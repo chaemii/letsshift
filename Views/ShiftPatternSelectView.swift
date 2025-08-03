@@ -14,12 +14,12 @@ struct ShiftPatternSelectView: View {
             VStack(spacing: 0) {
                 // Header
                 VStack(spacing: 15) {
-                    Text("근무 패턴 선택")
+                    Text(NSLocalizedString("select_work_pattern", comment: "Select work pattern"))
                         .font(.title2)
                         .fontWeight(.bold)
                         .foregroundColor(.charcoalBlack)
                     
-                    Text("적용할 근무 패턴을 선택하세요")
+                    Text(NSLocalizedString("select_pattern_description", comment: "Select pattern description"))
                         .font(.subheadline)
                         .foregroundColor(.charcoalBlack.opacity(0.7))
                 }
@@ -46,7 +46,7 @@ struct ShiftPatternSelectView: View {
                 // Action buttons
                 VStack(spacing: 12) {
                     Button(action: applyPattern) {
-                        Text("패턴 적용")
+                        Text(NSLocalizedString("apply_pattern", comment: "Apply pattern"))
                             .font(.headline)
                             .fontWeight(.semibold)
                             .foregroundColor(.white)
@@ -57,7 +57,7 @@ struct ShiftPatternSelectView: View {
                     }
                     
                     Button(action: { dismiss() }) {
-                        Text("취소")
+                        Text(NSLocalizedString("cancel", comment: "Cancel"))
                             .font(.headline)
                             .fontWeight(.medium)
                             .foregroundColor(.charcoalBlack)
@@ -120,7 +120,7 @@ struct PatternOptionCard: View {
                 // Pattern preview
                 HStack(spacing: 8) {
                     ForEach(pattern.generatePattern(), id: \.self) { shiftType in
-                        Text(shiftType.rawValue)
+                        Text(shiftType.displayName)
                             .font(.caption)
                             .fontWeight(.medium)
                             .foregroundColor(.white)

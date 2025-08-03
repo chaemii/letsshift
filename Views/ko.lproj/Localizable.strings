@@ -275,3 +275,8 @@
 "pattern_five_team_three_shift" = "5조 3교대";
 "pattern_irregular" = "비주기적";
 "pattern_custom" = "나만의 패턴";
+
+/* Shift Pattern Select View */
+"select_work_pattern" = "근무 패턴 선택";
+"select_pattern_description" = "적용할 근무 패턴을 선택하세요";
+"apply_pattern" = "패턴 적용";

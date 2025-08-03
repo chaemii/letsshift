@@ -275,3 +275,8 @@
 "pattern_five_team_three_shift" = "5T 3S";
 "pattern_irregular" = "Irregular";
 "pattern_custom" = "Custom Pattern";
+
+/* Shift Pattern Select View */
+"select_work_pattern" = "Select Work Pattern";
+"select_pattern_description" = "Choose the work pattern to apply";
+"apply_pattern" = "Apply Pattern";
