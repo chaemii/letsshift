@@ -320,3 +320,18 @@
 /* Additional Time Labels */
 "start" = "시작";
 "end" = "종료";
+
+/* Widget Texts */
+"today_shift" = "오늘 근무";
+"today_schedule" = "오늘 스케줄";
+"today_schedule_description" = "오늘의 근무 스케줄을 확인하세요.";
+"this_week" = "이번 주";
+
+/* Short Weekdays for Widget */
+"weekday_mon_short" = "월";
+"weekday_tue_short" = "화";
+"weekday_wed_short" = "수";
+"weekday_thu_short" = "목";
+"weekday_fri_short" = "금";
+"weekday_sat_short" = "토";
+"weekday_sun_short" = "일";

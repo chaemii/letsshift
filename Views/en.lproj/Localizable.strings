@@ -320,3 +320,18 @@
 /* Additional Time Labels */
 "start" = "Start";
 "end" = "End";
+
+/* Widget Texts */
+"today_shift" = "Today's Shift";
+"today_schedule" = "Today's Schedule";
+"today_schedule_description" = "Check today's work schedule.";
+"this_week" = "This Week";
+
+/* Short Weekdays for Widget */
+"weekday_mon_short" = "Mon";
+"weekday_tue_short" = "Tue";
+"weekday_wed_short" = "Wed";
+"weekday_thu_short" = "Thu";
+"weekday_fri_short" = "Fri";
+"weekday_sat_short" = "Sat";
+"weekday_sun_short" = "Sun";

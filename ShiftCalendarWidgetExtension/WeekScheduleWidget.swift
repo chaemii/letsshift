@@ -39,15 +39,15 @@ struct WeekScheduleProvider: TimelineProvider {
     
     func placeholder(in context: Context) -> WeekScheduleEntry {
         let sampleData = [
-            DayScheduleData(day: "월", shiftType: "주간", date: "7/28"),
-            DayScheduleData(day: "화", shiftType: "야간", date: "7/29"),
-            DayScheduleData(day: "수", shiftType: "비번", date: "7/30"),
-            DayScheduleData(day: "목", shiftType: "휴무", date: "7/31"),
-            DayScheduleData(day: "금", shiftType: "주간", date: "8/1"),
-            DayScheduleData(day: "토", shiftType: "야간", date: "8/2"),
-            DayScheduleData(day: "일", shiftType: "비번", date: "8/3")
+            DayScheduleData(day: NSLocalizedString("weekday_mon_short", comment: "Mon"), shiftType: NSLocalizedString("DAY", comment: "Day shift"), date: "7/28"),
+            DayScheduleData(day: NSLocalizedString("weekday_tue_short", comment: "Tue"), shiftType: NSLocalizedString("EVE", comment: "Evening shift"), date: "7/29"),
+            DayScheduleData(day: NSLocalizedString("weekday_wed_short", comment: "Wed"), shiftType: NSLocalizedString("OFF", comment: "Off duty"), date: "7/30"),
+            DayScheduleData(day: NSLocalizedString("weekday_thu_short", comment: "Thu"), shiftType: NSLocalizedString("RST", comment: "Rest"), date: "7/31"),
+            DayScheduleData(day: NSLocalizedString("weekday_fri_short", comment: "Fri"), shiftType: NSLocalizedString("DAY", comment: "Day shift"), date: "8/1"),
+            DayScheduleData(day: NSLocalizedString("weekday_sat_short", comment: "Sat"), shiftType: NSLocalizedString("EVE", comment: "Evening shift"), date: "8/2"),
+            DayScheduleData(day: NSLocalizedString("weekday_sun_short", comment: "Sun"), shiftType: NSLocalizedString("OFF", comment: "Off duty"), date: "8/3")
         ]
-        return WeekScheduleEntry(date: Date(), weekData: sampleData, team: "1조", patternType: "3교대", shiftOffset: 0)
+        return WeekScheduleEntry(date: Date(), weekData: sampleData, team: String(format: NSLocalizedString("team_format", comment: "Team format"), 1), patternType: NSLocalizedString("pattern_three_shift", comment: "3 Shift"), shiftOffset: 0)
     }
 
     func getSnapshot(in context: Context, completion: @escaping (WeekScheduleEntry) -> ()) {
@@ -234,15 +234,15 @@ struct WeekScheduleWidgetEntryView: View {
         formatter.dateFormat = "E"
         let todayDay = formatter.string(from: today)
         
-        // 요일 매핑 (한국어 -> 한국어)
+        // 요일 매핑 (현재 요일 -> 위젯 표시 요일)
         let dayMapping = [
-            "월": "월",
-            "화": "화", 
-            "수": "수",
-            "목": "목",
-            "금": "금",
-            "토": "토",
-            "일": "일"
+            NSLocalizedString("weekday_mon_short", comment: "Mon"): NSLocalizedString("weekday_mon_short", comment: "Mon"),
+            NSLocalizedString("weekday_tue_short", comment: "Tue"): NSLocalizedString("weekday_tue_short", comment: "Tue"), 
+            NSLocalizedString("weekday_wed_short", comment: "Wed"): NSLocalizedString("weekday_wed_short", comment: "Wed"),
+            NSLocalizedString("weekday_thu_short", comment: "Thu"): NSLocalizedString("weekday_thu_short", comment: "Thu"),
+            NSLocalizedString("weekday_fri_short", comment: "Fri"): NSLocalizedString("weekday_fri_short", comment: "Fri"),
+            NSLocalizedString("weekday_sat_short", comment: "Sat"): NSLocalizedString("weekday_sat_short", comment: "Sat"),
+            NSLocalizedString("weekday_sun_short", comment: "Sun"): NSLocalizedString("weekday_sun_short", comment: "Sun")
         ]
         
         return dayMapping[todayDay] == dayString
@@ -256,8 +256,8 @@ struct WeekScheduleWidget: Widget {
         StaticConfiguration(kind: kind, provider: WeekScheduleProvider()) { entry in
             WeekScheduleWidgetEntryView(entry: entry)
         }
-        .configurationDisplayName("일주일 스케줄")
-        .description("이번 주 근무 스케줄을 한눈에 확인하세요.")
+        .configurationDisplayName(NSLocalizedString("this_week", comment: "This week"))
+        .description(NSLocalizedString("today_schedule_description", comment: "Check today's work schedule."))
         .supportedFamilies([.systemMedium, .systemLarge])
     }
 } 

@@ -8,8 +8,8 @@ struct TodayShiftWidget: Widget {
         StaticConfiguration(kind: kind, provider: TodayShiftTimelineProvider()) { entry in
             TodayShiftWidgetEntryView(entry: entry)
         }
-        .configurationDisplayName("오늘 스케줄")
-        .description("오늘의 근무 스케줄을 확인하세요.")
+        .configurationDisplayName(NSLocalizedString("today_schedule", comment: "Today's schedule"))
+        .description(NSLocalizedString("today_schedule_description", comment: "Check today's work schedule."))
         .supportedFamilies([.systemSmall, .systemMedium])
     }
 }
