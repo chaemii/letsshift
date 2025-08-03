@@ -40,7 +40,7 @@ struct TodayShiftWidgetEntryView: View {
         VStack(spacing: 0) {
             // 헤더: 제목과 날짜
             HStack {
-                Text(NSLocalizedString("today_shift", comment: "Today's shift"))
+                Text(WidgetLocalizer.localizedString("today_shift"))
                     .font(.system(size: 14, weight: .medium))
                     .foregroundColor(.secondary)
                 
@@ -246,8 +246,8 @@ struct TodayShiftWidget: Widget {
         StaticConfiguration(kind: kind, provider: TodayShiftProvider()) { entry in
             TodayShiftWidgetEntryView(entry: entry)
         }
-        .configurationDisplayName(NSLocalizedString("today_shift", comment: "Today's shift"))
-        .description(NSLocalizedString("today_schedule_description", comment: "Check today's work schedule."))
+        .configurationDisplayName(WidgetLocalizer.localizedString("today_shift"))
+        .description(WidgetLocalizer.localizedString("today_schedule_description"))
         .supportedFamilies([.systemSmall])
     }
 }

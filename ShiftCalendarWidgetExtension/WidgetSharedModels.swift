@@ -7,6 +7,88 @@
 
 import SwiftUI
 
+// Widget Localization Helper
+struct WidgetLocalizer {
+    static var isEnglish: Bool {
+        let preferredLanguage = Locale.preferredLanguages.first ?? "ko"
+        return preferredLanguage.hasPrefix("en")
+    }
+    
+    static func localizedString(_ key: String) -> String {
+        if isEnglish {
+            switch key {
+            // Widget titles
+            case "today_shift": return "Today's Shift"
+            case "today_schedule": return "Today's Schedule"  
+            case "today_schedule_description": return "Check today's work schedule."
+            case "this_week": return "This Week"
+            
+            // Shift types
+            case "DAY": return "DAY"
+            case "EVE": return "EVE"
+            case "NGT": return "NGT"
+            case "AFT": return "AFT"
+            case "ONC": return "ONC"
+            case "OFF": return "OFF"
+            case "RST": return "RST"
+            
+            // Weekdays
+            case "weekday_mon_short": return "Mon"
+            case "weekday_tue_short": return "Tue"
+            case "weekday_wed_short": return "Wed"
+            case "weekday_thu_short": return "Thu"
+            case "weekday_fri_short": return "Fri"
+            case "weekday_sat_short": return "Sat"
+            case "weekday_sun_short": return "Sun"
+            
+            // Pattern types  
+            case "pattern_three_shift": return "3 Shift"
+            case "team_format": return "Team %d"
+            case "pattern_label": return "Pattern:"
+            case "no_info": return "No info"
+            case "week_schedule_title": return "This Week"
+            
+            default: return key
+            }
+        } else {
+            switch key {
+            // Widget titles
+            case "today_shift": return "오늘 근무"
+            case "today_schedule": return "오늘 스케줄"
+            case "today_schedule_description": return "오늘의 근무 스케줄을 확인하세요."
+            case "this_week": return "이번 주"
+            
+            // Shift types
+            case "DAY": return "주간"
+            case "EVE": return "야간"
+            case "NGT": return "심야"
+            case "AFT": return "오후"
+            case "ONC": return "당직"
+            case "OFF": return "비번"
+            case "RST": return "휴무"
+            
+            // Weekdays
+            case "weekday_mon_short": return "월"
+            case "weekday_tue_short": return "화"
+            case "weekday_wed_short": return "수"
+            case "weekday_thu_short": return "목"
+            case "weekday_fri_short": return "금"
+            case "weekday_sat_short": return "토"
+            case "weekday_sun_short": return "일"
+            
+            // Pattern types
+            case "pattern_three_shift": return "3교대"
+            case "team_format": return "%d조"
+            case "pattern_label": return "패턴:"
+            case "no_info": return "정보 없음"
+            case "week_schedule_title": return "일주일 스케줄"
+            
+            default: return key
+            }
+        }
+    }
+}
+
 // String extension for localized shift names
 extension String {
     var localizedShiftName: String {
@@ -83,13 +165,13 @@ enum ShiftType: String, CaseIterable, Codable {
     
     var displayName: String {
         switch self {
-        case .주간: return NSLocalizedString("DAY", comment: "Day shift")
-        case .야간: return NSLocalizedString("EVE", comment: "Evening shift")
-        case .심야: return NSLocalizedString("NGT", comment: "Night shift")
-        case .오후: return NSLocalizedString("AFT", comment: "Afternoon shift")
-        case .당직: return NSLocalizedString("ONC", comment: "On-call duty")
-        case .비번: return NSLocalizedString("OFF", comment: "Off duty")
-        case .휴무: return NSLocalizedString("RST", comment: "Rest")
+        case .주간: return WidgetLocalizer.localizedString("DAY")
+        case .야간: return WidgetLocalizer.localizedString("EVE")
+        case .심야: return WidgetLocalizer.localizedString("NGT")
+        case .오후: return WidgetLocalizer.localizedString("AFT")
+        case .당직: return WidgetLocalizer.localizedString("ONC")
+        case .비번: return WidgetLocalizer.localizedString("OFF")
+        case .휴무: return WidgetLocalizer.localizedString("RST")
         }
     }
     

@@ -39,15 +39,15 @@ struct WeekScheduleProvider: TimelineProvider {
     
     func placeholder(in context: Context) -> WeekScheduleEntry {
         let sampleData = [
-            DayScheduleData(day: NSLocalizedString("weekday_mon_short", comment: "Mon"), shiftType: NSLocalizedString("DAY", comment: "Day shift"), date: "7/28"),
-            DayScheduleData(day: NSLocalizedString("weekday_tue_short", comment: "Tue"), shiftType: NSLocalizedString("EVE", comment: "Evening shift"), date: "7/29"),
-            DayScheduleData(day: NSLocalizedString("weekday_wed_short", comment: "Wed"), shiftType: NSLocalizedString("OFF", comment: "Off duty"), date: "7/30"),
-            DayScheduleData(day: NSLocalizedString("weekday_thu_short", comment: "Thu"), shiftType: NSLocalizedString("RST", comment: "Rest"), date: "7/31"),
-            DayScheduleData(day: NSLocalizedString("weekday_fri_short", comment: "Fri"), shiftType: NSLocalizedString("DAY", comment: "Day shift"), date: "8/1"),
-            DayScheduleData(day: NSLocalizedString("weekday_sat_short", comment: "Sat"), shiftType: NSLocalizedString("EVE", comment: "Evening shift"), date: "8/2"),
-            DayScheduleData(day: NSLocalizedString("weekday_sun_short", comment: "Sun"), shiftType: NSLocalizedString("OFF", comment: "Off duty"), date: "8/3")
+            DayScheduleData(day: WidgetLocalizer.localizedString("weekday_mon_short"), shiftType: WidgetLocalizer.localizedString("DAY"), date: "7/28"),
+            DayScheduleData(day: WidgetLocalizer.localizedString("weekday_tue_short"), shiftType: WidgetLocalizer.localizedString("EVE"), date: "7/29"),
+            DayScheduleData(day: WidgetLocalizer.localizedString("weekday_wed_short"), shiftType: WidgetLocalizer.localizedString("OFF"), date: "7/30"),
+            DayScheduleData(day: WidgetLocalizer.localizedString("weekday_thu_short"), shiftType: WidgetLocalizer.localizedString("RST"), date: "7/31"),
+            DayScheduleData(day: WidgetLocalizer.localizedString("weekday_fri_short"), shiftType: WidgetLocalizer.localizedString("DAY"), date: "8/1"),
+            DayScheduleData(day: WidgetLocalizer.localizedString("weekday_sat_short"), shiftType: WidgetLocalizer.localizedString("EVE"), date: "8/2"),
+            DayScheduleData(day: WidgetLocalizer.localizedString("weekday_sun_short"), shiftType: WidgetLocalizer.localizedString("OFF"), date: "8/3")
         ]
-        return WeekScheduleEntry(date: Date(), weekData: sampleData, team: String(format: NSLocalizedString("team_format", comment: "Team format"), 1), patternType: NSLocalizedString("pattern_three_shift", comment: "3 Shift"), shiftOffset: 0)
+        return WeekScheduleEntry(date: Date(), weekData: sampleData, team: String(format: WidgetLocalizer.localizedString("team_format"), 1), patternType: WidgetLocalizer.localizedString("pattern_three_shift"), shiftOffset: 0)
     }
 
     func getSnapshot(in context: Context, completion: @escaping (WeekScheduleEntry) -> ()) {
@@ -111,16 +111,16 @@ struct WeekScheduleProvider: TimelineProvider {
         
         // 폴백 데이터
         let fallbackData = [
-            DayScheduleData(day: "월", shiftType: "정보 없음", date: "7/28"),
-            DayScheduleData(day: "화", shiftType: "정보 없음", date: "7/29"),
-            DayScheduleData(day: "수", shiftType: "정보 없음", date: "7/30"),
-            DayScheduleData(day: "목", shiftType: "정보 없음", date: "7/31"),
-            DayScheduleData(day: "금", shiftType: "정보 없음", date: "8/1"),
-            DayScheduleData(day: "토", shiftType: "정보 없음", date: "8/2"),
-            DayScheduleData(day: "일", shiftType: "정보 없음", date: "8/3")
+            DayScheduleData(day: WidgetLocalizer.localizedString("weekday_mon_short"), shiftType: WidgetLocalizer.localizedString("no_info"), date: "7/28"),
+            DayScheduleData(day: WidgetLocalizer.localizedString("weekday_tue_short"), shiftType: WidgetLocalizer.localizedString("no_info"), date: "7/29"),
+            DayScheduleData(day: WidgetLocalizer.localizedString("weekday_wed_short"), shiftType: WidgetLocalizer.localizedString("no_info"), date: "7/30"),
+            DayScheduleData(day: WidgetLocalizer.localizedString("weekday_thu_short"), shiftType: WidgetLocalizer.localizedString("no_info"), date: "7/31"),
+            DayScheduleData(day: WidgetLocalizer.localizedString("weekday_fri_short"), shiftType: WidgetLocalizer.localizedString("no_info"), date: "8/1"),
+            DayScheduleData(day: WidgetLocalizer.localizedString("weekday_sat_short"), shiftType: WidgetLocalizer.localizedString("no_info"), date: "8/2"),
+            DayScheduleData(day: WidgetLocalizer.localizedString("weekday_sun_short"), shiftType: WidgetLocalizer.localizedString("no_info"), date: "8/3")
         ]
         print("🔵 === Week Widget getWeekScheduleEntry END (fallback) ===")
-        return WeekScheduleEntry(date: date, weekData: fallbackData, team: "정보 없음", patternType: "정보 없음", shiftOffset: 0)
+        return WeekScheduleEntry(date: date, weekData: fallbackData, team: WidgetLocalizer.localizedString("no_info"), patternType: WidgetLocalizer.localizedString("no_info"), shiftOffset: 0)
     }
 }
 
@@ -132,7 +132,7 @@ struct WeekScheduleWidgetEntryView: View {
                             VStack(spacing: 10) {
                                     // 헤더: 제목과 팀 정보
                         HStack {
-                            Text("일주일 스케줄")
+                            Text(WidgetLocalizer.localizedString("week_schedule_title"))
                                 .font(.system(size: 16, weight: .medium))
                                 .foregroundColor(.secondary)
                             
@@ -181,7 +181,7 @@ struct WeekScheduleWidgetEntryView: View {
             }
             
                                     // 패턴 정보 (하단)
-                        Text("패턴: \(entry.patternType)")
+                        Text("\(WidgetLocalizer.localizedString("pattern_label")) \(entry.patternType)")
                             .font(.system(size: 12))
                             .foregroundColor(.gray)
             
@@ -236,13 +236,13 @@ struct WeekScheduleWidgetEntryView: View {
         
         // 요일 매핑 (현재 요일 -> 위젯 표시 요일)
         let dayMapping = [
-            NSLocalizedString("weekday_mon_short", comment: "Mon"): NSLocalizedString("weekday_mon_short", comment: "Mon"),
-            NSLocalizedString("weekday_tue_short", comment: "Tue"): NSLocalizedString("weekday_tue_short", comment: "Tue"), 
-            NSLocalizedString("weekday_wed_short", comment: "Wed"): NSLocalizedString("weekday_wed_short", comment: "Wed"),
-            NSLocalizedString("weekday_thu_short", comment: "Thu"): NSLocalizedString("weekday_thu_short", comment: "Thu"),
-            NSLocalizedString("weekday_fri_short", comment: "Fri"): NSLocalizedString("weekday_fri_short", comment: "Fri"),
-            NSLocalizedString("weekday_sat_short", comment: "Sat"): NSLocalizedString("weekday_sat_short", comment: "Sat"),
-            NSLocalizedString("weekday_sun_short", comment: "Sun"): NSLocalizedString("weekday_sun_short", comment: "Sun")
+            WidgetLocalizer.localizedString("weekday_mon_short"): WidgetLocalizer.localizedString("weekday_mon_short"),
+            WidgetLocalizer.localizedString("weekday_tue_short"): WidgetLocalizer.localizedString("weekday_tue_short"), 
+            WidgetLocalizer.localizedString("weekday_wed_short"): WidgetLocalizer.localizedString("weekday_wed_short"),
+            WidgetLocalizer.localizedString("weekday_thu_short"): WidgetLocalizer.localizedString("weekday_thu_short"),
+            WidgetLocalizer.localizedString("weekday_fri_short"): WidgetLocalizer.localizedString("weekday_fri_short"),
+            WidgetLocalizer.localizedString("weekday_sat_short"): WidgetLocalizer.localizedString("weekday_sat_short"),
+            WidgetLocalizer.localizedString("weekday_sun_short"): WidgetLocalizer.localizedString("weekday_sun_short")
         ]
         
         return dayMapping[todayDay] == dayString
@@ -256,8 +256,8 @@ struct WeekScheduleWidget: Widget {
         StaticConfiguration(kind: kind, provider: WeekScheduleProvider()) { entry in
             WeekScheduleWidgetEntryView(entry: entry)
         }
-        .configurationDisplayName(NSLocalizedString("this_week", comment: "This week"))
-        .description(NSLocalizedString("today_schedule_description", comment: "Check today's work schedule."))
+        .configurationDisplayName(WidgetLocalizer.localizedString("this_week"))
+        .description(WidgetLocalizer.localizedString("today_schedule_description"))
         .supportedFamilies([.systemMedium, .systemLarge])
     }
 } 
