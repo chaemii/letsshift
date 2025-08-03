@@ -1133,7 +1133,7 @@ struct CustomPatternEditView: View {
                             }
                             
                             VStack(alignment: .leading, spacing: 12) {
-                                Text("반복주기 (일)")
+                                Text(NSLocalizedString("cycle_length_days", comment: "Cycle length days"))
                                     .font(.subheadline)
                                     .fontWeight(.medium)
                                     .foregroundColor(.charcoalBlack)
@@ -1148,7 +1148,7 @@ struct CustomPatternEditView: View {
                                     
                                     Spacer()
                                     
-                                    Text("\(cycleLength)일")
+                                    Text("\(cycleLength)\(NSLocalizedString("days_suffix", comment: "Days suffix"))")
                                         .font(.title2)
                                         .fontWeight(.bold)
                                         .foregroundColor(.charcoalBlack)
@@ -1165,7 +1165,7 @@ struct CustomPatternEditView: View {
                                 }
                                 .padding(.horizontal, 20)
                                 
-                                Text("2일 ~ 15일 사이에서 선택하세요")
+                                Text(NSLocalizedString("cycle_range_hint", comment: "Cycle range hint"))
                                     .font(.caption)
                                     .foregroundColor(.charcoalBlack.opacity(0.7))
                             }
@@ -1181,19 +1181,19 @@ struct CustomPatternEditView: View {
                                 Image(systemName: "calendar")
                                     .foregroundColor(Color(hex: "1A1A1A"))
                                     .font(.title3)
-                                Text("시작일 설정")
+                                Text(NSLocalizedString("start_date_setting", comment: "Start date setting"))
                                     .font(.headline)
                                     .fontWeight(.bold)
                                     .foregroundColor(.charcoalBlack)
                             }
                             
                             VStack(alignment: .leading, spacing: 12) {
-                                Text("패턴 시작일")
+                                Text(NSLocalizedString("pattern_start_date", comment: "Pattern start date"))
                                     .font(.subheadline)
                                     .fontWeight(.medium)
                                     .foregroundColor(.charcoalBlack)
                                 
-                                DatePicker("시작일", selection: $startDate, displayedComponents: .date)
+                                DatePicker(NSLocalizedString("start_date", comment: "Start date"), selection: $startDate, displayedComponents: .date)
                                     .datePickerStyle(CompactDatePickerStyle())
                                     .labelsHidden()
                                     .padding(.horizontal, 20)
@@ -1210,7 +1210,7 @@ struct CustomPatternEditView: View {
                                 Image(systemName: "list.bullet")
                                     .foregroundColor(Color(hex: "1A1A1A"))
                                     .font(.title3)
-                                Text("일차별 근무 요소")
+                                Text(NSLocalizedString("daily_shift_elements", comment: "Daily shift elements"))
                                     .font(.headline)
                                     .fontWeight(.bold)
                                     .foregroundColor(.charcoalBlack)
@@ -1223,7 +1223,7 @@ struct CustomPatternEditView: View {
                                         showingShiftTypePicker = true
                                     }) {
                                         HStack {
-                                            Text("\(dayIndex + 1)일차")
+                                            Text(String(format: NSLocalizedString("day_format", comment: "Day format"), dayIndex + 1))
                                                 .font(.subheadline)
                                                 .fontWeight(.medium)
                                                 .foregroundColor(.charcoalBlack)

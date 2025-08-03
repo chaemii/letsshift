@@ -242,3 +242,13 @@
 "data_reset_warning" = "모든 데이터가 삭제됩니다.\n이 작업은 되돌릴 수 없습니다.";
 "reset" = "초기화";
 "cancel" = "취소";
+
+/* Custom Pattern Edit View */
+"cycle_length_days" = "반복주기 (일)";
+"cycle_range_hint" = "2일 ~ 15일 사이에서 선택하세요";
+"start_date_setting" = "시작일 설정";
+"pattern_start_date" = "패턴 시작일";
+"start_date" = "시작일";
+"daily_shift_elements" = "일차별 근무 요소";
+"day_format" = "%d일차";
+"days_suffix" = "일";

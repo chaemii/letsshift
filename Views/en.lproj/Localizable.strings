@@ -242,3 +242,13 @@
 "data_reset_warning" = "All data will be deleted.\nThis action cannot be undone.";
 "reset" = "Reset";
 "cancel" = "Cancel";
+
+/* Custom Pattern Edit View */
+"cycle_length_days" = "Cycle Length (Days)";
+"cycle_range_hint" = "Select between 2-15 days";
+"start_date_setting" = "Start Date Setting";
+"pattern_start_date" = "Pattern Start Date";
+"start_date" = "Start Date";
+"daily_shift_elements" = "Daily Shift Elements";
+"day_format" = "Day %d";
+"days_suffix" = "D";
