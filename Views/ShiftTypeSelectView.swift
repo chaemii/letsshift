@@ -52,7 +52,7 @@ struct ShiftTypeSelectView: View {
             }
             .padding()
             .background(Color.backgroundLight)
-            .navigationTitle(NSLocalizedString("shift_type", comment: "Shift type"))
+            .navigationTitle(NSLocalizedString("shift_element_edit", comment: "Edit Shift Element"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -236,7 +236,7 @@ struct ColorPickerView: View {
                 
                 // 시간 수정 섹션
                 VStack(spacing: 12) {
-                    Text("근무 시간")
+                    Text(NSLocalizedString("work_time", comment: "Work Time"))
                         .font(.headline)
                         .fontWeight(.semibold)
                         .foregroundColor(.charcoalBlack)
@@ -346,7 +346,7 @@ struct ColorPickerView: View {
                         Spacer()
                         
                         VStack(alignment: .trailing, spacing: 4) {
-                            Text("근무 시간")
+                            Text(NSLocalizedString("work_time", comment: "Work Time"))
                                 .font(.subheadline)
                                 .foregroundColor(.charcoalBlack.opacity(0.7))
                             
@@ -385,7 +385,7 @@ struct ColorPickerView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("완료") {
+                    Button(NSLocalizedString("done", comment: "Done")) {
                         dismiss()
                     }
                     .foregroundColor(.charcoalBlack)

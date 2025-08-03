@@ -94,7 +94,15 @@ struct WeekScheduleProvider: TimelineProvider {
                     print("📅 Day \(index): \(dayData.day) - \(dayData.shiftType) (\(dayData.date))")
                 }
                 print("🔵 === Week Widget getWeekScheduleEntry END ===")
-                return WeekScheduleEntry(date: date, weekData: weekData.weekData, team: weekData.team, patternType: weekData.patternType, shiftOffset: weekData.shiftOffset)
+                // 실제 데이터 변환 적용
+                let convertedWeekData = weekData.weekData.map { dayData in
+                    DayScheduleData(
+                        day: WidgetLocalizer.convertWeekday(dayData.day),
+                        shiftType: dayData.shiftType,
+                        date: dayData.date
+                    )
+                }
+                return WeekScheduleEntry(date: date, weekData: convertedWeekData, team: WidgetLocalizer.convertTeamName(weekData.team), patternType: WidgetLocalizer.convertPatternName(weekData.patternType), shiftOffset: weekData.shiftOffset)
             } else {
                 print("❌ Week Widget Debug - Failed to decode WeekScheduleData")
                 print("❌ JSON decode error occurred")

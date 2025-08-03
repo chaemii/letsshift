@@ -350,7 +350,14 @@ struct ShiftTableRow: View {
     private var dayOfWeek: String {
         let formatter = DateFormatter()
         formatter.dateFormat = "E"
-        formatter.locale = Locale(identifier: "ko_KR")
+        
+        // iOS 언어 설정에 따라 로케일 결정
+        if Locale.preferredLanguages.first?.hasPrefix("en") == true {
+            formatter.locale = Locale(identifier: "en_US")
+        } else {
+            formatter.locale = Locale(identifier: "ko_KR")
+        }
+        
         return formatter.string(from: date)
     }
     

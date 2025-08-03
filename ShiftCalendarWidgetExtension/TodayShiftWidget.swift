@@ -72,7 +72,7 @@ struct TodayShiftWidgetEntryView: View {
                 }
                 
                 // 팀 정보
-                Text(entry.team)
+                Text(WidgetLocalizer.convertTeamName(entry.team))
                     .font(.system(size: 14, weight: .medium))
                     .foregroundColor(.secondary)
             }

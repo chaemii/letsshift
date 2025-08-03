@@ -197,7 +197,7 @@ struct SettingsView: View {
                                 SalaryInfoRow(
                                     icon: "creditcard",
                                     title: NSLocalizedString("base_salary", comment: "Base salary"),
-                                    value: shiftManager.settings.baseSalary > 0 ? "\(Int(shiftManager.settings.baseSalary))\(NSLocalizedString("won_currency", comment: "Won currency"))" : NSLocalizedString("not_set", comment: "Not set"),
+                                    value: shiftManager.settings.baseSalary > 0 ? "\(Int(shiftManager.settings.baseSalary))\(Locale.preferredLanguages.first?.hasPrefix("en") == true ? NSLocalizedString("dollar_currency", comment: "Dollar currency") : NSLocalizedString("won_currency", comment: "Won currency"))" : NSLocalizedString("not_set", comment: "Not set"),
                                     isHighlighted: false
                                 )
                                 
