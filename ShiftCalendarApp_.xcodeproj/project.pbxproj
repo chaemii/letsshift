@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		C23A7E9E2E3E4ED300B393F3 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = C23A7E9D2E3E4ED300B393F3 /* Localizable.strings */; };
 		C23A7E9F2E3E4F1900B393F3 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = C23A7E9D2E3E4ED300B393F3 /* Localizable.strings */; };
+		C24D916C2E41A0500003EAD8 /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = C24D916B2E41A0500003EAD8 /* GoogleMobileAds */; };
 		C297D81D2E2E6CF1009FC80E /* ShiftModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = C297D81C2E2E6CF1009FC80E /* ShiftModels.swift */; };
 		C297D8292E2E6D00009FC80E /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C297D8222E2E6D00009FC80E /* OnboardingView.swift */; };
 		C297D82A2E2E6D00009FC80E /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C297D8242E2E6D00009FC80E /* SettingsView.swift */; };
@@ -129,6 +130,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C24D916C2E41A0500003EAD8 /* GoogleMobileAds in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -258,6 +260,7 @@
 			);
 			name = LetsShift;
 			packageProductDependencies = (
+				C24D916B2E41A0500003EAD8 /* GoogleMobileAds */,
 			);
 			productName = LetsShift;
 			productReference = C297D7E62E2E6C63009FC80E /* LetsShift.app */;
@@ -368,6 +371,7 @@
 			mainGroup = C297D7DD2E2E6C63009FC80E;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
+				C24D916A2E41A0500003EAD8 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = C297D7E72E2E6C63009FC80E /* Products */;
@@ -623,7 +627,7 @@
 				CURRENT_PROJECT_VERSION = 1.1.2;
 				DEVELOPMENT_TEAM = RPFY97S3D3;
 				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ShiftCalendarApp_/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -660,7 +664,7 @@
 				CURRENT_PROJECT_VERSION = 1.1.2;
 				DEVELOPMENT_TEAM = RPFY97S3D3;
 				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ShiftCalendarApp_/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -865,6 +869,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		C24D916A2E41A0500003EAD8 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/googleads/swift-package-manager-google-mobile-ads.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 12.8.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		C24D916B2E41A0500003EAD8 /* GoogleMobileAds */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C24D916A2E41A0500003EAD8 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */;
+			productName = GoogleMobileAds;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = C297D7DE2E2E6C63009FC80E /* Project object */;
 }
