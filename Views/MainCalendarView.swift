@@ -189,6 +189,11 @@ struct MainCalendarView: View {
     }
     
     private func getShiftType(for date: Date) -> ShiftType {
+        // 먼저 개인 스케줄에서 해당 날짜의 근무 타입을 확인
+        if let schedule = shiftManager.schedules.first(where: { calendar.isDate($0.date, inSameDayAs: date) }) {
+            return schedule.shiftType
+        }
+        // 개인 스케줄에 없으면 팀 근무표를 참조
         return shiftManager.getCurrentUserShiftType(for: date, shiftOffset: shiftManager.shiftOffset)
     }
     

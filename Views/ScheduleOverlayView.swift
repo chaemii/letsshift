@@ -215,18 +215,17 @@ struct ScheduleOverlayView: View {
     
     private func saveSchedule() {
         let overtime = Int(overtimeHours) ?? 0
-        let currentTeam = shiftManager.getCurrentTeamNumber()
         
-        // 팀 근무표와 연동: 현재 사용자의 팀 근무를 업데이트 (shiftOffset 고려)
-        shiftManager.updateShiftForTeam(date: selectedDate, team: currentTeam, shiftType: selectedShiftType)
-        
-        // 추가 정보 (초과근무, 휴가 등)는 기존 방식으로 저장
+        // 개인 스케줄만 업데이트 (팀 근무표는 변경하지 않음)
         if let index = shiftManager.schedules.firstIndex(where: { Calendar.current.isDate($0.date, inSameDayAs: selectedDate) }) {
+            // 기존 스케줄 업데이트
+            shiftManager.schedules[index].shiftType = selectedShiftType
             shiftManager.schedules[index].overtimeHours = overtime
             shiftManager.schedules[index].isVacation = isVacation
             shiftManager.schedules[index].vacationType = isVacation ? selectedVacationType : nil
             shiftManager.schedules[index].isVolunteerWork = isVolunteerWork
         } else {
+            // 새 스케줄 생성
             let newSchedule = ShiftSchedule(
                 date: selectedDate,
                 shiftType: selectedShiftType,
@@ -239,11 +238,14 @@ struct ScheduleOverlayView: View {
         }
         
         shiftManager.saveData()
-        print("📅 ScheduleOverlayView - Updated schedule for current user (team \(currentTeam)) on \(selectedDate): \(selectedShiftType.rawValue) with shiftOffset: \(shiftManager.shiftOffset)")
+        print("📅 ScheduleOverlayView - Updated personal schedule on \(selectedDate): \(selectedShiftType.rawValue)")
     }
     
     private func deleteSchedule() {
+        // 개인 스케줄만 삭제 (팀 근무표는 변경하지 않음)
         shiftManager.schedules.removeAll { Calendar.current.isDate($0.date, inSameDayAs: selectedDate) }
+        shiftManager.saveData()
+        print("📅 ScheduleOverlayView - Deleted personal schedule on \(selectedDate)")
     }
 }
 
