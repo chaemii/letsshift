@@ -238,6 +238,8 @@ struct ScheduleOverlayView: View {
         }
         
         shiftManager.saveData()
+        // 위젯용 개인 스케줄 데이터 저장
+        shiftManager.savePersonalSchedulesForWidget()
         print("📅 ScheduleOverlayView - Updated personal schedule on \(selectedDate): \(selectedShiftType.rawValue)")
     }
     
@@ -245,6 +247,8 @@ struct ScheduleOverlayView: View {
         // 개인 스케줄만 삭제 (팀 근무표는 변경하지 않음)
         shiftManager.schedules.removeAll { Calendar.current.isDate($0.date, inSameDayAs: selectedDate) }
         shiftManager.saveData()
+        // 위젯용 개인 스케줄 데이터 저장
+        shiftManager.savePersonalSchedulesForWidget()
         print("📅 ScheduleOverlayView - Deleted personal schedule on \(selectedDate)")
     }
 }

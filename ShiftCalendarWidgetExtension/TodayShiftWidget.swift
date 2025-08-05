@@ -16,6 +16,16 @@ struct SimpleShiftData: Codable {
     let shiftOffset: Int
 }
 
+// 개인 스케줄 데이터 구조
+struct PersonalScheduleData: Codable {
+    let date: String
+    let shiftType: String
+    let overtimeHours: Int
+    let isVacation: Bool
+    let vacationType: String?
+    let isVolunteerWork: Bool
+}
+
 // 근무 타입별 색상 매핑 (WidgetSharedModels의 ShiftType 사용)
 extension String {
     var shiftColor: Color {
@@ -139,14 +149,29 @@ struct TodayShiftProvider: TimelineProvider {
         // UserDefaults 동기화
         userDefaults.synchronize()
         
-        // 간단한 데이터 구조로 읽기
+        // 오늘 날짜 포맷팅
+        let today = Date()
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        let todayString = dateFormatter.string(from: today)
+        
+        // 먼저 개인 스케줄에서 오늘 날짜 확인
+        if let personalData = userDefaults.data(forKey: "personalSchedules"),
+           let personalSchedules = try? JSONDecoder().decode([PersonalScheduleData].self, from: personalData) {
+            
+            if let todaySchedule = personalSchedules.first(where: { $0.date == todayString }) {
+                print("📄 Widget Debug - Found personal schedule for today: \(todaySchedule.shiftType)")
+                return todaySchedule.shiftType
+            }
+        }
+        
+        // 개인 스케줄에 없으면 팀 근무표 확인
         if let data = userDefaults.data(forKey: "simpleShiftData"),
            let shiftData = try? JSONDecoder().decode(SimpleShiftData.self, from: data) {
             
             print("📄 Widget Debug - Found simple data: \(shiftData.shiftType), team: \(shiftData.team), offset: \(shiftData.shiftOffset)")
             
             // 오늘 날짜 계산
-            let today = Date()
             let calendar = Calendar.current
             let dayOfYear = calendar.ordinality(of: .day, in: .year, for: today) ?? 1
             

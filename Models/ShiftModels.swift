@@ -925,6 +925,9 @@ class ShiftManager: ObservableObject {
             print("Error: Failed to encode week schedule data")
         }
         
+        // 개인 스케줄 데이터 저장
+        savePersonalSchedulesForWidget()
+        
         // 위젯 타임라인 새로고침 (즉시 + 지연)
         WidgetCenter.shared.reloadAllTimelines()
         print("Widget timelines reloaded (immediate)")
@@ -1246,7 +1249,7 @@ class ShiftManager: ObservableObject {
         return result
     }
     
-    // 일주일 스케줄 데이터 생성
+    // 일주일 스케줄 데이터 생성 (개인 스케줄 고려)
     func generateWeekScheduleData() -> WeekScheduleData {
         let calendar = Calendar.current
         let today = Date()
@@ -1268,8 +1271,14 @@ class ShiftManager: ObservableObject {
             dateFormatter.dateFormat = "M/d"
             let dateString = dateFormatter.string(from: date)
             
-            // 해당 날짜의 근무 타입 가져오기
-            let shiftType = getCurrentUserShiftType(for: date, shiftOffset: shiftOffset)
+            // 먼저 개인 스케줄에서 해당 날짜의 근무 타입을 확인
+            let shiftType: ShiftType
+            if let schedule = schedules.first(where: { calendar.isDate($0.date, inSameDayAs: date) }) {
+                shiftType = schedule.shiftType
+            } else {
+                // 개인 스케줄에 없으면 팀 근무표를 참조
+                shiftType = getCurrentUserShiftType(for: date, shiftOffset: shiftOffset)
+            }
             
             weekData.append(DayScheduleData(
                 day: dayName,
@@ -1317,6 +1326,41 @@ class ShiftManager: ObservableObject {
     func findCustomShiftType(by name: String) -> CustomShiftType? {
         return settings.customShiftTypes.first { $0.name == name }
     }
+    
+    // 위젯용 개인 스케줄 데이터 저장
+    func savePersonalSchedulesForWidget() {
+        let userDefaults = UserDefaults(suiteName: "group.com.chaeeun.gyodaehaja")!
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        
+        let personalSchedules = schedules.map { schedule in
+            PersonalScheduleData(
+                date: dateFormatter.string(from: schedule.date),
+                shiftType: schedule.shiftType.rawValue,
+                overtimeHours: schedule.overtimeHours,
+                isVacation: schedule.isVacation,
+                vacationType: schedule.vacationType?.rawValue,
+                isVolunteerWork: schedule.isVolunteerWork
+            )
+        }
+        
+        if let data = try? JSONEncoder().encode(personalSchedules) {
+            userDefaults.set(data, forKey: "personalSchedules")
+            userDefaults.synchronize()
+            print("📱 App Debug - Saved personal schedules for widget: \(personalSchedules.count) schedules")
+        }
+    }
+}
+
+// 위젯용 개인 스케줄 데이터 구조
+struct PersonalScheduleData: Codable {
+    let date: String
+    let shiftType: String
+    let overtimeHours: Int
+    let isVacation: Bool
+    let vacationType: String?
+    let isVolunteerWork: Bool
 }
 
 // MARK: - ShiftType Extensions
